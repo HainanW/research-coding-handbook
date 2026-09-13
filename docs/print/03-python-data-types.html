@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>03 — Python data types through a Case 1 profit equation</title><style>@page {
+  size: A4;
+  margin: 17mm 16mm 18mm;
+  @top-left { content: "RESEARCH CODING HANDBOOK"; font: 7.5pt Arial, sans-serif; color: #555; }
+  @bottom-right { content: counter(page) " / " counter(pages); font: 8pt Arial, sans-serif; color: #444; }
+}
+* { box-sizing: border-box; }
+html { color: #111; background: white; }
+body {
+  font-family: Arial, "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  font-size: 10pt;
+  line-height: 1.48;
+  margin: 0;
+}
+h1 { font-size: 19pt; line-height: 1.3; margin: 0 0 12pt; font-weight: 700; }
+h2 { font-size: 13pt; line-height: 1.35; margin: 15pt 0 7pt; border-bottom: 0.5pt solid #999; padding-bottom: 4pt; }
+h3 { font-size: 11pt; margin: 12pt 0 5pt; }
+h1, h2, h3 { break-after: avoid; page-break-after: avoid; }
+p { margin: 0 0 8pt; orphans: 3; widows: 3; break-inside: avoid; }
+ul, ol { margin: 5pt 0 9pt; padding-left: 19pt; }
+li { margin-bottom: 4pt; orphans: 2; widows: 2; }
+blockquote { margin: 8pt 0 10pt; padding: 1pt 0 1pt 10pt; border-left: 2pt solid #777; }
+blockquote p { margin: 0; }
+a { color: #111; text-decoration: underline; text-decoration-color: #999; }
+code { font-family: Consolas, "Microsoft YaHei", monospace; font-size: 0.88em; overflow-wrap: anywhere; }
+pre {
+  font-family: Consolas, "Microsoft YaHei", monospace;
+  font-size: 8.2pt;
+  line-height: 1.32;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  tab-size: 4;
+  border: 0.5pt solid #aaa;
+  background: white;
+  padding: 7pt 8pt;
+  margin: 7pt 0 9pt;
+  break-inside: avoid;
+}
+pre code { font-size: inherit; }
+table { width: 100%; table-layout: fixed; border-collapse: collapse; margin: 8pt 0 11pt; font-size: 8.8pt; line-height: 1.38; break-inside: auto; }
+thead { display: table-header-group; }
+tr { break-inside: avoid; }
+th, td { border: 0.5pt solid #999; padding: 5pt 6pt; vertical-align: top; overflow-wrap: anywhere; }
+th { font-weight: bold; background: white; border-bottom: 1pt solid #444; }
+table code { font-size: 0.93em; }
+figure { margin: 9pt 0 12pt; break-inside: avoid; }
+figure p { margin: 0; }
+img { display: block; width: 100%; height: auto; filter: grayscale(1); }
+figcaption { font-size: 8.6pt; line-height: 1.4; margin-top: 5pt; color: #333; }
+sup.reference { font-size: 7pt; margin-left: 2pt; white-space: nowrap; }
+.references { font-size: 8pt; line-height: 1.4; padding-left: 18pt; }
+.references li { margin-bottom: 5pt; overflow-wrap: anywhere; break-inside: avoid; }
+.references a { text-decoration: none; }
+@media screen { body { max-width: 210mm; padding: 17mm 16mm 18mm; margin: 15px auto; border: 1px solid #ddd; } }
+@media print { body { padding: 0; } }
+
+p:has(+ table) { break-after: avoid; }
+thead { break-after: avoid; }
+table:not(:has(tbody tr:nth-child(9))) { break-inside: avoid; }
+</style></head><body><h1>03 — Python data types through a Case 1 profit equation</h1>
+<h2>The question</h2>
+<blockquote>
+<p>As a beginner, I want to understand Python's different kinds of variables, such as <code>float</code> and <code>tuple</code>, rather than just naming conventions. Can we cover the main data types, inspect their size where applicable, and connect them to a real equation and function from Case 1?</p>
+</blockquote>
+<p>This chapter covers the main built-in value types, NumPy arrays, and a short tour of other objects found in research code. Python also permits user-defined and library-defined types, so there is no finite list of every possible type. Learn the numeric and container sections first; the binary and further-object sections are reference material.</p>
+<p>Run <a href="../../examples/03_python_data_types.py">the complete example</a> with Python 3.9+ and NumPy: <code>python examples/03_python_data_types.py</code>. It also contains numbered Spyder cells. The small inputs are teaching data, not a reproduction of the paper's optimal decisions. The example was checked with Python 3.9.25 and NumPy 1.26.4.</p>
+<h2>1. Name, object, type, and value</h2>
+<pre><code class="language-python">noise_std = 0.12
+print(type(noise_std))     # &lt;class 'float'&gt;
+print(noise_std)           # 0.12
+</code></pre>
+<p><code>noise_std</code> is a name bound to an object; that object has type <code>float</code> and value <code>0.12</code>. <code>float</code> is itself the name of a built-in type, not a declaration attached to <code>noise_std</code>. Assigning <code>noise_std = "unknown"</code> later binds that name to a string. It does not convert the previous float object into a string.</p>
+<p>Use <code>type(value)</code> to inspect the exact type and <code>isinstance(value, float)</code> to ask whether an object belongs to a type or its subclasses. <code>isinstance(True, int)</code> is also true because <code>bool</code> subclasses <code>int</code>. Avoid using built-in names such as <code>list</code>, <code>str</code>, or <code>float</code> for your own variables: <code>list = [1, 2]</code> hides the constructor <code>list()</code> in that scope.</p>
+<p>A type annotation such as <code>noise_std: float = 0.12</code> communicates an intended type. By itself, it neither converts the value nor enforces the type at runtime.</p>
+<h2>2. Numbers, text, and missing values</h2>
+<p>These objects do not allow their contents to be changed in place. Reassigning a name is still allowed.</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Create a value</th>
+<th>Inspect or use it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>int</code></td>
+<td><code>count = 3</code></td>
+<td><code>count + 1</code>; an integer count</td>
+</tr>
+<tr>
+<td><code>float</code></td>
+<td><code>noise_std = 0.12</code></td>
+<td><code>noise_std ** 2</code>; a real-valued approximation</td>
+</tr>
+<tr>
+<td><code>complex</code></td>
+<td><code>z = 2 + 3j</code></td>
+<td><code>z.real</code>, <code>z.imag</code>, <code>abs(z)</code></td>
+</tr>
+<tr>
+<td><code>bool</code></td>
+<td><code>converged = True</code></td>
+<td><code>if converged:</code>; a logical condition</td>
+</tr>
+<tr>
+<td><code>str</code></td>
+<td><code>label = "Case 1"</code></td>
+<td><code>label[0]</code> gives <code>"C"</code>; <code>len(label)</code> gives 6</td>
+</tr>
+<tr>
+<td><code>NoneType</code></td>
+<td><code>result = None</code></td>
+<td><code>result is None</code>; no result yet</td>
+</tr>
+</tbody>
+</table>
+<p>Python <code>float</code> normally uses binary double precision. Decimal fractions may not be exact: <code>0.1 + 0.2 == 0.3</code> is false. Use <code>math.isclose</code> or <code>np.isclose</code> with tolerances suited to the problem. <code>None</code> is not zero, an empty string, or NumPy's numerical <code>nan</code>; <code>type(None)</code> gives <code>NoneType</code>. Numerical <code>nan</code> is a floating-point value, and <code>np.isnan</code> checks for it.</p>
+<pre><code class="language-python">float(&quot;0.12&quot;)       # 0.12: parse text
+int(3.9)            # 3: truncate toward zero
+str(3)              # &quot;3&quot;: produce text
+bool(0)             # False
+bool(&quot;False&quot;)       # True: a nonempty string
+</code></pre>
+<p><code>len(3)</code> and <code>0.12.shape</code> are invalid. Scalar values are not one-element sequences. <code>len("你好")</code> is 2 Unicode code points; encoded byte length is a different quantity.</p>
+<h2>3. Sequences: list, tuple, and range</h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Construction and access</th>
+<th>Can its slots change?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>list</code></td>
+<td><code>q = [1.0, 2.0, 3.0]</code>; <code>q[0]</code></td>
+<td>Yes: <code>q[0] = 4.0</code>, <code>q.append(5.0)</code></td>
+</tr>
+<tr>
+<td><code>tuple</code></td>
+<td><code>bounds = (0.0, 6.0)</code>; <code>bounds[1]</code></td>
+<td>No reassignment of tuple slots</td>
+</tr>
+<tr>
+<td><code>range</code></td>
+<td><code>indices = range(3)</code>; <code>indices[0]</code></td>
+<td>No; describes 0, 1, 2 without storing a list</td>
+</tr>
+</tbody>
+</table>
+<p>Indexing starts at zero. <code>q[-1]</code> selects the last item; <code>q[0:2]</code> selects the first two. <code>len(q)</code> counts top-level items. Lists and tuples can contain mixed types, for example <code>("seed", 5, True)</code>, though numerical calculations usually benefit from homogeneous arrays.</p>
+<pre><code class="language-python">single = (3,)                  # a one-item tuple
+not_a_tuple = (3)              # an int
+lower, upper = (0.0, 6.0)      # unpack two values
+values = list(range(3))        # [0, 1, 2]
+</code></pre>
+<p>The comma makes a one-item tuple. In Q1, <code>return x, y</code> returns a tuple of two arrays, which the caller unpacks. An array's <code>shape</code>, such as <code>(4, 3)</code>, is also a tuple.</p>
+<h2>4. Mapping and sets</h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Construction</th>
+<th>Access and purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dict</code></td>
+<td><code>cfg = {"seed": 5, "std": 0.12}</code></td>
+<td><code>cfg["seed"]</code>; named settings</td>
+</tr>
+<tr>
+<td><code>set</code></td>
+<td><code>ids = {1, 2, 2}</code></td>
+<td><code>2 in ids</code>; unique members</td>
+</tr>
+<tr>
+<td><code>frozenset</code></td>
+<td><code>fixed = frozenset({1, 2})</code></td>
+<td><code>2 in fixed</code>; immutable set</td>
+</tr>
+</tbody>
+</table>
+<p>A dictionary maps unique, hashable keys to values; <code>len(cfg)</code> counts entries. <code>cfg["seed"] = 6</code> updates a value. <code>cfg.get("missing")</code> returns <code>None</code> by default, while <code>cfg["missing"]</code> raises <code>KeyError</code>. Dictionaries preserve insertion order. Sets have no positional indexing or promised iteration order; <code>ids[0]</code> is invalid. Use <code>ids.add(3)</code> to modify a set.</p>
+<p><code>{}</code> is an empty dictionary; <code>set()</code> is an empty set. Hashability means an object can safely serve as a dictionary key or set member under Python's hashing rules. Lists cannot; tuples can only when all their elements are hashable. Do not assume that every immutable container is hashable regardless of its contents.</p>
+<h2>5. Binary values: useful when reading files or buffers</h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Example</th>
+<th>Access and mutability</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bytes</code></td>
+<td><code>raw = b"ABC"</code></td>
+<td><code>raw[0] == 65</code>; immutable bytes</td>
+</tr>
+<tr>
+<td><code>bytearray</code></td>
+<td><code>buf = bytearray(b"ABC")</code></td>
+<td><code>buf[0] = 90</code>; mutable bytes</td>
+</tr>
+<tr>
+<td><code>memoryview</code></td>
+<td><code>view = memoryview(buf)</code></td>
+<td><code>view[0] = 90</code> modifies the backing buffer</td>
+</tr>
+</tbody>
+</table>
+<p>For these one-dimensional byte examples, <code>len()</code> is 3. <code>raw.decode("utf-8")</code> produces text; <code>"ABC".encode("utf-8")</code> produces bytes. A memory view exposes an existing buffer without copying its data. Writability depends on the backing object: a view over <code>bytes</code> is read-only. More general memory views can have their own <code>shape</code>, <code>format</code>, and <code>nbytes</code>.</p>
+<h2>6. Mutation, aliases, and copies</h2>
+<pre><code class="language-python">q = [1.0, 2.0]
+alias = q
+copied = q.copy()
+alias[0] = 9.0
+# q is now [9.0, 2.0]; copied is still [1.0, 2.0]
+</code></pre>
+<p><code>alias = q</code> adds another name for the same list. It does not copy the list. A shallow copy creates a new outer container but shares references to nested objects. A tuple can hold a mutable object: <code>t = ([1, 2],)</code> permits <code>t[0].append(3)</code>, even though replacing the tuple slot with <code>t[0] = []</code> is forbidden.</p>
+<p>For numeric NumPy arrays, basic slices normally share data with the original array, while <code>a.copy()</code> copies the data. Inspect <code>np.shares_memory(a, b)</code> when the relationship matters. An object-dtype array can still contain references to shared Python objects after a shallow array copy.</p>
+<h2>7. NumPy: type, dtype, shape, size, and len</h2>
+<pre><code class="language-python">import numpy as np
+a = np.array([[1, 2, 3], [4, 5, 6]], dtype=np.float64)
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Inspection</th>
+<th>Result</th>
+<th>Meaning in this example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>type(a)</code></td>
+<td><code>numpy.ndarray</code></td>
+<td>Type of the whole array object</td>
+</tr>
+<tr>
+<td><code>a.dtype</code></td>
+<td><code>float64</code></td>
+<td>Element storage type</td>
+</tr>
+<tr>
+<td><code>a.shape</code></td>
+<td><code>(2, 3)</code></td>
+<td>Two rows, three columns</td>
+</tr>
+<tr>
+<td><code>a.ndim</code></td>
+<td><code>2</code></td>
+<td>Number of axes</td>
+</tr>
+<tr>
+<td><code>a.size</code></td>
+<td><code>6</code></td>
+<td>Total number of elements</td>
+</tr>
+<tr>
+<td><code>len(a)</code></td>
+<td><code>2</code></td>
+<td>Length of the first axis</td>
+</tr>
+<tr>
+<td><code>a.itemsize</code></td>
+<td><code>8</code></td>
+<td>Bytes per element</td>
+</tr>
+<tr>
+<td><code>a.nbytes</code></td>
+<td><code>48</code></td>
+<td>Element buffer bytes, excluding object overhead</td>
+</tr>
+</tbody>
+</table>
+<p><code>type(a[0, 0])</code> is <code>np.float64</code>; <code>type(a[0, 0].item())</code> is Python <code>float</code>. A NumPy scalar and a zero-dimensional array differ: <code>np.array(0.12)</code> is an <code>ndarray</code> with <code>shape == ()</code> and <code>size == 1</code>, but <code>len()</code> is invalid. <code>float64</code>, <code>int64</code>, and <code>bool</code> describe common element dtypes; they do not determine an array's shape.</p>
+<p>Lists do not have array <code>shape</code> or <code>dtype</code>. <code>[1, 2] * 2</code> repeats a list; <code>np.array([1, 2]) * 2</code> multiplies each element. Prefer explicit dtypes for reproducible storage choices; default integer widths can depend on the NumPy version and platform.</p>
+<h2>8. The real Case 1 function</h2>
+<p>Source: <code>Code_Python_rogp39/Case1-Production-Planning/</code> → <code>comparative-study-production-planning_v2_revised_eng.ipynb</code>, section <strong>S6.1</strong>, in the separate GaussianProcess-Integrated-Optimization repository. The following two functions retain the notebook's executable statements. Extra type demonstrations elsewhere in this chapter are teaching additions, not claims about types used by this function.</p>
+<pre><code class="language-python">def true_price_fn(x):
+    x = np.asarray(x, dtype=float)
+    return np.exp(-x / 2.0)
+
+
+def realized_profit_samples(x, noise_matrix, cost_vec):
+    x = np.asarray(x, dtype=float).reshape(1, -1)
+    cost_vec = np.asarray(cost_vec, dtype=float).reshape(1, -1)
+    realized_price = true_price_fn(x) + noise_matrix
+    return np.sum(x * (realized_price - cost_vec), axis=1)
+</code></pre>
+<p>The equation below uses plain text so it renders identically in Markdown and offline PDF:</p>
+<pre><code class="language-text">price[s, j] = exp(-x[j] / 2) + noise[s, j]
+profit[s]  = SUM over j of x[j] * (price[s, j] - cost[j])
+s = scenario index; j = production component index
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Python name</th>
+<th>Role in the equation</th>
+<th>Shape after conversion</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>x</code></td>
+<td>Production quantities x[j]</td>
+<td><code>(1, J)</code></td>
+</tr>
+<tr>
+<td><code>cost_vec</code></td>
+<td>Unit costs cost[j]</td>
+<td><code>(1, J)</code></td>
+</tr>
+<tr>
+<td><code>noise_matrix</code></td>
+<td>Price errors noise[s, j]</td>
+<td><code>(S, J)</code> expected</td>
+</tr>
+<tr>
+<td><code>realized_price</code></td>
+<td>Scenario prices</td>
+<td><code>(S, J)</code></td>
+</tr>
+<tr>
+<td>Returned array</td>
+<td>One profit per scenario</td>
+<td><code>(S,)</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>x</code>, <code>noise_matrix</code>, and <code>cost_vec</code> are parameters; <code>realized_price</code> is a local name. On the first line, <code>np.asarray(..., dtype=float)</code> converts a list or tuple to a floating-point array, or may reuse compatible array storage. <code>reshape(1, -1)</code> creates one row and infers the column count; <code>-1</code> is not negative indexing here. Local reassignment of <code>x</code> does not rebind the caller's <code>x_input</code> name.</p>
+<p>The helper computes the noiseless price element by element. Adding the <code>(S, J)</code> noise matrix broadcasts the <code>(1, J)</code> prices across scenarios. Subtracting costs and multiplying quantities is elementwise. Finally, <code>axis=1</code> sums across columns, leaving one value for each row. Omitting <code>axis</code> would combine all scenarios into one scalar. <code>float</code> is a type passed as an argument; <code>dtype</code> and <code>axis</code> are keyword parameter names; <code>reshape</code> is a method. These are different roles despite appearing on the same line.</p>
+<p>The original function assumes compatible numeric inputs; it does not validate dimensions or enforce economic constraints. In particular, a <code>(S, 1)</code> noise array can broadcast the same shock across every component. Verify the intended <code>(S, J)</code> shape before calling it; successful broadcasting alone does not prove the model is correct.</p>
+<h2>9. A hand-checkable run and Spyder inspection</h2>
+<p>The script uses three quantities <code>[1.0, 2.0, 3.0]</code>, costs <code>(0.1, 0.2, 0.3)</code>, and four explicit noise rows:</p>
+<pre><code class="language-text">[ 0.00,  0.00,  0.00]
+[ 0.10,  0.00, -0.10]
+[-0.10,  0.10,  0.00]
+[ 0.02, -0.03,  0.04]
+</code></pre>
+<p>The zero-noise profit is approximately <code>0.61168002</code>. Relative to it, the other scenarios change profit by <code>-0.20</code>, <code>+0.10</code>, and <code>+0.08</code>: multiply each noise row by the three quantities and add. Expected output:</p>
+<pre><code class="language-text">profits = [0.61168002 0.41168002 0.71168002 0.69168002]
+profit shape = (4,)
+Verification passed.
+</code></pre>
+<ol>
+<li>Run cells 1–3 to inspect scalar and container names in Spyder's Variable Explorer. The <code>samples</code> dictionary collects all 15 core types in one place. Some object types may be filtered or lack a graphical editor; <code>type(value)</code> in the console remains useful.</li>
+<li>Place a breakpoint on the return line marked <code>P1</code>, then debug the script. At that point, the preceding assignments have executed and the return has not.</li>
+<li>Inspect <code>type(x)</code>, <code>x.dtype</code>, <code>x.shape</code>, <code>noise_matrix.shape</code>, <code>realized_price.shape</code>, and <code>type(x.shape)</code>. Expect <code>(1, 3)</code>, <code>(4, 3)</code>, <code>(4, 3)</code>, and a tuple for the shape object.</li>
+<li>After returning, inspect <code>profits</code> and compare with <code>reference</code>, calculated using nested loops rather than broadcasting. The script checks their agreement and the scenario profit changes.</li>
+</ol>
+<h2>10. Other objects you will meet</h2>
+<p>This is a recognition guide, not a requirement to learn every advanced class now. The final script cell creates inspectable examples without writing files or raising exceptions.</p>
+<table>
+<thead>
+<tr>
+<th>Object family</th>
+<th>Example</th>
+<th>What to recognize</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Exact decimal / rational</td>
+<td><code>Decimal("0.1")</code>, <code>Fraction(1, 3)</code></td>
+<td>Standard-library numeric classes; not built-in float</td>
+</tr>
+<tr>
+<td>File-system path</td>
+<td><code>Path("results")</code></td>
+<td>Library object representing a path</td>
+</tr>
+<tr>
+<td>Function / module / class</td>
+<td><code>true_price_fn</code>, <code>np</code>, <code>float</code></td>
+<td>Callable function, imported module, type object</td>
+</tr>
+<tr>
+<td>Iterator / generator</td>
+<td><code>iter([1, 2])</code>, <code>(i*i for i in range(3))</code></td>
+<td><code>next()</code> consumes values; usually no <code>len()</code></td>
+</tr>
+<tr>
+<td>Slice</td>
+<td><code>slice(0, 2)</code></td>
+<td>Reusable indexing selection</td>
+</tr>
+<tr>
+<td>Exception instance</td>
+<td><code>ValueError("bad input")</code></td>
+<td>An object that can be raised with <code>raise</code></td>
+</tr>
+<tr>
+<td>Special singleton values</td>
+<td><code>Ellipsis</code>, <code>NotImplemented</code></td>
+<td>Extended slicing; unsupported operator protocol</td>
+</tr>
+</tbody>
+</table>
+<p><code>NotImplemented</code> is distinct from the exception <code>NotImplementedError</code>; it is not a generic missing-value marker. Files, custom class instances, pandas tables, and optimization model objects also have their own types. Inspect their type and documented interface instead of assuming they behave like an array.</p>
+<h2>11. Practice and source notes</h2>
+<p>Predict before running: What is the type of <code>(3)</code> versus <code>(3,)</code>? Why does <code>len(a)</code> differ from <code>a.size</code>? Why does assigning <code>alias = q</code> affect the original list later? Why does a profit array have shape <code>(4,)</code> instead of <code>(4, 3)</code>? The answers are in sections 3, 7, 6, and 8 respectively.</p>
+<p>The <a href="https://docs.python.org/3/library/stdtypes.html">Python built-in types reference</a><sup class="reference">[1]</sup> is the lookup source for numeric, sequence, mapping, set, and binary operations. The <a href="https://numpy.org/doc/stable/reference/arrays.ndarray.html">NumPy ndarray reference</a><sup class="reference">[2]</sup> documents array attributes and methods. The worked inputs, manual profit comparison, and teaching organization here are specific to this handbook.</p><h2>References</h2><ol class="references"><li><a href="https://docs.python.org/3/library/stdtypes.html">https://docs.python.org/3/library/stdtypes.html</a></li><li><a href="https://numpy.org/doc/stable/reference/arrays.ndarray.html">https://numpy.org/doc/stable/reference/arrays.ndarray.html</a></li></ol></body></html>
