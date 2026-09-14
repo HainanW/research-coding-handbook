@@ -3,7 +3,7 @@
 [Back to the handbook](../README.md)
 
 <!-- print:omit -->
-[Download the A4 print PDF](print/01-spyder-function-inspection.pdf) · [Open the print layout](print/01-spyder-function-inspection.html)
+[Download the US Letter print PDF](print/01-spyder-function-inspection.pdf) · [Open the print layout](print/01-spyder-function-inspection.html)
 <!-- /print:omit -->
 
 ## Question

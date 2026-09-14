@@ -28,7 +28,7 @@ This repository collects recurring programming practices, workflows, and templat
 
 - [Read the image guide](docs/02-markdown-images.md): relative paths, VS Code insertion and preview, display width, and shared images for both languages.
 - [Regenerate the example figure](examples/02_plot_generated_data.py): save a comparison of the two random datasets to `docs/images/01-generated-data.png`.
-- [A4 PDF](docs/print/02-markdown-images.pdf) · [Print HTML](docs/print/02-markdown-images.html).
+- [US Letter PDF](docs/print/02-markdown-images.pdf) · [Print HTML](docs/print/02-markdown-images.html).
 
 **Q3. Python data types through a Case 1 profit equation**
 
@@ -36,7 +36,7 @@ This repository collects recurring programming practices, workflows, and templat
 
 - [Read the guide](docs/03-python-data-types.md): core built-in types, NumPy arrays, aliases and copies, and the profit function explained line by line.
 - [Run the example](examples/03_python_data_types.py): inspectable type examples, four profit scenarios, and independent loop verification.
-- [A4 PDF](docs/print/03-python-data-types.pdf) · [Print HTML](docs/print/03-python-data-types.html).
+- [US Letter PDF](docs/print/03-python-data-types.pdf) · [Print HTML](docs/print/03-python-data-types.html).
 
 ## GitHub Sync and Koopman Learning Materials
 
@@ -51,9 +51,9 @@ The original internal push guides are kept locally and excluded from Git. Only t
 
 ## Print Editions
 
-Q1 is available as an [A4 PDF](docs/print/01-spyder-function-inspection.pdf) and a [self-contained print HTML](docs/print/01-spyder-function-inspection.html). The layout uses black text, grayscale figures, page numbers, repeated table headers, and numbered source URLs for reading on paper.
+Q1 is available as a [US Letter PDF](docs/print/01-spyder-function-inspection.pdf) and a [self-contained print HTML](docs/print/01-spyder-function-inspection.html). Q1–Q3 use US Letter paper (8.5 × 11 inches). The layout uses black text, grayscale figures, page numbers, repeated table headers, and numbered source URLs for reading on paper.
 
-To regenerate after editing the Markdown sources, run `python tools/export_print.py` in a Python environment with Python-Markdown installed and Chrome or Edge available. The exporter was verified with Python-Markdown 3.8 and Chrome 152 on Windows. Its stylesheet is `tools/print.css`; outputs go to `docs/print/`. The command updates both language editions of Q1 and Q3. Chinese exports are ignored by Git.
+To regenerate after editing the Markdown sources, run `python tools/export_print.py` in a Python environment with Python-Markdown installed and Chrome or Edge available. The exporter was verified with Python-Markdown 3.8 and Chrome 152 on Windows. Its stylesheet is `tools/print.css`; outputs go to `docs/print/`. The command updates Q1–Q3. To export a local Chinese edition, pass its Markdown path explicitly; Chinese exports are ignored by Git.
 
 To regenerate Q2's HTML and PDF, run `python tools/export_print.py docs/02-markdown-images.md`. The HTML embeds the example image so it can be viewed offline as a single file.
 
@@ -115,7 +115,7 @@ research-coding-handbook/
 │   ├── 01-spyder-function-inspection.md
 │   ├── 02-markdown-images.md
 │   ├── 03-python-data-types.md
-│   ├── print/     # A4 PDF and self-contained HTML editions
+│   ├── print/     # PDF and self-contained HTML editions
 │   └── images/
 │       └── 01-generated-data.png
 ├── examples/

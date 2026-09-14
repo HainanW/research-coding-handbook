@@ -1,4 +1,4 @@
-"""Export the bilingual Q1 and Q3 Markdown guides to A4 HTML and PDF.
+"""Export the Q1-Q3 Markdown guides to US Letter HTML and PDF.
 
 Requires Python-Markdown and an installed Chrome or Edge browser.
 Run from the repository root: python tools/export_print.py
@@ -22,9 +22,8 @@ import markdown
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DOCS = (
     "docs/01-spyder-function-inspection.md",
-    "docs/01-spyder-function-inspection.zh-CN.md",
+    "docs/02-markdown-images.md",
     "docs/03-python-data-types.md",
-    "docs/03-python-data-types.zh-CN.md",
 )
 
 
@@ -111,6 +110,7 @@ def render_html(source, destination, css):
 
 
 def print_pdf(browser, source, destination):
+    previous_mtime = destination.stat().st_mtime_ns if destination.exists() else None
     # An isolated temporary profile avoids touching an existing browser session.
     profile_root = Path(tempfile.gettempdir()).resolve()
     profile = Path(tempfile.mkdtemp(prefix="handbook-print-", dir=profile_root)).resolve()
@@ -127,6 +127,10 @@ def print_pdf(browser, source, destination):
                                 creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         if result.returncode != 0 or not destination.is_file():
             raise RuntimeError("PDF export failed: " + result.stderr[-2000:])
+        if previous_mtime is not None and destination.stat().st_mtime_ns == previous_mtime:
+            raise RuntimeError(
+                f"PDF was not updated: {destination}. Close any application using this file and retry."
+            )
         if destination.read_bytes()[:5] != b"%PDF-":
             raise RuntimeError(f"Invalid PDF output: {destination}")
     finally:
