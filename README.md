@@ -28,6 +28,7 @@ This repository collects recurring programming practices, workflows, and templat
 
 - [Read the image guide](docs/02-markdown-images.md): relative paths, VS Code insertion and preview, display width, and shared images for both languages.
 - [Regenerate the example figure](examples/02_plot_generated_data.py): save a comparison of the two random datasets to `docs/images/01-generated-data.png`.
+- [A4 PDF](docs/print/02-markdown-images.pdf) · [Print HTML](docs/print/02-markdown-images.html).
 
 **Q3. Python data types through a Case 1 profit equation**
 
@@ -53,6 +54,8 @@ The original internal push guides are kept locally and excluded from Git. Only t
 Q1 is available as an [A4 PDF](docs/print/01-spyder-function-inspection.pdf) and a [self-contained print HTML](docs/print/01-spyder-function-inspection.html). The layout uses black text, grayscale figures, page numbers, repeated table headers, and numbered source URLs for reading on paper.
 
 To regenerate after editing the Markdown sources, run `python tools/export_print.py` in a Python environment with Python-Markdown installed and Chrome or Edge available. The exporter was verified with Python-Markdown 3.8 and Chrome 152 on Windows. Its stylesheet is `tools/print.css`; outputs go to `docs/print/`. The command updates both language editions of Q1 and Q3. Chinese exports are ignored by Git.
+
+To regenerate Q2's HTML and PDF, run `python tools/export_print.py docs/02-markdown-images.md`. The HTML embeds the example image so it can be viewed offline as a single file.
 
 ## Core Principles
 
