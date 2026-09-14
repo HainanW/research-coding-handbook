@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>GitHub 手动同步指南（公开脱敏版）</title><style>@page {
+  size: A4;
+  margin: 17mm 16mm 18mm;
+  @top-left { content: "RESEARCH CODING HANDBOOK"; font: 7.5pt Arial, sans-serif; color: #555; }
+  @bottom-right { content: counter(page) " / " counter(pages); font: 8pt Arial, sans-serif; color: #444; }
+}
+* { box-sizing: border-box; }
+html { color: #111; background: white; }
+body {
+  font-family: Arial, "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  font-size: 10pt;
+  line-height: 1.48;
+  margin: 0;
+}
+h1 { font-size: 19pt; line-height: 1.3; margin: 0 0 12pt; font-weight: 700; }
+h2 { font-size: 13pt; line-height: 1.35; margin: 15pt 0 7pt; border-bottom: 0.5pt solid #999; padding-bottom: 4pt; }
+h3 { font-size: 11pt; margin: 12pt 0 5pt; }
+h1, h2, h3 { break-after: avoid; page-break-after: avoid; }
+p { margin: 0 0 8pt; orphans: 3; widows: 3; break-inside: avoid; }
+ul, ol { margin: 5pt 0 9pt; padding-left: 19pt; }
+li { margin-bottom: 4pt; orphans: 2; widows: 2; }
+blockquote { margin: 8pt 0 10pt; padding: 1pt 0 1pt 10pt; border-left: 2pt solid #777; }
+blockquote p { margin: 0; }
+a { color: #111; text-decoration: underline; text-decoration-color: #999; }
+code { font-family: Consolas, "Microsoft YaHei", monospace; font-size: 0.88em; overflow-wrap: anywhere; }
+pre {
+  font-family: Consolas, "Microsoft YaHei", monospace;
+  font-size: 8.2pt;
+  line-height: 1.32;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  tab-size: 4;
+  border: 0.5pt solid #aaa;
+  background: white;
+  padding: 7pt 8pt;
+  margin: 7pt 0 9pt;
+  break-inside: avoid;
+}
+pre code { font-size: inherit; }
+table { width: 100%; table-layout: fixed; border-collapse: collapse; margin: 8pt 0 11pt; font-size: 8.8pt; line-height: 1.38; break-inside: auto; }
+thead { display: table-header-group; }
+tr { break-inside: avoid; }
+th, td { border: 0.5pt solid #999; padding: 5pt 6pt; vertical-align: top; overflow-wrap: anywhere; }
+th { font-weight: bold; background: white; border-bottom: 1pt solid #444; }
+table code { font-size: 0.93em; }
+figure { margin: 9pt 0 12pt; break-inside: avoid; }
+figure p { margin: 0; }
+img { display: block; width: 100%; height: auto; filter: grayscale(1); }
+figcaption { font-size: 8.6pt; line-height: 1.4; margin-top: 5pt; color: #333; }
+sup.reference { font-size: 7pt; margin-left: 2pt; white-space: nowrap; }
+.references { font-size: 8pt; line-height: 1.4; padding-left: 18pt; }
+.references li { margin-bottom: 5pt; overflow-wrap: anywhere; break-inside: avoid; }
+.references a { text-decoration: none; }
+@media screen { body { max-width: 210mm; padding: 17mm 16mm 18mm; margin: 15px auto; border: 1px solid #ddd; } }
+@media print { body { padding: 0; } }
+
+p:has(+ table) { break-after: avoid; }
+thead { break-after: avoid; }
+table:not(:has(tbody tr:nth-child(9))) { break-inside: avoid; }
+</style></head><body><h1>GitHub 手动同步指南（公开脱敏版）</h1>
+<p>更新日期：2026-09-14</p>
+<p>本版移除了内部项目名称、组织信息、本机用户名、绝对路径和专用环境名称。原始 Markdown 与 PDF 仅保留本地，不加入 Git 提交。</p>
+<p>本文以公开仓库 <code>HainanW/research-coding-handbook</code> 为例。GitHub 保存的是已经提交并推送的文件；被忽略的本地原件不会自动备份到 GitHub。</p>
+<h2>1. 进入仓库并确认远程地址</h2>
+<p>在本地项目文件夹中打开 PowerShell，逐条执行：</p>
+<pre><code class="language-powershell">git status
+git remote -v
+git branch --show-current
+</code></pre>
+<p>本仓库的 <code>origin</code> 应指向 <code>https://github.com/HainanW/research-coding-handbook.git</code>，当前分支为 <code>main</code>。</p>
+<p>在另一台电脑首次下载时，可以在目标父目录运行：</p>
+<pre><code class="language-powershell">git clone https://github.com/HainanW/research-coding-handbook.git
+cd research-coding-handbook
+</code></pre>
+<p><code>git clone</code> 的目标目录应不存在或为空。已有文件的文件夹需要先比较、备份并合并文件，不能直接覆盖。</p>
+<h2>2. 获取 GitHub 上的更新</h2>
+<p>工作区干净时执行：</p>
+<pre><code class="language-powershell">git pull --ff-only origin main
+</code></pre>
+<p>如果有尚未提交的修改，先按下一节检查并提交，再拉取。如果提示分支已经分叉，先检查 <code>git log --oneline --graph --all</code>，协调合并后再推送。不要强制覆盖远程历史。</p>
+<h2>3. 检查、暂存并提交本地文件</h2>
+<pre><code class="language-powershell">git status --short
+git diff
+git add -- README.md
+git diff --cached --stat
+git diff --cached
+git commit -m &quot;Update handbook documentation&quot;
+</code></pre>
+<p>将 <code>README.md</code> 替换为本次确实需要上传的文件名，也可以一次列出多个文件。提交说明应描述实际修改。新文件需要单独打开检查；Word、PDF 等二进制文件也要查看内容，不能只看差异摘要。</p>
+<p>公开上传前，确认文件不含密码、令牌、内部地址或不应公开的资料。本仓库根目录下的两份 <code>GitHub_Manual_Push_Guide</code> 原件已经由 <code>.gitignore</code> 排除，不要使用 <code>git add -f</code> 强制加入。</p>
+<p>若 Git 提示没有作者身份，可仅为当前仓库配置自己的 GitHub 用户名和已验证邮箱，或使用 GitHub 设置中提供的隐私邮箱。无需更改其他项目的全局设置。</p>
+<h2>4. 推送到 GitHub</h2>
+<pre><code class="language-powershell">git pull --ff-only origin main
+git push origin main
+</code></pre>
+<p>每条命令成功后再执行下一条。推送失败时先处理错误，不要使用 <code>--force</code>。</p>
+<p>如果另有经过确认的第二个备份仓库，需要单独配置远程并分别推送；一次编辑器“同步”操作不保证更新所有远程。本示例只配置 <code>origin</code>。</p>
+<h2>5. 核对同步结果</h2>
+<pre><code class="language-powershell">git status
+git rev-parse HEAD
+git ls-remote origin refs/heads/main
+</code></pre>
+<p>工作区应没有待提交修改，本地 <code>HEAD</code> 与远程 <code>main</code> 的完整提交编号应一致。工作区干净本身不代表已经上传。被忽略的文件仍保留本地，不会出现在普通 <code>git status</code> 中。</p>
+<h2>6. 目录所有权错误</h2>
+<p>如果 Git 提示 <code>detected dubious ownership</code>，先确认当前目录确实是你信任的本地仓库，再执行：</p>
+<pre><code class="language-powershell">$TrustedRepo = (Get-Location).Path -replace '\\', '/'
+git config --global --add safe.directory $TrustedRepo
+</code></pre>
+<p>这只为当前已确认的目录添加例外。不要将 <code>safe.directory</code> 设置为 <code>*</code>。</p>
+<h2>7. 常见问题</h2>
+<ul>
+<li><code>non-fast-forward</code>：远程包含本地尚未整合的提交。先获取并检查差异，处理合并后重试。</li>
+<li>同名文件冲突：保留两份内容进行比较；二进制文件通常需要人工选择或分别保存。</li>
+<li>文件没有上传：检查是否已经暂存、提交和推送，以及是否匹配 <code>.gitignore</code>。</li>
+<li>误提交敏感资料：<code>.gitignore</code> 不会删除已有历史；先处理已暴露的凭据，再按具体情况清理历史。</li>
+</ul>
+<p>日常流程是：拉取更新 → 修改文件 → 检查并提交 → 推送 → 核对提交编号。</p></body></html>

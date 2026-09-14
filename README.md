@@ -37,6 +37,17 @@ This repository collects recurring programming practices, workflows, and templat
 - [Run the example](examples/03_python_data_types.py): inspectable type examples, four profit scenarios, and independent loop verification.
 - [A4 PDF](docs/print/03-python-data-types.pdf) · [Print HTML](docs/print/03-python-data-types.html).
 
+## GitHub Sync and Koopman Learning Materials
+
+- [Manual GitHub sync guide (sanitized, Chinese)](docs/04-github-manual-push.md) · [PDF](docs/print/04-github-manual-push.pdf).
+- [Koopman operator: Day 1](Koopman_Operator_Day_1_Learning_Materials.docx).
+- [Koopman operator: Days 2–7](Koopman_Operator_Day_2_to_Day_7_Learning_Materials.docx).
+- [Koopman operator: Days 8–14](Koopman_Operator_Week_2_Day_8_to_Day_14_Learning_Materials.docx).
+- [Koopman operator: Days 15–21](Koopman_Operator_Week_3_Day_15_to_Day_21_Learning_Materials.docx).
+- [Koopman operator: Days 22–30 and final project](Koopman_Operator_Week_4_Day_22_to_Day_30_Final_Project_Learning_Materials.docx).
+
+The original internal push guides are kept locally and excluded from Git. Only their sanitized edition is published.
+
 ## Print Editions
 
 Q1 is available as an [A4 PDF](docs/print/01-spyder-function-inspection.pdf) and a [self-contained print HTML](docs/print/01-spyder-function-inspection.html). The layout uses black text, grayscale figures, page numbers, repeated table headers, and numbered source URLs for reading on paper.

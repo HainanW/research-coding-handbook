@@ -1,3 +1,7 @@
 /README.zh-CN.md
 /docs/*.zh-CN.md
 /docs/print/*.zh-CN.*
+
+# Original internal guides stay on this computer; publish sanitized editions only.
+/GitHub_Manual_Push_Guide.md
+/GitHub_Manual_Push_Guide.pdf
