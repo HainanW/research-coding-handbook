@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>07 — Install and use a conda environment on Windows</title><style>@page {
+  size: letter;
+  margin: 17mm 16mm 18mm;
+  @top-left { content: "RESEARCH CODING HANDBOOK"; font: 7.5pt Arial, sans-serif; color: #555; }
+  @bottom-right { content: counter(page) " / " counter(pages); font: 8pt Arial, sans-serif; color: #444; }
+}
+* { box-sizing: border-box; }
+html { color: #111; background: white; }
+body {
+  font-family: Arial, "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  font-size: 10pt;
+  line-height: 1.48;
+  margin: 0;
+}
+h1 { font-size: 19pt; line-height: 1.3; margin: 0 0 12pt; font-weight: 700; }
+h2 { font-size: 13pt; line-height: 1.35; margin: 15pt 0 7pt; border-bottom: 0.5pt solid #999; padding-bottom: 4pt; }
+h3 { font-size: 11pt; margin: 12pt 0 5pt; }
+h1, h2, h3 { break-after: avoid; page-break-after: avoid; }
+p { margin: 0 0 8pt; orphans: 3; widows: 3; break-inside: avoid; }
+ul, ol { margin: 5pt 0 9pt; padding-left: 19pt; }
+li { margin-bottom: 4pt; orphans: 2; widows: 2; }
+blockquote { margin: 8pt 0 10pt; padding: 1pt 0 1pt 10pt; border-left: 2pt solid #777; }
+blockquote p { margin: 0; }
+a { color: #111; text-decoration: underline; text-decoration-color: #999; }
+code { font-family: Consolas, "Microsoft YaHei", monospace; font-size: 0.88em; overflow-wrap: anywhere; }
+pre {
+  font-family: Consolas, "Microsoft YaHei", monospace;
+  font-size: 8.2pt;
+  line-height: 1.32;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  tab-size: 4;
+  border: 0.5pt solid #aaa;
+  background: white;
+  padding: 7pt 8pt;
+  margin: 7pt 0 9pt;
+  break-inside: avoid;
+}
+pre code { font-size: inherit; }
+table { width: 100%; table-layout: fixed; border-collapse: collapse; margin: 8pt 0 11pt; font-size: 8.8pt; line-height: 1.38; break-inside: auto; }
+thead { display: table-header-group; }
+tr { break-inside: avoid; }
+th, td { border: 0.5pt solid #999; padding: 5pt 6pt; vertical-align: top; overflow-wrap: anywhere; }
+th { font-weight: bold; background: white; border-bottom: 1pt solid #444; }
+table code { font-size: 0.93em; }
+figure { margin: 9pt 0 12pt; break-inside: avoid; }
+figure p { margin: 0; }
+img { display: block; width: 100%; height: auto; filter: grayscale(1); }
+figcaption { font-size: 8.6pt; line-height: 1.4; margin-top: 5pt; color: #333; }
+sup.reference { font-size: 7pt; margin-left: 2pt; white-space: nowrap; }
+.references { font-size: 8pt; line-height: 1.4; padding-left: 18pt; }
+.references li { margin-bottom: 5pt; overflow-wrap: anywhere; break-inside: avoid; }
+.references a { text-decoration: none; }
+@media screen { body { max-width: 8.5in; padding: 17mm 16mm 18mm; margin: 15px auto; border: 1px solid #ddd; } }
+@media print { body { padding: 0; } }
+
+p:has(+ table) { break-after: avoid; }
+thead { break-after: avoid; }
+table:not(:has(tbody tr:nth-child(9))) { break-inside: avoid; }
+
+/* Bilingual table cells contain both languages and may span many pages. */
+table:has(br), table:has(br):not(:has(tbody tr:nth-child(9))) { break-inside: auto; }
+</style></head><body><h1>07 — Install and use a conda environment on Windows</h1>
+<h2>Question and scope</h2>
+<blockquote>
+<p>How do I install conda if necessary, create a separate Python environment, and use the correct interpreter in VS Code?</p>
+</blockquote>
+<p>Anaconda/Miniconda supplies conda, the environment and package manager. A conda environment holds a Python interpreter and its packages. VS Code is the editor; choosing an interpreter connects it to an environment. This Windows walkthrough uses a new environment named <code>handbook-demo</code>; it does not change an existing research environment. Commands are instructions for you to run, not a record that an installation was performed. Documentation was checked on 2026-09-20.</p>
+<h2>1. Check whether conda is already installed</h2>
+<p>Open <strong>Anaconda Prompt</strong> from the Windows Start menu and run:</p>
+<pre><code class="language-powershell">conda --version
+conda env list
+</code></pre>
+<p>If both work, skip reinstallation. An asterisk marks the active environment. A missing <code>conda</code> command in an ordinary terminal can mean that shell is not initialized, rather than that conda is absent.</p>
+<blockquote>
+<p><strong>Screenshot placeholder 07-1</strong> — Anaconda Prompt showing conda --version and conda env list.
+Suggested file: <code>docs/images/07-conda-available.png</code></p>
+</blockquote>
+<!-- Replace the placeholder above after saving the screenshot:
+![Anaconda Prompt showing conda --version and conda env list.](images/07-conda-available.png)
+-->
+
+<p>If no conda installation exists, use the <a href="https://docs.conda.io/projects/conda/en/latest/user-guide/install/windows.html">official Windows installation guide</a><sup class="reference">[1]</sup> and a matching installer from <a href="https://www.anaconda.com/download">Anaconda's download page</a><sup class="reference">[2]</sup>. Miniconda provides a smaller starting installation; Anaconda Distribution includes more preinstalled packages. For a personal machine, use a per-user installation where appropriate. Finish the installer, open a fresh Anaconda Prompt, and repeat the two checks above. Keep environments outside your Git repository.</p>
+<h2>2. Create a project environment</h2>
+<p>The example chooses Python 3.11 for an isolated teaching environment. For a real project, use the version required by its dependencies or its existing environment file. First make sure <code>handbook-demo</code> is not already listed; if it exists, inspect it or choose a different name.</p>
+<p>Run each command after the previous one succeeds, and review conda's proposed package changes when prompted:</p>
+<pre><code class="language-powershell">conda create -n handbook-demo python=3.11 numpy matplotlib pip
+conda activate handbook-demo
+python --version
+python -c &quot;import sys; print(sys.executable)&quot;
+python -c &quot;import numpy, matplotlib; print(numpy.__version__, matplotlib.__version__)&quot;
+</code></pre>
+<p>Check that <code>sys.executable</code> points into the new environment. A successful import verifies that both packages are available to that interpreter. Do not rely only on the prompt prefix. See <a href="https://docs.conda.io/projects/conda/en/stable/user-guide/tasks/manage-environments.html">conda environment management</a><sup class="reference">[3]</sup>.</p>
+<blockquote>
+<p><strong>Screenshot placeholder 07-2</strong> — Activated handbook-demo environment and interpreter/version verification.
+Suggested file: <code>docs/images/07-conda-active.png</code></p>
+</blockquote>
+<!-- Replace the placeholder above after saving the screenshot:
+![Activated handbook-demo environment and interpreter/version verification.](images/07-conda-active.png)
+-->
+
+<p><code>conda activate handbook-demo</code> selects an existing environment; it does not install anything. <code>conda deactivate</code> leaves it. If activation fails in PowerShell, run <code>conda init powershell</code> from Anaconda Prompt, then close and reopen PowerShell. This initializes that shell's startup configuration. If local policy prevents startup scripts, use Anaconda Prompt rather than changing system-wide security settings as a first response.</p>
+<h2>3. Select the interpreter in VS Code</h2>
+<p>Install Microsoft's Python extension if it is not already available. Open the project, press <strong>Ctrl+Shift+P</strong>, run <strong>Python: Select Interpreter</strong>, and select <code>handbook-demo</code>. If necessary, enter the interpreter path printed by <code>sys.executable</code>. Open a new terminal and repeat the interpreter/import checks. Existing terminals may still have the previous environment active. See <a href="https://code.visualstudio.com/docs/python/environments">VS Code's environment guide</a><sup class="reference">[4]</sup>.</p>
+<blockquote>
+<p><strong>Screenshot placeholder 07-3</strong> — VS Code interpreter picker with handbook-demo selected.
+Suggested file: <code>docs/images/07-vscode-interpreter.png</code></p>
+</blockquote>
+<!-- Replace the placeholder above after saving the screenshot:
+![VS Code interpreter picker with handbook-demo selected.](images/07-vscode-interpreter.png)
+-->
+
+<p>For a notebook, its kernel is a separate selection: choose the intended environment through <strong>Select Kernel</strong>. If it needs an IPython kernel, install <code>ipykernel</code> in that environment and select it again:</p>
+<pre><code class="language-powershell">conda install -n handbook-demo ipykernel
+</code></pre>
+<h2>4. Save a reproducible starting specification</h2>
+<p>Create a UTF-8 <code>environment.yml</code> in your project, for example:</p>
+<pre><code class="language-yaml">name: handbook-demo
+channels:
+  - defaults
+dependencies:
+  - python=3.11
+  - numpy
+  - matplotlib
+  - pip
+</code></pre>
+<p>To reproduce this specification in a fresh environment, use <code>conda env create -f environment.yml</code>. If the name already exists, use a new one, for example <code>conda env create -n handbook-demo-copy -f environment.yml</code>. This recipe intentionally leaves most package versions open; it is not an exact lock file. Record the resolved versions when comparing research results.</p>
+<p>To export the current environment's explicitly requested packages in PowerShell:</p>
+<pre><code class="language-powershell">conda env export -n handbook-demo --from-history | Set-Content -Encoding utf8 environment.yml
+</code></pre>
+<p>This overwrites that file; use a different filename if you want to retain the hand-written recipe. Inspect the export before sharing: remove any machine-specific <code>prefix:</code> path. The history export is useful for portability but does not capture every resolved dependency or every package installed with pip. Channel choice, operating system, and package availability also affect reconstruction.</p>
+<p>If pip is needed, install conda packages first and then use <code>python -m pip install PACKAGE_NAME</code> inside the activated environment, replacing <code>PACKAGE_NAME</code> with the actual package. Record these additional dependencies; prefer rebuilding from a complete specification when changing a mixed conda/pip environment.</p>
+<h2>5. Troubleshooting and completion check</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>First check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>conda</code> not recognized</td>
+<td>Use Anaconda Prompt; check shell initialization</td>
+</tr>
+<tr>
+<td><code>ModuleNotFoundError</code></td>
+<td>Print <code>sys.executable</code>; install in that environment</td>
+</tr>
+<tr>
+<td>VS Code runs another Python</td>
+<td>Select the interpreter, then open a new terminal</td>
+</tr>
+<tr>
+<td>Notebook uses another environment</td>
+<td>Check its kernel selection</td>
+</tr>
+<tr>
+<td>Dependency solving fails</td>
+<td>Check Python/package compatibility and project requirements</td>
+</tr>
+</tbody>
+</table>
+<p>You are ready when the environment is listed, its interpreter imports the required packages, VS Code uses that interpreter, and the project has a reviewed environment specification.</p>
+<h2>6. Replace the screenshot placeholders</h2>
+<p>Save future screenshots under the three suggested names in <code>docs/images/</code>. Replace each visible block with the image line in its adjacent HTML comment, removing the comment markers. The bilingual guides share those image files; no nonexistent images are linked yet. Crop personal paths if sharing screenshots publicly.</p>
+<p>Regenerate with <code>python tools/export_print.py docs/07-main-conda-environment.md</code>.</p><h2>References</h2><ol class="references"><li><a href="https://docs.conda.io/projects/conda/en/latest/user-guide/install/windows.html">https://docs.conda.io/projects/conda/en/latest/user-guide/install/windows.html</a></li><li><a href="https://www.anaconda.com/download">https://www.anaconda.com/download</a></li><li><a href="https://docs.conda.io/projects/conda/en/stable/user-guide/tasks/manage-environments.html">https://docs.conda.io/projects/conda/en/stable/user-guide/tasks/manage-environments.html</a></li><li><a href="https://code.visualstudio.com/docs/python/environments">https://code.visualstudio.com/docs/python/environments</a></li></ol></body></html>

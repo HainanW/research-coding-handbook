@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>06 — Create a GitHub organization / 06 — 创建 GitHub 组织（Organization）</title><style>@page {
+  size: letter;
+  margin: 17mm 16mm 18mm;
+  @top-left { content: "RESEARCH CODING HANDBOOK"; font: 7.5pt Arial, sans-serif; color: #555; }
+  @bottom-right { content: counter(page) " / " counter(pages); font: 8pt Arial, sans-serif; color: #444; }
+}
+* { box-sizing: border-box; }
+html { color: #111; background: white; }
+body {
+  font-family: Arial, "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  font-size: 10pt;
+  line-height: 1.48;
+  margin: 0;
+}
+h1 { font-size: 19pt; line-height: 1.3; margin: 0 0 12pt; font-weight: 700; }
+h2 { font-size: 13pt; line-height: 1.35; margin: 15pt 0 7pt; border-bottom: 0.5pt solid #999; padding-bottom: 4pt; }
+h3 { font-size: 11pt; margin: 12pt 0 5pt; }
+h1, h2, h3 { break-after: avoid; page-break-after: avoid; }
+p { margin: 0 0 8pt; orphans: 3; widows: 3; break-inside: avoid; }
+ul, ol { margin: 5pt 0 9pt; padding-left: 19pt; }
+li { margin-bottom: 4pt; orphans: 2; widows: 2; }
+blockquote { margin: 8pt 0 10pt; padding: 1pt 0 1pt 10pt; border-left: 2pt solid #777; }
+blockquote p { margin: 0; }
+a { color: #111; text-decoration: underline; text-decoration-color: #999; }
+code { font-family: Consolas, "Microsoft YaHei", monospace; font-size: 0.88em; overflow-wrap: anywhere; }
+pre {
+  font-family: Consolas, "Microsoft YaHei", monospace;
+  font-size: 8.2pt;
+  line-height: 1.32;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  tab-size: 4;
+  border: 0.5pt solid #aaa;
+  background: white;
+  padding: 7pt 8pt;
+  margin: 7pt 0 9pt;
+  break-inside: avoid;
+}
+pre code { font-size: inherit; }
+table { width: 100%; table-layout: fixed; border-collapse: collapse; margin: 8pt 0 11pt; font-size: 8.8pt; line-height: 1.38; break-inside: auto; }
+thead { display: table-header-group; }
+tr { break-inside: avoid; }
+th, td { border: 0.5pt solid #999; padding: 5pt 6pt; vertical-align: top; overflow-wrap: anywhere; }
+th { font-weight: bold; background: white; border-bottom: 1pt solid #444; }
+table code { font-size: 0.93em; }
+figure { margin: 9pt 0 12pt; break-inside: avoid; }
+figure p { margin: 0; }
+img { display: block; width: 100%; height: auto; filter: grayscale(1); }
+figcaption { font-size: 8.6pt; line-height: 1.4; margin-top: 5pt; color: #333; }
+sup.reference { font-size: 7pt; margin-left: 2pt; white-space: nowrap; }
+.references { font-size: 8pt; line-height: 1.4; padding-left: 18pt; }
+.references li { margin-bottom: 5pt; overflow-wrap: anywhere; break-inside: avoid; }
+.references a { text-decoration: none; }
+@media screen { body { max-width: 8.5in; padding: 17mm 16mm 18mm; margin: 15px auto; border: 1px solid #ddd; } }
+@media print { body { padding: 0; } }
+
+p:has(+ table) { break-after: avoid; }
+thead { break-after: avoid; }
+table:not(:has(tbody tr:nth-child(9))) { break-inside: avoid; }
+
+/* Bilingual table cells contain both languages and may span many pages. */
+table:has(br), table:has(br):not(:has(tbody tr:nth-child(9))) { break-inside: auto; }
+</style></head><body><h1>06 — Create a GitHub organization / 06 — 创建 GitHub 组织（Organization）</h1>
+<!-- bilingual: en-zh -->
+
+<h2>Question and scope / 问题与范围（Question and scope）</h2>
+<blockquote>
+<p>How do I create a GitHub organization for research collaboration and make sure a repository belongs to it?</p>
+<p>如何创建 GitHub 组织（Organization）用于科研协作，并确认仓库确实属于该组织？</p>
+</blockquote>
+<p>An organization groups repositories and access permissions; each collaborator still uses their own personal account. This is a walkthrough, not a record that an organization has already been created. The sample name <code>research-lab-example</code> is a placeholder; choose an available name for your own group. Interface wording was checked against GitHub documentation on 2026-09-20.</p>
+<p>组织用于集中管理仓库与访问权限（access permissions）；每位合作者仍使用自己的个人账号。本篇是操作指南，不表示已经创建了组织。示例名 <code>research-lab-example</code> 只是占位名称，实际操作需选择可用名称。界面步骤依据 2026-09-20 查阅的官方文档。</p>
+<h2>1. Identify the three names / 1. 区分三个名称（Names）</h2>
+<table>
+<thead>
+<tr>
+<th>Item<br>项目（item）</th>
+<th>Example<br>示例（example）</th>
+<th>Meaning<br>含义（meaning）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Personal account<br>个人账号（personal account）</td>
+<td><code>HainanW</code></td>
+<td>The person who signs in<br>登录 GitHub 的个人</td>
+</tr>
+<tr>
+<td>Organization account<br>组织账号（organization account）</td>
+<td><code>research-lab-example</code></td>
+<td>A shared owner for repositories<br>集中拥有和管理仓库</td>
+</tr>
+<tr>
+<td>Repository<br>仓库（repository）</td>
+<td><code>research-coding-handbook</code></td>
+<td>A particular project<br>某个具体项目</td>
+</tr>
+</tbody>
+</table>
+<p>A personal repository has an address like <code>github.com/HainanW/research-coding-handbook</code>. An organization-owned repository would instead use <code>github.com/research-lab-example/research-coding-handbook</code>. Creating an organization does not move your existing personal repository.</p>
+<p>个人仓库地址例如 <code>github.com/HainanW/research-coding-handbook</code>；组织仓库则可能是 <code>github.com/research-lab-example/research-coding-handbook</code>。创建组织不会自动迁移已有的个人仓库。</p>
+<h2>2. Open the creation page / 2. 找到创建入口（Creation entry）</h2>
+<p>Sign in to GitHub. Open your profile picture menu, choose <strong>Settings</strong>, then <strong>Organizations</strong> in the Access section. Select <strong>New organization</strong> and follow the setup prompts. This is the route documented in <a href="https://docs.github.com/en/organizations/collaborating-with-groups-in-organizations/creating-a-new-organization-from-scratch">GitHub's creation guide</a><sup class="reference">[1]</sup>.</p>
+<p>登录 GitHub，点击右上角头像 → <strong>Settings（设置）</strong> → Access 区域的 <strong>Organizations（组织）</strong> → <strong>New organization（新建组织）</strong>，再按页面提示继续。该入口来自 <a href="https://docs.github.com/en/organizations/collaborating-with-groups-in-organizations/creating-a-new-organization-from-scratch">GitHub 创建组织指南</a><sup class="reference">[1]</sup>。</p>
+<blockquote>
+<p><strong>Screenshot placeholder 06-1</strong> — Settings → Organizations → New organization.
+Suggested file: <code>docs/images/06-organization-entry.png</code></p>
+<p><strong>插图占位（Screenshot placeholder） 06-1</strong> — 设置（Settings）→ 组织（Organizations）→ 新建组织（New organization）的入口。
+建议文件：<code>docs/images/06-organization-entry.png</code></p>
+</blockquote>
+<!-- Replace the placeholder above after saving the screenshot:
+![设置（Settings）→ 组织（Organizations）→ 新建组织（New organization）的入口。](images/06-organization-entry.png)
+-->
+
+<h2>3. Complete the setup / 3. 填写创建信息（Setup）</h2>
+<p>Prepare an available organization account name and a contact email. Read the current plan choices and select the one that meets your group's needs; record the plan you select rather than assuming a particular price or feature list. Complete any account verification and required setup fields shown by GitHub. If the flow offers member invitations, you can handle membership when ready.</p>
+<p>准备可用的组织账号名（account name）和联系邮箱（contact email）。查看当前方案（plan），选择适合团队需求的方案，并记录实际选择；不要假设价格或功能永久不变。按页面要求完成验证及必填项目。如流程提供成员邀请（member invitations），可在准备好成员安排后处理。</p>
+<blockquote>
+<p><strong>Screenshot placeholder 06-2</strong> — Organization setup: account name and selected plan; hide contact and billing details.
+Suggested file: <code>docs/images/06-organization-setup.png</code></p>
+<p><strong>插图占位（Screenshot placeholder） 06-2</strong> — 组织创建页面：组织账号名及所选方案；隐藏联系邮箱和账单信息。
+建议文件：<code>docs/images/06-organization-setup.png</code></p>
+</blockquote>
+<!-- Replace the placeholder above after saving the screenshot:
+![组织创建页面：组织账号名及所选方案；隐藏联系邮箱和账单信息。](images/06-organization-setup.png)
+-->
+
+<p>After creation, open the organization's page and check that its account name matches your intention. A newly created organization has no repositories. For your own notes, fill in:</p>
+<p>创建后打开组织页面，检查账号名是否正确。新组织起初没有仓库。可以在自己的记录中填写：</p>
+<table>
+<thead>
+<tr>
+<th>Field<br>字段（field）</th>
+<th>Your record<br>记录（record）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Organization account name<br>组织账号名</td>
+<td>To fill in<br>待填写</td>
+</tr>
+<tr>
+<td>Organization URL<br>组织网址（URL）</td>
+<td>To fill in<br>待填写</td>
+</tr>
+<tr>
+<td>Selected plan<br>所选方案（plan）</td>
+<td>To fill in<br>待填写</td>
+</tr>
+<tr>
+<td>Creation date<br>创建日期</td>
+<td>To fill in<br>待填写</td>
+</tr>
+<tr>
+<td>Intended projects<br>计划管理的项目</td>
+<td>To fill in<br>待填写</td>
+</tr>
+</tbody>
+</table>
+<h2>4. Choose between a new repository and an existing one / 4. 新仓库与已有仓库（New versus existing repository）</h2>
+<p>For a <strong>new project</strong>, use GitHub's new-repository form and choose the organization in <strong>Owner</strong>. Enter the repository name, description, and intended visibility. Check the resulting address after creating it. See <a href="https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-new-repository">creating a repository</a><sup class="reference">[2]</sup>.</p>
+<p>对于<strong>新项目</strong>，进入 GitHub 新建仓库页面，在 <strong>Owner（所属者）</strong> 中选择组织，再填写仓库名、说明和可见性（visibility）。创建后核对地址。参见<a href="https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-new-repository">创建仓库官方指南</a><sup class="reference">[2]</sup>。</p>
+<blockquote>
+<p><strong>Screenshot placeholder 06-3</strong> — Repository creation form showing the organization as Owner.
+Suggested file: <code>docs/images/06-repository-owner.png</code></p>
+<p><strong>插图占位（Screenshot placeholder） 06-3</strong> — 新建仓库页面，突出显示所属者（Owner）已选为组织。
+建议文件：<code>docs/images/06-repository-owner.png</code></p>
+</blockquote>
+<!-- Replace the placeholder above after saving the screenshot:
+![新建仓库页面，突出显示所属者（Owner）已选为组织。](images/06-repository-owner.png)
+-->
+
+<p>For an <strong>existing personal project</strong>, creation and transfer are separate actions. If the intended goal is to move <code>HainanW/research-coding-handbook</code>, first review its collaborators, destination, and any name conflict, then follow <a href="https://docs.github.com/en/repositories/creating-and-managing-repositories/transferring-a-repository">GitHub's repository transfer guide</a><sup class="reference">[3]</sup>. Do not create a same-named empty repository in the organization if you intend to transfer the existing one there.</p>
+<p>对于<strong>已有个人项目</strong>，创建组织与迁移仓库（transfer）是两件事。如果目标是迁移 <code>HainanW/research-coding-handbook</code>，应先核对协作者、目标组织及名称冲突，再按<a href="https://docs.github.com/en/repositories/creating-and-managing-repositories/transferring-a-repository">仓库迁移指南</a><sup class="reference">[3]</sup>操作。打算迁移已有仓库时，不要先在组织里创建同名空仓库。</p>
+<p>Only after an actual transfer, update the existing clone's remote using its real new URL:</p>
+<p>只有完成实际迁移后，才将本地副本的远程地址（remote URL）改为真实的新地址：</p>
+<pre><code class="language-powershell">git remote -v
+# Replace YOUR-ORG and YOUR-REPO with the actual destination.
+git remote set-url origin https://github.com/YOUR-ORG/YOUR-REPO.git
+git remote -v
+git fetch origin
+</code></pre>
+<p><code>git remote set-url</code> only changes the local connection address; it does not transfer a repository or upload any files.</p>
+<p>将 <code>YOUR-ORG</code> 和 <code>YOUR-REPO</code> 替换为真实名称。<code>git remote set-url</code> 仅修改本地连接地址，本身不会迁移仓库或上传文件。</p>
+<h2>5. Verify the result / 5. 核对结果（Verification）</h2>
+<ul>
+<li>The organization page exists with the intended account name.</li>
+</ul>
+<p>组织页面存在，账号名符合预期。</p>
+<ul>
+<li>The repository address begins with the intended organization name.</li>
+</ul>
+<p>仓库地址以目标组织名开头。</p>
+<ul>
+<li>The repository's public/private setting is the one you selected.</li>
+</ul>
+<p>仓库可见性（public/private）符合选择。</p>
+<ul>
+<li>The intended collaborators have access through their own accounts.</li>
+</ul>
+<p>预期合作者通过各自账号拥有访问权限。</p>
+<ul>
+<li>If you moved an existing repository, the local <code>origin</code> now targets its new location.</li>
+</ul>
+<p>若迁移了已有仓库，本地 <code>origin</code> 已指向新位置。</p>
+<h2>6. Add screenshots later / 6. 后续添加插图（Screenshots）</h2>
+<p>The three visible blocks are intentional placeholders, not missing image files. They remain readable in Markdown and the PDF. Save each future screenshot under the suggested filename, replace its block with the image line stored in the adjacent HTML comment, and remove the comment markers. Both language editions can use the same image. See <a href="../02-main-markdown-images.md">02, Markdown images</a>.</p>
+<p>三个可见区块是明确的插图占位，不是失效图片。Markdown 和 PDF 都能正常阅读。以后将截图保存到建议文件名，用相邻 HTML 注释（comment）中的图片语句替换占位区块，并去掉注释标记。双语版本可以共用图片。参见 <a href="../02-main-markdown-images.zh-CN.md">02：Markdown 插图</a>。</p>
+<p>Regenerate with <code>python tools/export_print.py docs/06-main-github-organization.md</code>. The image will then be embedded into the print HTML and PDF.</p>
+<p>运行 <code>python tools/export_print.py docs/06-main-github-organization.zh-CN.md</code>，即可将图片嵌入新的打印 HTML 和 PDF。</p><h2>参考资料（References）</h2><ol class="references"><li><a href="https://docs.github.com/en/organizations/collaborating-with-groups-in-organizations/creating-a-new-organization-from-scratch">https://docs.github.com/en/organizations/collaborating-with-groups-in-organizations/creating-a-new-organization-from-scratch</a></li><li><a href="https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-new-repository">https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-new-repository</a></li><li><a href="https://docs.github.com/en/repositories/creating-and-managing-repositories/transferring-a-repository">https://docs.github.com/en/repositories/creating-and-managing-repositories/transferring-a-repository</a></li></ol></body></html>

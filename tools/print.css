@@ -57,3 +57,6 @@ sup.reference { font-size: 7pt; margin-left: 2pt; white-space: nowrap; }
 p:has(+ table) { break-after: avoid; }
 thead { break-after: avoid; }
 table:not(:has(tbody tr:nth-child(9))) { break-inside: avoid; }
+
+/* Bilingual table cells contain both languages and may span many pages. */
+table:has(br), table:has(br):not(:has(tbody tr:nth-child(9))) { break-inside: auto; }

@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>05 — Python dunder methods and special names / 05 — Python 双下划线方法与特殊名称</title><style>@page {
+  size: letter;
+  margin: 17mm 16mm 18mm;
+  @top-left { content: "RESEARCH CODING HANDBOOK"; font: 7.5pt Arial, sans-serif; color: #555; }
+  @bottom-right { content: counter(page) " / " counter(pages); font: 8pt Arial, sans-serif; color: #444; }
+}
+* { box-sizing: border-box; }
+html { color: #111; background: white; }
+body {
+  font-family: Arial, "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  font-size: 10pt;
+  line-height: 1.48;
+  margin: 0;
+}
+h1 { font-size: 19pt; line-height: 1.3; margin: 0 0 12pt; font-weight: 700; }
+h2 { font-size: 13pt; line-height: 1.35; margin: 15pt 0 7pt; border-bottom: 0.5pt solid #999; padding-bottom: 4pt; }
+h3 { font-size: 11pt; margin: 12pt 0 5pt; }
+h1, h2, h3 { break-after: avoid; page-break-after: avoid; }
+p { margin: 0 0 8pt; orphans: 3; widows: 3; break-inside: avoid; }
+ul, ol { margin: 5pt 0 9pt; padding-left: 19pt; }
+li { margin-bottom: 4pt; orphans: 2; widows: 2; }
+blockquote { margin: 8pt 0 10pt; padding: 1pt 0 1pt 10pt; border-left: 2pt solid #777; }
+blockquote p { margin: 0; }
+a { color: #111; text-decoration: underline; text-decoration-color: #999; }
+code { font-family: Consolas, "Microsoft YaHei", monospace; font-size: 0.88em; overflow-wrap: anywhere; }
+pre {
+  font-family: Consolas, "Microsoft YaHei", monospace;
+  font-size: 8.2pt;
+  line-height: 1.32;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  tab-size: 4;
+  border: 0.5pt solid #aaa;
+  background: white;
+  padding: 7pt 8pt;
+  margin: 7pt 0 9pt;
+  break-inside: avoid;
+}
+pre code { font-size: inherit; }
+table { width: 100%; table-layout: fixed; border-collapse: collapse; margin: 8pt 0 11pt; font-size: 8.8pt; line-height: 1.38; break-inside: auto; }
+thead { display: table-header-group; }
+tr { break-inside: avoid; }
+th, td { border: 0.5pt solid #999; padding: 5pt 6pt; vertical-align: top; overflow-wrap: anywhere; }
+th { font-weight: bold; background: white; border-bottom: 1pt solid #444; }
+table code { font-size: 0.93em; }
+figure { margin: 9pt 0 12pt; break-inside: avoid; }
+figure p { margin: 0; }
+img { display: block; width: 100%; height: auto; filter: grayscale(1); }
+figcaption { font-size: 8.6pt; line-height: 1.4; margin-top: 5pt; color: #333; }
+sup.reference { font-size: 7pt; margin-left: 2pt; white-space: nowrap; }
+.references { font-size: 8pt; line-height: 1.4; padding-left: 18pt; }
+.references li { margin-bottom: 5pt; overflow-wrap: anywhere; break-inside: avoid; }
+.references a { text-decoration: none; }
+@media screen { body { max-width: 8.5in; padding: 17mm 16mm 18mm; margin: 15px auto; border: 1px solid #ddd; } }
+@media print { body { padding: 0; } }
+
+p:has(+ table) { break-after: avoid; }
+thead { break-after: avoid; }
+table:not(:has(tbody tr:nth-child(9))) { break-inside: avoid; }
+
+/* Bilingual table cells contain both languages and may span many pages. */
+table:has(br), table:has(br):not(:has(tbody tr:nth-child(9))) { break-inside: auto; }
+</style></head><body><h1>05 — Python dunder methods and special names / 05 — Python 双下划线方法与特殊名称</h1>
+<!-- bilingual: en-zh -->
+
+<h2>The question / 原始问题（Question）</h2>
+<blockquote>
+<p>What does dunder mean, and how do I use names such as <code>__init__</code>, <code>__len__</code>, and <code>__name__</code> in Python?</p>
+<p>dunder 是什么意思？<code>__init__</code>、<code>__len__</code>、<code>__name__</code> 这些双下划线名称，在 Python 中怎么使用？</p>
+</blockquote>
+<p>Dunder is short for double underscore. Names such as <code>__init__</code> have two underscores at each end. Distinguish special methods from special attributes or module variables: <code>__len__</code> is a method, whereas a module's <code>__name__</code> is a string.</p>
+<p>dunder 是 double underscore 的简称，指 <code>__init__</code> 这种前后各有两个下划线的名称。先区分特殊方法（special methods）与特殊属性／模块变量（special attributes / module variables）：<code>__len__</code> 是方法，模块的 <code>__name__</code> 是字符串。</p>
+<h2>1. Connect familiar operations to special methods / 1. 常见操作与特殊方法（Operations and special methods）</h2>
+<p>When using an object, normally write <code>len(x)</code> or <code>x[0]</code>. When writing your own class, implement the appropriate special methods to support those operations. These method names are part of Python's protocols; do not invent new dunder names for ordinary helpers.</p>
+<p>使用对象时通常写 <code>len(x)</code> 或 <code>x[0]</code>；编写自己的类（class）时，才定义相应特殊方法，使实例支持这些操作。这些名称属于 Python 的协议（protocols），普通辅助函数不要自行创造新的 dunder 名称。</p>
+<table>
+<thead>
+<tr>
+<th>Operation<br>操作（operation）</th>
+<th>Special method<br>特殊方法（special method）</th>
+<th>Purpose<br>作用（purpose）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Initialize an instance<br>初始化实例</td>
+<td><code>__init__</code></td>
+<td>Set initial attributes<br>设置初始属性</td>
+</tr>
+<tr>
+<td><code>print(x)</code>, <code>str(x)</code><br><code>print(x)</code>、<code>str(x)</code></td>
+<td><code>__str__</code></td>
+<td>Human-readable text<br>便于阅读的文本</td>
+</tr>
+<tr>
+<td><code>repr(x)</code></td>
+<td><code>__repr__</code></td>
+<td>Debugging representation<br>便于调试的对象表示</td>
+</tr>
+<tr>
+<td><code>len(x)</code></td>
+<td><code>__len__</code></td>
+<td>Number of items<br>返回元素数量</td>
+</tr>
+<tr>
+<td><code>x[0]</code></td>
+<td><code>__getitem__</code></td>
+<td>Index or key lookup<br>按索引或键取值</td>
+</tr>
+<tr>
+<td><code>x + y</code></td>
+<td><code>__add__</code></td>
+<td>Addition behavior<br>定义加法行为</td>
+</tr>
+<tr>
+<td><code>x == y</code></td>
+<td><code>__eq__</code></td>
+<td>Equality comparison<br>定义相等比较</td>
+</tr>
+<tr>
+<td><code>iter(x)</code></td>
+<td><code>__iter__</code></td>
+<td>Supply an iterator<br>提供迭代器</td>
+</tr>
+<tr>
+<td><code>x()</code></td>
+<td><code>__call__</code></td>
+<td>Make an instance callable<br>让实例可以像函数一样调用</td>
+</tr>
+</tbody>
+</table>
+<p>This table is a lookup aid, not a literal expansion of every expression. Operators may involve reflected methods or fallbacks. For example, addition can also consider <code>__radd__</code>. Implicit special-method lookup generally uses the object's type, so attaching a method only to an individual instance is not a reliable way to support <code>len(instance)</code>.</p>
+<p>表格用于识别对应关系，并非每个表达式都只调用这一个方法。运算符还可能使用反向方法（reflected methods）或后备规则，例如加法也可能考虑 <code>__radd__</code>。隐式特殊方法查找（implicit special-method lookup）通常从对象的类型查找，因此只给某个实例临时添加方法，并不能可靠地让 <code>len(instance)</code> 生效。</p>
+<h2>2. A small class for scenario profits / 2. 保存情景利润的小类（ProfitSamples example）</h2>
+<p>The numbers below are illustrative rounded profits, not a new Case 1 calculation. Save or run <a href="../../examples/05_dunder_methods.py">the complete example</a>; it requires Python 3.9+ and no external packages.</p>
+<p>下面的数值是用于讲解的简化利润，不是重新计算 Case 1。<a href="../../examples/05_dunder_methods.py">完整示例</a> 需要 Python 3.9+，无需安装额外库。</p>
+<pre><code class="language-python">class ProfitSamples:
+    def __init__(self, values):
+        self.values = list(values)
+
+    def __len__(self):
+        return len(self.values)
+
+    def __getitem__(self, index):
+        return self.values[index]
+
+    def __repr__(self):
+        return f&quot;ProfitSamples({self.values!r})&quot;
+</code></pre>
+<p>Now create an instance and inspect it:</p>
+<p>创建实例（instance）并查看结果：</p>
+<pre><code class="language-python">profits = ProfitSamples([0.61, 0.41, 0.71])
+print(len(profits))       # 3
+print(profits[0])         # 0.61
+print(profits)            # ProfitSamples([0.61, 0.41, 0.71])
+</code></pre>
+<p>Read our class one method at a time:</p>
+<p>逐个理解本例的方法：</p>
+<ul>
+<li><code>__init__</code> stores the supplied values in a list. It initializes an already created instance; object creation is handled by <code>__new__</code>. An initializer must not return a non-<code>None</code> value.</li>
+</ul>
+<p><code>__init__</code> 将输入保存为列表（list）。它初始化已经创建的实例；对象创建由 <code>__new__</code> 负责。初始化方法不能返回非 <code>None</code> 的值。</p>
+<ul>
+<li><code>self</code> refers to the current instance. It is a conventional parameter name, not a keyword or a dunder name. Python supplies it when a bound method is called.</li>
+</ul>
+<p><code>self</code> 指向当前实例，是约定的参数名，不是关键字（keyword），也不是 dunder。调用绑定方法（bound method）时，Python 会自动传入实例。</p>
+<ul>
+<li><code>__len__</code> delegates to the stored list, so this instance reports three items.</li>
+</ul>
+<p><code>__len__</code> 调用内部列表的 <code>len()</code>，因此本例得到 3。</p>
+<ul>
+<li><code>__getitem__</code> delegates to that list, so index 0 returns <code>0.61</code>. In this implementation, <code>profits[:2]</code> returns a list, not another <code>ProfitSamples</code> instance.</li>
+</ul>
+<p><code>__getitem__</code> 把索引操作交给列表，所以索引 0 得到 <code>0.61</code>。在这个实现中，<code>profits[:2]</code> 返回列表，而不是新的 <code>ProfitSamples</code> 实例。</p>
+<ul>
+<li><code>__repr__</code> includes the class name and stored values. The <code>!r</code> in the f-string uses <code>repr(self.values)</code>. Our class does not override <code>__str__</code>, so printing it falls back to this representation.</li>
+</ul>
+<p><code>__repr__</code> 在显示结果中包含类名及内部数值。f-string 中的 <code>!r</code> 使用 <code>repr(self.values)</code>。本类没有重写 <code>__str__</code>，所以 <code>print()</code> 使用这个表示作为后备（fallback）。</p>
+<p>In Spyder, put a breakpoint on <code>return len(self.values)</code> and debug the script. When <code>len(profits)</code> reaches the breakpoint, inspect <code>type(self)</code>, <code>self.values</code>, and <code>type(self.values)</code>. This connects the custom instance with the ordinary list it contains.</p>
+<p>在 Spyder 中，可在 <code>return len(self.values)</code> 上设置断点（breakpoint），然后调试脚本。当 <code>len(profits)</code> 进入断点时，检查 <code>type(self)</code>、<code>self.values</code> 和 <code>type(self.values)</code>，就能将自定义实例与其中保存的普通列表对应起来。</p>
+<h2>3. The script entry point: <code>__name__</code> / 3. 脚本入口（Entry point）：<code>__name__</code></h2>
+<p>Our example ends with:</p>
+<p>完整示例最后包含：</p>
+<pre><code class="language-python">def main():
+    profits = ProfitSamples([0.61, 0.41, 0.71])
+    print(len(profits))
+    print(profits[0])
+    print(profits)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre>
+<p>Here <code>__name__</code> is a module variable, not a method. Running the file directly gives it the value <code>"__main__"</code>, so the demonstration runs. Loading it as an imported module with a different name leaves the guarded call unexecuted. Importing still executes other top-level statements, including class and function definitions; the guard protects only its own block.</p>
+<p>这里的 <code>__name__</code> 是模块变量（module variable），不是方法。直接运行文件时，它为 <code>"__main__"</code>，因此执行演示。以其他模块名导入（import）时，受保护的 <code>main()</code> 调用不执行。导入仍会执行其他顶层语句（top-level statements），包括类与函数定义；这个判断只保护自己的代码块。</p>
+<p>From the repository root:</p>
+<p>在仓库根目录运行：</p>
+<pre><code class="language-powershell">python examples/05_dunder_methods.py
+</code></pre>
+<p>Expected output:</p>
+<p>预期输出（expected output）：</p>
+<pre><code class="language-text">3
+0.61
+ProfitSamples([0.61, 0.41, 0.71])
+</code></pre>
+<p>For a normal file named <code>experiment.py</code>, <code>import experiment</code> sets that module's <code>__name__</code> to <code>"experiment"</code>; package imports can use a dotted name such as <code>"package.experiment"</code>. The handbook example's numeric filename is convenient for ordering, so use <code>importlib</code> if you want to import it by path rather than writing a normal import statement starting with a digit.</p>
+<p>对于普通文件 <code>experiment.py</code>，<code>import experiment</code> 会让该模块的 <code>__name__</code> 为 <code>"experiment"</code>；包内导入可以是 <code>"package.experiment"</code> 这样的完整名称。手册示例文件名前面的数字便于排序，如需按路径导入，可用 <code>importlib</code>，而不是写以数字开头的普通 import 语句。</p>
+<h2>4. Similar underscore patterns have different meanings / 4. 不同下划线形式（Underscore patterns）</h2>
+<table>
+<thead>
+<tr>
+<th>Pattern<br>写法（pattern）</th>
+<th>Meaning<br>含义（meaning）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>value</code></td>
+<td>Ordinary name<br>普通名称</td>
+</tr>
+<tr>
+<td><code>_value</code></td>
+<td>Convention for internal use, not access control<br>约定为内部使用，不是访问控制</td>
+</tr>
+<tr>
+<td><code>__value</code> inside a class<br>类内的 <code>__value</code></td>
+<td>Name mangling to reduce subclass name collisions<br>名称改写（name mangling），减少继承中的名称冲突</td>
+</tr>
+<tr>
+<td><code>__value__</code></td>
+<td>Form used for documented special names<br>文档中定义的特殊名称所使用的形式</td>
+</tr>
+</tbody>
+</table>
+<p>For example, a class <code>Demo</code> with <code>self.__value = 1</code> normally stores it under <code>_Demo__value</code>. This is not a security boundary. <code>__init__</code> has trailing double underscores and is not a private method.</p>
+<p>例如类 <code>Demo</code> 中的 <code>self.__value = 1</code>，通常会存为 <code>_Demo__value</code>。这不是安全屏障。<code>__init__</code> 末尾也有双下划线，它不是私有方法（private method）。</p>
+<h2>5. What to learn first / 5. 新手学习顺序（Learning order）</h2>
+<p>Start with <code>__init__</code>, <code>__repr__</code>, <code>__len__</code>, <code>__getitem__</code>, and the <code>__name__</code> guard. You do not need a custom class just to calculate profits with NumPy. A class becomes useful when related data and operations should travel together.</p>
+<p>优先理解 <code>__init__</code>、<code>__repr__</code>、<code>__len__</code>、<code>__getitem__</code> 和 <code>__name__</code> 入口判断。使用 NumPy 计算利润并不要求你先写一个类；当相关数据和操作需要组合在一起时，类才更有帮助。</p>
+<p>Try predicting <code>profits[-1]</code>, <code>profits[:2]</code>, and <code>type(profits.values)</code>. For this class, the answers are <code>0.71</code>, <code>[0.61, 0.41]</code>, and <code>list</code>. The built-in list provides the indexing rules because our implementation delegates to it.</p>
+<p>先预测 <code>profits[-1]</code>、<code>profits[:2]</code>、<code>type(profits.values)</code> 的结果。本例分别得到 <code>0.71</code>、<code>[0.61, 0.41]</code> 和 <code>list</code>。索引规则来自内部列表，因为我们将操作委托（delegate）给了它。</p>
+<h2>Sources / 资料（Sources）</h2>
+<p>See Python's <a href="https://docs.python.org/3/reference/datamodel.html#special-method-names">special-method reference</a><sup class="reference">[1]</sup> for protocol details and its <a href="https://docs.python.org/3/library/__main__.html">top-level code environment guide</a><sup class="reference">[2]</sup> for the entry-point guard. The <code>ProfitSamples</code> example and inspection exercise are specific to this handbook.</p>
+<p><a href="https://docs.python.org/3/reference/datamodel.html#special-method-names">Python 特殊方法参考（special methods）</a><sup class="reference">[1]</sup> 可用于查阅协议细节；<a href="https://docs.python.org/3/library/__main__.html">顶层代码环境（top-level code environment）</a><sup class="reference">[2]</sup> 解释入口判断。<code>ProfitSamples</code> 示例和检查练习为本手册专门编写。</p><h2>参考资料（References）</h2><ol class="references"><li><a href="https://docs.python.org/3/reference/datamodel.html#special-method-names">https://docs.python.org/3/reference/datamodel.html#special-method-names</a></li><li><a href="https://docs.python.org/3/library/__main__.html">https://docs.python.org/3/library/__main__.html</a></li></ol></body></html>

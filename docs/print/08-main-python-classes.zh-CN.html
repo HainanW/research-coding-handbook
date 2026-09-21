@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>08 — Understanding Python classes with an experiment record / 08 — 用实验记录理解 Python 类</title><style>@page {
+  size: letter;
+  margin: 17mm 16mm 18mm;
+  @top-left { content: "RESEARCH CODING HANDBOOK"; font: 7.5pt Arial, sans-serif; color: #555; }
+  @bottom-right { content: counter(page) " / " counter(pages); font: 8pt Arial, sans-serif; color: #444; }
+}
+* { box-sizing: border-box; }
+html { color: #111; background: white; }
+body {
+  font-family: Arial, "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  font-size: 10pt;
+  line-height: 1.48;
+  margin: 0;
+}
+h1 { font-size: 19pt; line-height: 1.3; margin: 0 0 12pt; font-weight: 700; }
+h2 { font-size: 13pt; line-height: 1.35; margin: 15pt 0 7pt; border-bottom: 0.5pt solid #999; padding-bottom: 4pt; }
+h3 { font-size: 11pt; margin: 12pt 0 5pt; }
+h1, h2, h3 { break-after: avoid; page-break-after: avoid; }
+p { margin: 0 0 8pt; orphans: 3; widows: 3; break-inside: avoid; }
+ul, ol { margin: 5pt 0 9pt; padding-left: 19pt; }
+li { margin-bottom: 4pt; orphans: 2; widows: 2; }
+blockquote { margin: 8pt 0 10pt; padding: 1pt 0 1pt 10pt; border-left: 2pt solid #777; }
+blockquote p { margin: 0; }
+a { color: #111; text-decoration: underline; text-decoration-color: #999; }
+code { font-family: Consolas, "Microsoft YaHei", monospace; font-size: 0.88em; overflow-wrap: anywhere; }
+pre {
+  font-family: Consolas, "Microsoft YaHei", monospace;
+  font-size: 8.2pt;
+  line-height: 1.32;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  tab-size: 4;
+  border: 0.5pt solid #aaa;
+  background: white;
+  padding: 7pt 8pt;
+  margin: 7pt 0 9pt;
+  break-inside: avoid;
+}
+pre code { font-size: inherit; }
+table { width: 100%; table-layout: fixed; border-collapse: collapse; margin: 8pt 0 11pt; font-size: 8.8pt; line-height: 1.38; break-inside: auto; }
+thead { display: table-header-group; }
+tr { break-inside: avoid; }
+th, td { border: 0.5pt solid #999; padding: 5pt 6pt; vertical-align: top; overflow-wrap: anywhere; }
+th { font-weight: bold; background: white; border-bottom: 1pt solid #444; }
+table code { font-size: 0.93em; }
+figure { margin: 9pt 0 12pt; break-inside: avoid; }
+figure p { margin: 0; }
+img { display: block; width: 100%; height: auto; filter: grayscale(1); }
+figcaption { font-size: 8.6pt; line-height: 1.4; margin-top: 5pt; color: #333; }
+sup.reference { font-size: 7pt; margin-left: 2pt; white-space: nowrap; }
+.references { font-size: 8pt; line-height: 1.4; padding-left: 18pt; }
+.references li { margin-bottom: 5pt; overflow-wrap: anywhere; break-inside: avoid; }
+.references a { text-decoration: none; }
+@media screen { body { max-width: 8.5in; padding: 17mm 16mm 18mm; margin: 15px auto; border: 1px solid #ddd; } }
+@media print { body { padding: 0; } }
+
+p:has(+ table) { break-after: avoid; }
+thead { break-after: avoid; }
+table:not(:has(tbody tr:nth-child(9))) { break-inside: avoid; }
+
+/* Bilingual table cells contain both languages and may span many pages. */
+table:has(br), table:has(br):not(:has(tbody tr:nth-child(9))) { break-inside: auto; }
+</style></head><body><h1>08 — Understanding Python classes with an experiment record / 08 — 用实验记录理解 Python 类</h1>
+<!-- bilingual: en-zh -->
+
+<h2>The question / 问题</h2>
+<blockquote>
+<p>What is a class? How are a class, an object, and an instance related? What do <code>self</code>, <code>__init__</code>, attributes, and methods actually do in research code?</p>
+<p>什么是类（class）？类、对象（object）和实例（instance）有什么关系？在科研代码里，<code>self</code>、<code>__init__</code>、属性（attribute）和方法（method）到底分别做什么？</p>
+</blockquote>
+<p>This chapter builds a small record for one experiment run. Its measurements are invented teaching data, not actual experimental results. Review <a href="../03-main-python-data-types.md">03 — Python data types</a> if lists and dictionaries are unfamiliar. <a href="../05-main-python-dunder.md">05 — Dunder methods</a> explains special methods after the class basics make sense.</p>
+<p>本章为一次实验运行创建一个小型记录。测量值是人为编写的教学数据，不是真实实验结果。如果还不熟悉列表（list）和字典（dictionary），请先复习 <a href="../03-main-python-data-types.zh-CN.md">03 — Python 数据类型</a>。理解类的基础后，可以通过 <a href="../05-main-python-dunder.zh-CN.md">05 — 双下划线方法</a>继续学习特殊方法。</p>
+<p>Run <a href="../../examples/08_python_classes.py">the complete example</a> with Python 3.9+; it needs no external packages. Read sections 1–6 first, then run the example and inspect it in Spyder. Inheritance near the end is optional.</p>
+<p>使用 Python 3.9 或更高版本运行<a href="../../examples/08_python_classes.py">完整示例</a>，不需要外部软件包。建议先阅读第 1–6 节，再运行示例并在 Spyder 中观察变量。靠近结尾的继承（inheritance）部分可以选读。</p>
+<h2>1. Start with data and an operation / 1. 从数据和一个操作开始</h2>
+<p>Suppose one run has a name and several measurements in milliseconds:</p>
+<p>假设一次实验运行有一个名称，以及若干以毫秒（ms）为单位的测量值：</p>
+<pre><code class="language-python">name = &quot;run A&quot;
+measurements = [10.0, 12.0]
+mean_value = sum(measurements) / len(measurements)
+</code></pre>
+<p>This is already useful code. With many runs, you may want each name and measurement list to stay together, along with operations for adding a measurement and calculating its mean. A class lets us define that kind of record and its operations once, then create several records.</p>
+<p>这段代码已经可以完成计算。当实验运行次数增多时，你可能希望把每次运行的名称、测量值列表，以及“添加测量值”“计算平均值”等操作放在一起。使用类（class），只需定义一次这种记录及其操作，就可以创建多条记录。</p>
+<table>
+<thead>
+<tr>
+<th>Term<br>术语</th>
+<th>Meaning in our example<br>在本例中的含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Class<br>类（class）</td>
+<td><code>ExperimentRun</code>: a type we define for experiment records<br><code>ExperimentRun</code>：我们为实验记录定义的一种类型</td>
+</tr>
+<tr>
+<td>Object<br>对象（object）</td>
+<td>A value Python can work with; numbers, lists, and our records are all objects<br>Python 可以处理的值；数字、列表和我们的实验记录都是对象</td>
+</tr>
+<tr>
+<td>Instance<br>实例（instance）</td>
+<td>One object of a particular class; <code>run_a</code> refers to an instance of <code>ExperimentRun</code><br>属于某个类的一个具体对象；<code>run_a</code> 指向 <code>ExperimentRun</code> 的一个实例</td>
+</tr>
+<tr>
+<td>Attribute<br>属性（attribute）</td>
+<td>A named item reached with a dot, such as <code>run_a.name</code><br>通过点号访问的有名字的成员，例如 <code>run_a.name</code></td>
+</tr>
+<tr>
+<td>Method<br>方法（method）</td>
+<td>An operation accessed through an object, such as <code>run_a.mean()</code><br>通过对象访问的操作，例如 <code>run_a.mean()</code></td>
+</tr>
+</tbody>
+</table>
+<p>“Object” and “instance” are not opposing categories: the same record is an object and an instance of <code>ExperimentRun</code>. The class itself is also an object. Here we focus on the records created by calling that class. Python's <a href="https://docs.python.org/3/tutorial/classes.html">classes tutorial</a><sup class="reference">[1]</sup> introduces these relationships.</p>
+<p>“对象”和“实例”不是互斥的分类：同一条记录既是对象，也是 <code>ExperimentRun</code> 的实例。类本身也是对象。本章重点讨论调用这个类后创建的记录。Python 官方<a href="https://docs.python.org/3/tutorial/classes.html">类教程</a><sup class="reference">[1]</sup>介绍了这些关系。</p>
+<h2>2. Define a complete small class / 2. 定义一个完整的小型类</h2>
+<pre><code class="language-python">class ExperimentRun:
+    unit = &quot;ms&quot;
+
+    def __init__(self, name, measurements):
+        self.name = name
+        self.measurements = list(measurements)
+
+    def add_measurement(self, value):
+        self.measurements.append(value)
+
+    def mean(self):
+        if not self.measurements:
+            raise ValueError(&quot;Cannot calculate a mean without measurements.&quot;)
+        return sum(self.measurements) / len(self.measurements)
+</code></pre>
+<p>Read it from the outside inward:</p>
+<p>按从外到内的顺序阅读：</p>
+<ol>
+<li><code>class ExperimentRun:</code> defines our new type. Class names conventionally use capitalized words; this is a naming convention, not a requirement for execution.<br><code>class ExperimentRun:</code> 定义了新的类型。类名通常采用每个单词首字母大写的写法；这是命名约定（naming convention），不是代码能够运行的必要条件。</li>
+<li>The indented <code>def</code> blocks define methods. Their bodies are indented one level further, just like an ordinary function body.<br>缩进后的 <code>def</code> 代码块定义方法（method）。方法体再向内缩进一级，和普通函数的函数体一样。</li>
+<li><code>__init__</code> sets the starting state: a name and a measurement list. <code>self.name</code> and <code>self.measurements</code> are instance attributes.<br><code>__init__</code> 设置初始状态：名称和测量值列表。<code>self.name</code> 与 <code>self.measurements</code> 是实例属性（instance attributes）。</li>
+<li><code>add_measurement</code> changes that instance's list. It has no explicit <code>return</code>, so its result is <code>None</code>.<br><code>add_measurement</code> 修改当前实例的列表。它没有显式写出 <code>return</code>，所以调用结果是 <code>None</code>。</li>
+<li><code>mean</code> returns a number without changing the list. An empty list raises a clear <code>ValueError</code>; its mean is not silently treated as zero.<br><code>mean</code> 返回一个数值，不改变列表。列表为空时会抛出带有明确说明的 <code>ValueError</code>，不会悄悄把平均值当成零。</li>
+</ol>
+<p>The input contract for this teaching class is a string name and a flat sequence of numeric measurements in milliseconds. It does not validate every input or convert units. <code>unit = "ms"</code> is a label, not an instruction that performs numerical conversion.</p>
+<p>这个教学类约定的输入是：一个字符串名称，以及一个由数值组成、不嵌套其他序列的测量值序列，单位为毫秒。它没有逐项验证所有输入，也不会转换单位。<code>unit = "ms"</code> 只是单位标签，不会对数值执行单位换算。</p>
+<h2>3. Create an instance: what runs, and in which order? / 3. 创建实例：执行什么，顺序如何？</h2>
+<pre><code class="language-python">run_a = ExperimentRun(&quot;run A&quot;, [10.0, 12.0])
+</code></pre>
+<p>For this ordinary class, read that line as follows:</p>
+<p>对于这个普通类，可以按以下过程理解这一行：</p>
+<ol>
+<li>Calling <code>ExperimentRun(...)</code> begins creating an instance. Python's inherited <code>__new__</code> supplies the new object; we do not need to implement it.<br>调用 <code>ExperimentRun(...)</code> 开始创建实例。由继承而来的 <code>__new__</code> 提供新对象，本例不需要自己实现它。</li>
+<li>Python calls <code>__init__</code> with the new object as <code>self</code>, <code>"run A"</code> as <code>name</code>, and the list as <code>measurements</code>.<br>Python 调用 <code>__init__</code>：新对象作为 <code>self</code> 传入，<code>"run A"</code> 作为 <code>name</code> 传入，列表作为 <code>measurements</code> 传入。</li>
+<li>The assignments inside <code>__init__</code> store attributes on that object. The initialized object is returned by the class call and bound to the name <code>run_a</code>.<br><code>__init__</code> 内的赋值语句把属性存到这个对象上。类调用返回初始化后的对象，并让变量名 <code>run_a</code> 指向它。</li>
+</ol>
+<p>Strictly, <code>__init__</code> is an <strong>initializer</strong>, not the operation that creates the object. It must not return a non-<code>None</code> value; normally write no <code>return</code> in it. The <a href="https://docs.python.org/3/reference/datamodel.html#object.__init__">Python data model</a><sup class="reference">[2]</sup> distinguishes it from <code>__new__</code>.</p>
+<p>严格说来，<code>__init__</code> 是<strong>初始化方法（initializer）</strong>，并不负责创建对象本身。它不能返回非 <code>None</code> 的值，通常不必在其中写 <code>return</code>。<a href="https://docs.python.org/3/reference/datamodel.html#object.__init__">Python 数据模型文档</a><sup class="reference">[2]</sup>解释了它与 <code>__new__</code> 的区别。</p>
+<p>Defining the class does not run these method bodies. Calling the class creates a record; calling a method later performs that operation. <code>ExperimentRun</code> refers to the class, whereas <code>ExperimentRun(...)</code> calls it.</p>
+<p>定义类时，不会执行这些方法的方法体。调用类才会创建一条记录，之后调用方法才会执行相应操作。<code>ExperimentRun</code> 指向类本身，<code>ExperimentRun(...)</code> 则表示调用这个类。</p>
+<h2>4. Understand <code>self</code>, parameters, and the dot / 4. 理解 <code>self</code>、参数和点号</h2>
+<p><code>self</code> means “the instance receiving this method call.” It is a conventional parameter name, not a keyword, global variable, or a second record. For our class, these calls have the same effect; execute only one if you want to add one value:</p>
+<p><code>self</code> 表示“正在接收这次方法调用的实例”。它是约定使用的参数名，不是关键字（keyword）、全局变量，也不是另外一条记录。对于本例的类，下面两种调用效果相同；如果只想添加一个值，执行其中一种即可：</p>
+<pre><code class="language-python">run_a.add_measurement(14.0)                 # usual form
+# ExperimentRun.add_measurement(run_a, 14.0)  # equivalent explicit form
+</code></pre>
+<p>Python supplies <code>run_a</code> as <code>self</code> in the first form. You supply only <code>14.0</code>, which becomes <code>value</code>. When you call <code>run_b.add_measurement(...)</code>, the same method works with <code>run_b</code> as <code>self</code>.</p>
+<p>第一种写法中，Python 自动把 <code>run_a</code> 传给 <code>self</code>。你只需传入 <code>14.0</code>，它对应参数 <code>value</code>。当你调用 <code>run_b.add_measurement(...)</code> 时，同一个方法中的 <code>self</code> 就会指向 <code>run_b</code>。</p>
+<p>Inside <code>__init__</code>, <code>name</code> is a local parameter; <code>self.name</code> is an attribute that remains on the instance after the method finishes. Writing only <code>name = name</code> would not store an instance attribute. The two names need not match: <code>self.name = label</code> works if the parameter is named <code>label</code>.</p>
+<p>在 <code>__init__</code> 内，<code>name</code> 是局部参数（local parameter）；<code>self.name</code> 是实例上的属性，方法执行结束后仍保留在实例上。只写 <code>name = name</code> 不会保存实例属性。两边的名字也不必相同：如果参数名是 <code>label</code>，就可以写 <code>self.name = label</code>。</p>
+<pre><code class="language-python">print(run_a.name)             # run A: read an attribute
+run_a.name = &quot;baseline&quot;       # replace that attribute
+print(run_a.measurements)     # [10.0, 12.0, 14.0]
+print(run_a.mean())           # 12.0: call a method
+calculate = run_a.mean        # store a bound method; no calculation yet
+print(calculate())            # 12.0: now call it
+</code></pre>
+<p>The dot selects an attribute; parentheses call the selected method. <code>run_a.mean</code> and <code>run_a.mean()</code> are different expressions. Our attributes are public, so <code>run_a.measurements.append(16.0)</code> also changes the list. A class does not automatically prevent outside changes or ensure valid data.</p>
+<p>点号用于选取属性，括号用于调用选中的方法。<code>run_a.mean</code> 和 <code>run_a.mean()</code> 是不同的表达式：前者取得绑定方法（bound method），后者才执行计算。本例的属性是公开的（public），所以 <code>run_a.measurements.append(16.0)</code> 也能改变列表。使用类不会自动阻止外部修改，也不会自动保证数据有效。</p>
+<h2>5. Separate instances, copies, and aliases / 5. 区分实例、复制和别名</h2>
+<p>Start this section with fresh records; it does not continue the optional changes above.</p>
+<p>本节重新创建记录，不接着使用上面经过可选修改的记录。</p>
+<pre><code class="language-python">source = [10.0, 12.0]
+run_a = ExperimentRun(&quot;run A&quot;, source)
+run_b = ExperimentRun(&quot;run B&quot;, source)
+run_a.add_measurement(14.0)
+source.append(99.0)
+
+print(run_a.measurements)   # [10.0, 12.0, 14.0]
+print(run_b.measurements)   # [10.0, 12.0]
+print(source)               # [10.0, 12.0, 99.0]
+print(run_a is run_b)       # False
+</code></pre>
+<p><code>list(measurements)</code> creates a new outer list on every initialization. Therefore the two records and <code>source</code> have three different lists. Replacing it with <code>self.measurements = measurements</code> would share the supplied list, so changing one record could unexpectedly affect the other record and the caller.</p>
+<p>每次初始化时，<code>list(measurements)</code> 都会创建一个新的外层列表。因此，两条记录各有一个列表，加上 <code>source</code>，总共是三个不同的列表。如果改为 <code>self.measurements = measurements</code>，就会共享传入的列表，改变一条记录可能意外影响另一条记录，以及调用者持有的原始列表。</p>
+<p>This is a <strong>shallow copy</strong>. It suffices for our flat list of immutable numbers; nested mutable objects would still be shared. Class instances are not automatically independent: the way their attributes are assigned determines what is shared.</p>
+<p>这是<strong>浅复制（shallow copy）</strong>。本例的列表只包含不可变的数值，没有嵌套，浅复制已经够用；如果内部还有可变对象（mutable objects），这些内部对象仍会共享。不同实例之间的数据不会自动彼此独立，哪些内容共享取决于属性的赋值方式。</p>
+<pre><code class="language-python">alias = run_a
+alias.name = &quot;renamed A&quot;
+print(run_a.name)           # renamed A
+print(alias is run_a)      # True
+</code></pre>
+<p><code>alias = run_a</code> creates another reference to the same instance, not a new record. This is the same assignment rule you learned for lists in chapter 03.</p>
+<p><code>alias = run_a</code> 让另一个变量名也引用同一个实例，并没有创建新记录。这和第 03 章学习列表时的赋值规则相同。</p>
+<h2>6. Instance attributes and class attributes / 6. 实例属性与类属性</h2>
+<table>
+<thead>
+<tr>
+<th>Attribute<br>属性（attribute）</th>
+<th>Where we assign it<br>赋值位置</th>
+<th>Intended role<br>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>self.name</code></td>
+<td>Inside <code>__init__</code><br>在 <code>__init__</code> 内</td>
+<td>This record's name<br>当前记录的名称</td>
+</tr>
+<tr>
+<td><code>self.measurements</code></td>
+<td>Inside <code>__init__</code><br>在 <code>__init__</code> 内</td>
+<td>This record's own list<br>当前记录自己的列表</td>
+</tr>
+<tr>
+<td><code>unit</code></td>
+<td>Directly in the class body<br>直接写在类体中</td>
+<td>A common label, accessed as <code>ExperimentRun.unit</code> or <code>run_a.unit</code><br>共用标签，通过 <code>ExperimentRun.unit</code> 或 <code>run_a.unit</code> 访问</td>
+</tr>
+</tbody>
+</table>
+<p>In this simple class, reading <code>run_a.unit</code> falls back to the class attribute if the instance has no attribute called <code>unit</code>. Assigning <code>run_a.unit = "s"</code> adds an instance attribute that hides the class label for that record. Assigning <code>ExperimentRun.unit = "s"</code> changes the class label seen by instances without their own override. Neither assignment converts measurements. See Python's <a href="https://docs.python.org/3/tutorial/classes.html#class-and-instance-variables">class and instance variables</a><sup class="reference">[3]</sup>.</p>
+<p>在这个简单类中，读取 <code>run_a.unit</code> 时，如果实例没有名为 <code>unit</code> 的属性，就会读取类属性（class attribute）。执行 <code>run_a.unit = "s"</code> 会新增实例属性，让当前记录优先使用自己的单位标签。执行 <code>ExperimentRun.unit = "s"</code> 则会改变类上的标签，尚未设置自己 <code>unit</code> 属性的实例都会读到这个新标签。这两种赋值都不会换算测量值。参见 Python 官方<a href="https://docs.python.org/3/tutorial/classes.html#class-and-instance-variables">类变量与实例变量</a><sup class="reference">[3]</sup>说明。</p>
+<p>A common mistake is putting a mutable list in the class body:</p>
+<p>一个常见错误是直接在类体中放置可变列表：</p>
+<pre><code class="language-python">class BadRun:
+    measurements = []       # one list shared through the class
+
+first = BadRun()
+second = BadRun()
+first.measurements.append(10.0)
+print(second.measurements)  # [10.0]: surprising shared state
+</code></pre>
+<p>For one list per record, assign a fresh list to <code>self.measurements</code> in <code>__init__</code>. Also avoid a mutable default such as <code>def __init__(self, measurements=[]):</code>: a default is evaluated once when the function is defined. If measurements are optional, use <code>measurements=None</code> and create a new list when it is <code>None</code>.</p>
+<p>要让每条记录各有一个列表，应在 <code>__init__</code> 中把新列表赋给 <code>self.measurements</code>。也要避免 <code>def __init__(self, measurements=[]):</code> 这样的可变默认值（mutable default）：默认值只在定义函数时求值一次。如果测量值是可选参数，可以使用 <code>measurements=None</code>，并在参数为 <code>None</code> 时创建新列表。</p>
+<h2>7. Run the example and check the result / 7. 运行示例并核对结果</h2>
+<p>From the repository root, run:</p>
+<p>在仓库根目录运行：</p>
+<pre><code class="language-powershell">python examples/08_python_classes.py
+</code></pre>
+<p>Expected output:</p>
+<p>预期输出：</p>
+<pre><code class="language-text">run A: [10.0, 12.0, 14.0], mean = 12.0 ms
+run B: [10.0, 12.0], mean = 11.0 ms
+source: [10.0, 12.0, 99.0]
+same instance: False
+same measurement list: False
+empty run: Cannot calculate a mean without measurements.
+Verification passed.
+</code></pre>
+<p>Check the arithmetic yourself: <code>(10 + 12 + 14) / 3 = 12</code> and <code>(10 + 12) / 2 = 11</code>. The script checks these values, list independence, and independence from the caller's list. It catches the intended empty-list error so execution can finish.</p>
+<p>自己核对计算：<code>(10 + 12 + 14) / 3 = 12</code>，<code>(10 + 12) / 2 = 11</code>。脚本会检查这些数值、两个实例列表之间的独立性，以及它们与调用者原始列表之间的独立性。脚本还会捕获预期的空列表异常，确保程序能够执行到最后。</p>
+<p>In Spyder, open the script and use these steps:</p>
+<p>在 Spyder 中打开脚本，按以下步骤观察：</p>
+<ol>
+<li>Run cells 1–2 in order. <code>run_a</code>, <code>run_b</code>, and <code>source</code> are top-level names so they are convenient to inspect.<br>按顺序运行第 1–2 个代码单元（cell）。<code>run_a</code>、<code>run_b</code> 和 <code>source</code> 都在脚本顶层定义，便于直接查看。</li>
+<li>In the console, evaluate <code>type(run_a)</code>, <code>isinstance(run_a, ExperimentRun)</code>, <code>vars(run_a)</code>, and <code>run_a.measurements</code>. Expect the class <code>ExperimentRun</code>, <code>True</code>, the instance's attribute dictionary, and <code>[10.0, 12.0, 14.0]</code>. A module prefix in the displayed type can vary with how you run the file.<br>在控制台分别执行 <code>type(run_a)</code>、<code>isinstance(run_a, ExperimentRun)</code>、<code>vars(run_a)</code> 和 <code>run_a.measurements</code>。应分别得到类 <code>ExperimentRun</code>、<code>True</code>、这个实例的属性字典，以及 <code>[10.0, 12.0, 14.0]</code>。显示类型时的模块名前缀可能随文件运行方式而变化。</li>
+<li>Put a breakpoint on the <code>return sum(...)</code> line marked <code>P1</code>, then debug the whole file. On the first stop, <code>self.name</code> is <code>"run A"</code> and <code>self.measurements</code> has three numbers. Continue to the next call to see <code>"run B"</code> and two numbers.<br>在标记为 <code>P1</code> 的 <code>return sum(...)</code> 行设置断点（breakpoint），然后调试整个文件。第一次暂停时，<code>self.name</code> 是 <code>"run A"</code>，<code>self.measurements</code> 有三个数。继续运行到下一次调用，就会看到 <code>"run B"</code> 和两个数。</li>
+<li>Use the console if your Variable Explorer filters out custom objects. After editing and rerunning a class definition, recreate its instances too; existing instances still belong to the previous class object.<br>如果变量查看器（Variable Explorer）过滤掉了自定义对象，就使用控制台查看。修改并重新执行类定义后，也要重新创建实例；原来已有的实例仍然属于修改前的那个类对象。</li>
+</ol>
+<p>Spyder's <a href="https://docs.spyder-ide.org/current/panes/debugging.html">debugger guide</a><sup class="reference">[4]</sup> explains inspecting local variables at breakpoints. In this class, <code>vars(run_a)</code> shows instance attributes; <code>unit</code> is on the class and therefore does not appear there unless you assign an instance override.</p>
+<p>Spyder 的<a href="https://docs.spyder-ide.org/current/panes/debugging.html">调试器指南</a><sup class="reference">[4]</sup>说明了如何在断点处查看局部变量。在本例中，<code>vars(run_a)</code> 显示实例属性；<code>unit</code> 存在于类上，因此默认不会出现在这个字典中，除非你给该实例单独设置了 <code>unit</code>。</p>
+<p><strong>Screenshot placeholder:</strong> Show Spyder paused at <code>P1</code>, with <code>self.name</code> and <code>self.measurements</code> visible in the console or Variable Explorer. Suggested file: <code>docs/images/08-class-self-inspection.png</code>. Replace this paragraph with the image when a screenshot is available.</p>
+<p><strong>截图占位（Screenshot placeholder）：</strong> 展示 Spyder 在 <code>P1</code> 处暂停的画面，并在控制台或变量查看器中显示 <code>self.name</code> 和 <code>self.measurements</code>。建议文件名：<code>docs/images/08-class-self-inspection.png</code>。有截图后，用下方注释中的图片语句替换这组占位说明，并移除注释标记。</p>
+<!-- ![Inspecting an ExperimentRun instance in Spyder](images/08-class-self-inspection.png) -->
+
+<h2>8. When should you use a class? / 8. 什么时候适合使用类？</h2>
+<table>
+<thead>
+<tr>
+<th>Situation<br>情形</th>
+<th>A suitable starting point<br>适合的起点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Calculate a mean from a list once<br>只需对一个列表计算一次平均值</td>
+<td>A function, such as <code>mean(values)</code><br>函数（function），例如 <code>mean(values)</code></td>
+</tr>
+<tr>
+<td>Group a few settings or exchange simple records<br>组织少量设置，或传递简单记录</td>
+<td>A dictionary, such as <code>{"name": "A", "measurements": [10, 12]}</code><br>字典（dictionary），例如 <code>{"name": "A", "measurements": [10, 12]}</code></td>
+</tr>
+<tr>
+<td>Several records each keep state and use the same related operations<br>多条记录各自保存状态，并使用相同的相关操作</td>
+<td>A class such as <code>ExperimentRun</code><br>类（class），例如 <code>ExperimentRun</code></td>
+</tr>
+<tr>
+<td>Work with a numerical array or table<br>处理数值数组或表格</td>
+<td>An existing NumPy or pandas type, when appropriate<br>在适合的情况下使用 NumPy 或 pandas 已有的类型</td>
+</tr>
+</tbody>
+</table>
+<p>A class is not required for research code. Choose it when it makes relationships clearer, not because a longer program must be object-oriented. Functions can still do the calculations used by methods; methods do not require different mathematics.</p>
+<p>科研代码并非必须使用类。当类能让数据与操作的关系更清楚时再使用它，程序变长不意味着必须改成面向对象（object-oriented）的写法。方法里需要的计算仍然可以交给普通函数完成；方法不会要求另一套数学计算方式。</p>
+<h2>9. Recognize inheritance and composition / 9. 认识继承与组合</h2>
+<p><strong>Inheritance</strong> defines a specialized kind of an existing class. This optional example adds an operator name while reusing the measurement methods:</p>
+<p><strong>继承（inheritance）</strong>以已有类为基础，定义更具体的一类对象。下面是选读示例：它在复用测量相关方法的同时，增加操作人员名称：</p>
+<pre><code class="language-python">class LabeledRun(ExperimentRun):
+    def __init__(self, name, measurements, operator):
+        super().__init__(name, measurements)
+        self.operator = operator
+
+labeled = LabeledRun(&quot;run C&quot;, [8.0, 10.0], &quot;student&quot;)
+print(labeled.mean())                       # 9.0: inherited method
+print(isinstance(labeled, ExperimentRun))    # True
+</code></pre>
+<p>For this single-inheritance example, <code>super().__init__(...)</code> initializes the base-class part of the same instance; it does not create another record. If you write a new initializer, call the base initializer when its setup is needed.</p>
+<p>在这个单继承（single inheritance）示例中，<code>super().__init__(...)</code> 为同一个实例完成基类（base class）负责的初始化，并没有创建另一条记录。如果在子类中编写新的初始化方法，而又需要基类的初始化设置，就应调用基类的初始化方法。</p>
+<p><strong>Composition</strong> means keeping another object as part of your object. <code>ExperimentRun</code> already uses composition: it contains a list in <code>self.measurements</code> and delegates storage to that list. A future study record could contain a list of <code>ExperimentRun</code> objects. Start with a small class; elaborate inheritance trees are unnecessary here.</p>
+<p><strong>组合（composition）</strong>是把另一个对象作为当前对象的一部分。<code>ExperimentRun</code> 已经使用了组合：<code>self.measurements</code> 保存一个列表，具体存储工作由列表承担。以后可以创建一个研究记录，其中保存由多个 <code>ExperimentRun</code> 对象组成的列表。从小型类开始即可，本例不需要复杂的继承层级。</p>
+<h2>10. Common mistakes and a short practice check / 10. 常见错误与小练习</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom or code<br>现象或代码</th>
+<th>Explanation and correction<br>解释与修正</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NameError</code> for <code>ExperimentRun</code><br>使用 <code>ExperimentRun</code> 时出现 <code>NameError</code></td>
+<td>Run the class definition before using it.<br>使用之前先执行类定义。</td>
+</tr>
+<tr>
+<td>An instance method is defined without <code>self</code><br>定义实例方法时漏写 <code>self</code></td>
+<td>Python supplies the instance automatically; a missing parameter can cause an argument-count <code>TypeError</code>.<br>Python 会自动传入实例；缺少对应参数可能引发参数数量不匹配的 <code>TypeError</code>。</td>
+</tr>
+<tr>
+<td><code>name = name</code> in the initializer<br>在初始化方法中写 <code>name = name</code></td>
+<td>This does not create an attribute; use <code>self.name = name</code>.<br>这不会创建属性，应使用 <code>self.name = name</code>。</td>
+</tr>
+<tr>
+<td><code>run_a.mean</code> gives a method object<br><code>run_a.mean</code> 得到方法对象</td>
+<td>Add parentheses to calculate: <code>run_a.mean()</code>.<br>加上括号才执行计算：<code>run_a.mean()</code>。</td>
+</tr>
+<tr>
+<td><code>run_a = ExperimentRun</code></td>
+<td>This binds a name to the class; call <code>ExperimentRun(...)</code> to create a record.<br>这只让变量名指向类；应调用 <code>ExperimentRun(...)</code> 来创建记录。</td>
+</tr>
+<tr>
+<td><code>__init__</code> returns a number or <code>self</code><br><code>__init__</code> 返回数值或 <code>self</code></td>
+<td>Remove that return value; the class call returns the instance.<br>移除这个返回值；实例由类调用返回。</td>
+</tr>
+<tr>
+<td>One run unexpectedly changes another<br>修改一条记录时意外改变另一条记录</td>
+<td>Check for shared lists or aliases; use the intended copy boundary.<br>检查是否存在共享列表或别名，并按需要确定哪些数据应当复制。</td>
+</tr>
+<tr>
+<td>A typo such as <code>run_a.measurments</code><br>出现 <code>run_a.measurments</code> 这样的拼写错误</td>
+<td>Reading an absent attribute raises <code>AttributeError</code>; check spelling and initialization.<br>读取不存在的属性会引发 <code>AttributeError</code>；检查拼写和初始化过程。</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>Add <code>run_b.add_measurement(16.0)</code> to the section 5 example. Predict both means before running.<br>在第 5 节示例中加入 <code>run_b.add_measurement(16.0)</code>，运行前先预测两条记录各自的平均值。</li>
+<li>Add a method <code>count(self)</code> that returns <code>len(self.measurements)</code>. Explain why the call is <code>run_a.count()</code> with no explicit <code>self</code>.<br>添加一个返回 <code>len(self.measurements)</code> 的方法 <code>count(self)</code>。解释为什么调用写成 <code>run_a.count()</code>，不需要显式传入 <code>self</code>。</li>
+<li>Predict what <code>alias = run_a; alias.add_measurement(18.0)</code> changes. Does <code>run_b</code> change?<br>预测 <code>alias = run_a; alias.add_measurement(18.0)</code> 会改变什么。<code>run_b</code> 会改变吗？</li>
+<li>Explain why an empty run raises an error instead of returning <code>0.0</code>.<br>解释为什么空记录应当抛出异常，而不是返回 <code>0.0</code>。</li>
+</ol>
+<p>Check: exercise 1 gives a mean of <code>12.0</code> for A and <code>38 / 3</code>, approximately <code>12.6667</code>, for B. Exercise 2 returns 3 for A at that point; Python supplies the instance. Exercise 3 changes A through its alias, leaving B unchanged. Exercise 4 has no observations to average; zero would incorrectly suggest an observed result.</p>
+<p>核对：练习 1 中，A 的平均值为 <code>12.0</code>，B 为 <code>38 / 3</code>，约为 <code>12.6667</code>。练习 2 中，此时 A 的计数结果为 3，调用时由 Python 自动传入实例。练习 3 通过别名改变 A，B 不受影响。练习 4 中，没有任何观测值可供求平均；返回零会误导读者，以为确实观测到了平均值为零的结果。</p>
+<h2>Sources / 来源</h2>
+<p>Python's <a href="https://docs.python.org/3/tutorial/classes.html">classes tutorial</a><sup class="reference">[1]</sup>, <a href="https://docs.python.org/3/reference/datamodel.html#object.__init__">object initialization reference</a><sup class="reference">[2]</sup>, and <a href="https://docs.python.org/3/library/functions.html#vars">built-in inspection functions</a><sup class="reference">[5]</sup> document the language behavior. Spyder's <a href="https://docs.spyder-ide.org/current/panes/debugging.html">debugger guide</a><sup class="reference">[4]</sup> documents inspection while paused. The experiment record, numerical inputs, and exercises are teaching examples created for this handbook.</p>
+<p>Python 官方<a href="https://docs.python.org/3/tutorial/classes.html">类教程</a><sup class="reference">[1]</sup>、<a href="https://docs.python.org/3/reference/datamodel.html#object.__init__">对象初始化参考</a><sup class="reference">[2]</sup>和<a href="https://docs.python.org/3/library/functions.html#vars">内置查看函数</a><sup class="reference">[5]</sup>说明了相关语言行为。Spyder 的<a href="https://docs.spyder-ide.org/current/panes/debugging.html">调试器指南</a><sup class="reference">[4]</sup>说明了暂停执行时如何查看变量。本章的实验记录、数值输入和练习都是为本手册编写的教学示例。</p><h2>参考资料（References）</h2><ol class="references"><li><a href="https://docs.python.org/3/tutorial/classes.html">https://docs.python.org/3/tutorial/classes.html</a></li><li><a href="https://docs.python.org/3/reference/datamodel.html#object.__init__">https://docs.python.org/3/reference/datamodel.html#object.__init__</a></li><li><a href="https://docs.python.org/3/tutorial/classes.html#class-and-instance-variables">https://docs.python.org/3/tutorial/classes.html#class-and-instance-variables</a></li><li><a href="https://docs.spyder-ide.org/current/panes/debugging.html">https://docs.spyder-ide.org/current/panes/debugging.html</a></li><li><a href="https://docs.python.org/3/library/functions.html#vars">https://docs.python.org/3/library/functions.html#vars</a></li></ol></body></html>

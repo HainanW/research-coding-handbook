@@ -1,0 +1,169 @@
+# 07 — Install and use a conda environment on Windows / 07 — 在 Windows 安装和使用 conda 环境
+
+<!-- bilingual: en-zh -->
+
+<!-- print:omit -->
+[返回手册 / Handbook](../README.zh-CN.md) · [English](07-main-conda-environment.md)
+
+[英中双语 PDF / Bilingual PDF](print/07-main-conda-environment.zh-CN.pdf) · [打印 HTML / Print HTML](print/07-main-conda-environment.zh-CN.html)
+<!-- /print:omit -->
+
+## Question and scope / 问题与范围（Question and scope）
+
+> How do I install conda if necessary, create a separate Python environment, and use the correct interpreter in VS Code?
+>
+> 如果尚未安装 conda，如何安装？如何创建独立 Python 环境，并让 VS Code 使用正确的解释器？
+
+Anaconda/Miniconda supplies conda, the environment and package manager. A conda environment holds a Python interpreter and its packages. VS Code is the editor; choosing an interpreter connects it to an environment. This Windows walkthrough uses a new environment named `handbook-demo`; it does not change an existing research environment. Commands are instructions for you to run, not a record that an installation was performed. Documentation was checked on 2026-09-20.
+
+Anaconda/Miniconda 提供环境和包管理器（environment/package manager）conda；conda 环境包含 Python 解释器（interpreter）及软件包。VS Code 是编辑器，选择解释器才能连接到相应环境。本篇面向 Windows，以新环境 `handbook-demo` 为例，不改动已有科研环境。命令是供你执行的步骤，不代表已经完成安装。官方资料核对日期：2026-09-20。
+
+## 1. Check whether conda is already installed / 1. 检查是否已经安装（Installation check）
+
+Open **Anaconda Prompt** from the Windows Start menu and run:
+
+从 Windows 开始菜单打开 **Anaconda Prompt**，执行：
+
+```powershell
+conda --version
+conda env list
+```
+
+If both work, skip reinstallation. An asterisk marks the active environment. A missing `conda` command in an ordinary terminal can mean that shell is not initialized, rather than that conda is absent.
+
+如果都成功，就跳过重新安装。环境列表中的星号表示当前激活环境。普通终端提示找不到 `conda`，可能只是该终端尚未初始化（shell initialization），不能直接认定未安装。
+
+> **Screenshot placeholder 07-1** — Anaconda Prompt showing conda --version and conda env list.
+> Suggested file: `docs/images/07-conda-available.png`
+>
+> **插图占位（Screenshot placeholder） 07-1** — Anaconda Prompt 中的 conda --version 与 conda env list 输出。
+> 建议文件：`docs/images/07-conda-available.png`
+
+<!-- Replace the placeholder above after saving the screenshot:
+![Anaconda Prompt 中的 conda --version 与 conda env list 输出。](images/07-conda-available.png)
+-->
+
+If no conda installation exists, use the [official Windows installation guide](https://docs.conda.io/projects/conda/en/latest/user-guide/install/windows.html) and a matching installer from [Anaconda's download page](https://www.anaconda.com/download). Miniconda provides a smaller starting installation; Anaconda Distribution includes more preinstalled packages. For a personal machine, use a per-user installation where appropriate. Finish the installer, open a fresh Anaconda Prompt, and repeat the two checks above. Keep environments outside your Git repository.
+
+如果确实没有 conda，按[官方 Windows 安装指南](https://docs.conda.io/projects/conda/en/latest/user-guide/install/windows.html)，从 [Anaconda 下载页](https://www.anaconda.com/download)选择适合系统的安装程序。Miniconda 初始安装较小；Anaconda Distribution 预装的软件包更多。个人电脑适合时可采用当前用户安装（per-user installation）。安装结束后重新打开 Anaconda Prompt，再执行上面的检查。不要把整个环境装进 Git 仓库。
+
+## 2. Create a project environment / 2. 创建项目环境（Create environment）
+
+The example chooses Python 3.11 for an isolated teaching environment. For a real project, use the version required by its dependencies or its existing environment file. First make sure `handbook-demo` is not already listed; if it exists, inspect it or choose a different name.
+
+教学示例使用 Python 3.11；真实项目应按照依赖要求或已有环境文件选择版本。先检查列表中没有 `handbook-demo`；如果已存在，先检查它或另选名称。
+
+Run each command after the previous one succeeds, and review conda's proposed package changes when prompted:
+
+逐条执行，上一条成功后再继续；conda 提示确认时，查看拟安装的软件包：
+
+```powershell
+conda create -n handbook-demo python=3.11 numpy matplotlib pip
+conda activate handbook-demo
+python --version
+python -c "import sys; print(sys.executable)"
+python -c "import numpy, matplotlib; print(numpy.__version__, matplotlib.__version__)"
+```
+
+Check that `sys.executable` points into the new environment. A successful import verifies that both packages are available to that interpreter. Do not rely only on the prompt prefix. See [conda environment management](https://docs.conda.io/projects/conda/en/stable/user-guide/tasks/manage-environments.html).
+
+`sys.executable` 应指向新环境的 Python。导入（import）成功说明该解释器能够使用 NumPy 和 Matplotlib；不要仅凭命令行前缀判断。参见 [conda 环境管理文档](https://docs.conda.io/projects/conda/en/stable/user-guide/tasks/manage-environments.html)。
+
+> **Screenshot placeholder 07-2** — Activated handbook-demo environment and interpreter/version verification.
+> Suggested file: `docs/images/07-conda-active.png`
+>
+> **插图占位（Screenshot placeholder） 07-2** — handbook-demo 环境已激活，并显示解释器路径与版本检查结果。
+> 建议文件：`docs/images/07-conda-active.png`
+
+<!-- Replace the placeholder above after saving the screenshot:
+![handbook-demo 环境已激活，并显示解释器路径与版本检查结果。](images/07-conda-active.png)
+-->
+
+`conda activate handbook-demo` selects an existing environment; it does not install anything. `conda deactivate` leaves it. If activation fails in PowerShell, run `conda init powershell` from Anaconda Prompt, then close and reopen PowerShell. This initializes that shell's startup configuration. If local policy prevents startup scripts, use Anaconda Prompt rather than changing system-wide security settings as a first response.
+
+`conda activate handbook-demo` 是激活已有环境，不会安装软件；`conda deactivate` 退出当前环境。如果 PowerShell 无法激活，可在 Anaconda Prompt 执行 `conda init powershell`，然后关闭并重新打开 PowerShell。该命令会配置终端启动文件。若本机策略禁止启动脚本，可先使用 Anaconda Prompt，不要一开始就更改系统范围的安全设置。
+
+## 3. Select the interpreter in VS Code / 3. 在 VS Code 选择解释器（Select interpreter）
+
+Install Microsoft's Python extension if it is not already available. Open the project, press **Ctrl+Shift+P**, run **Python: Select Interpreter**, and select `handbook-demo`. If necessary, enter the interpreter path printed by `sys.executable`. Open a new terminal and repeat the interpreter/import checks. Existing terminals may still have the previous environment active. See [VS Code's environment guide](https://code.visualstudio.com/docs/python/environments).
+
+如果尚未安装，先安装 Microsoft 的 Python 扩展（extension）。打开项目，按 **Ctrl+Shift+P**，选择 **Python: Select Interpreter**，再选择 `handbook-demo`。如果找不到，可输入前面 `sys.executable` 显示的路径。新建终端后，再检查解释器及导入结果；已有终端可能仍使用旧环境。参见 [VS Code 环境指南](https://code.visualstudio.com/docs/python/environments)。
+
+> **Screenshot placeholder 07-3** — VS Code interpreter picker with handbook-demo selected.
+> Suggested file: `docs/images/07-vscode-interpreter.png`
+>
+> **插图占位（Screenshot placeholder） 07-3** — VS Code 解释器选择列表，突出显示 handbook-demo 已选中。
+> 建议文件：`docs/images/07-vscode-interpreter.png`
+
+<!-- Replace the placeholder above after saving the screenshot:
+![VS Code 解释器选择列表，突出显示 handbook-demo 已选中。](images/07-vscode-interpreter.png)
+-->
+
+For a notebook, its kernel is a separate selection: choose the intended environment through **Select Kernel**. If it needs an IPython kernel, install `ipykernel` in that environment and select it again:
+
+Notebook 的内核（kernel）需要单独选择：通过 **Select Kernel** 选择目标环境。如果该环境缺少 IPython 内核，可执行后重新选择：
+
+```powershell
+conda install -n handbook-demo ipykernel
+```
+
+## 4. Save a reproducible starting specification / 4. 保存可复现的环境说明（Environment specification）
+
+Create a UTF-8 `environment.yml` in your project, for example:
+
+在项目中创建 UTF-8 编码的 `environment.yml`，例如：
+
+```yaml
+name: handbook-demo
+channels:
+  - defaults
+dependencies:
+  - python=3.11
+  - numpy
+  - matplotlib
+  - pip
+```
+
+To reproduce this specification in a fresh environment, use `conda env create -f environment.yml`. If the name already exists, use a new one, for example `conda env create -n handbook-demo-copy -f environment.yml`. This recipe intentionally leaves most package versions open; it is not an exact lock file. Record the resolved versions when comparing research results.
+
+在新环境中重建时执行 `conda env create -f environment.yml`。若同名环境已存在，改用新名称，例如 `conda env create -n handbook-demo-copy -f environment.yml`。这个配方没有固定大部分包版本，并非精确锁定文件（lock file）；比较科研结果时，应同时记录实际解析得到的版本（resolved versions）。
+
+To export the current environment's explicitly requested packages in PowerShell:
+
+在 PowerShell 导出该环境中明确请求安装的软件包：
+
+```powershell
+conda env export -n handbook-demo --from-history | Set-Content -Encoding utf8 environment.yml
+```
+
+This overwrites that file; use a different filename if you want to retain the hand-written recipe. Inspect the export before sharing: remove any machine-specific `prefix:` path. The history export is useful for portability but does not capture every resolved dependency or every package installed with pip. Channel choice, operating system, and package availability also affect reconstruction.
+
+命令会覆盖同名文件；若要保留手写配方，请改用其他文件名。分享前检查导出内容，删除与本机有关的 `prefix:` 路径。历史导出（history export）有利于跨机器使用，但不会完整记录所有间接依赖，也不能保证包含通过 pip 安装的所有包。软件源（channel）、操作系统及包的可用性也会影响重建结果。
+
+If pip is needed, install conda packages first and then use `python -m pip install PACKAGE_NAME` inside the activated environment, replacing `PACKAGE_NAME` with the actual package. Record these additional dependencies; prefer rebuilding from a complete specification when changing a mixed conda/pip environment.
+
+如需 pip，先安装 conda 包，再在激活的环境中使用 `python -m pip install PACKAGE_NAME`，将 `PACKAGE_NAME` 替换为实际包名，并记录新增依赖。后续调整 conda/pip 混合环境时，优先根据完整说明重新构建。
+
+## 5. Troubleshooting and completion check / 5. 排查与完成标准（Troubleshooting and verification）
+
+| Symptom<br>现象（symptom） | First check<br>首先检查（first check） |
+| --- | --- |
+| `conda` not recognized<br>找不到 `conda` | Use Anaconda Prompt; check shell initialization<br>使用 Anaconda Prompt，检查终端初始化 |
+| `ModuleNotFoundError` | Print `sys.executable`; install in that environment<br>查看 `sys.executable`，在对应环境安装包 |
+| VS Code runs another Python<br>VS Code 使用了另一个 Python | Select the interpreter, then open a new terminal<br>重新选择解释器，再新建终端 |
+| Notebook uses another environment<br>Notebook 环境不一致 | Check its kernel selection<br>检查内核选择（kernel selection） |
+| Dependency solving fails<br>依赖解析失败（solving fails） | Check Python/package compatibility and project requirements<br>核对 Python、包版本与项目要求 |
+
+You are ready when the environment is listed, its interpreter imports the required packages, VS Code uses that interpreter, and the project has a reviewed environment specification.
+
+环境已出现在列表中、其解释器能够导入所需包、VS Code 使用同一解释器、项目保存了已检查的环境说明，就完成了基本配置。
+
+## 6. Replace the screenshot placeholders / 6. 后续替换插图（Screenshot placeholders）
+
+Save future screenshots under the three suggested names in `docs/images/`. Replace each visible block with the image line in its adjacent HTML comment, removing the comment markers. The bilingual guides share those image files; no nonexistent images are linked yet. Crop personal paths if sharing screenshots publicly.
+
+将截图保存到 `docs/images/` 下的三个建议文件名，用相邻 HTML 注释里的图片语句替换可见占位区块，并删除注释标记。双语指南共用图片；当前未链接不存在的图片。公开截图时可裁去个人路径。
+
+Regenerate with `python tools/export_print.py docs/07-main-conda-environment.md`.
+
+重新运行 `python tools/export_print.py docs/07-main-conda-environment.zh-CN.md` 即可更新打印版。

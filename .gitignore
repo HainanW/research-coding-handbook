@@ -1,6 +1,7 @@
-/README.zh-CN.md
-/docs/*.zh-CN.md
-/docs/print/*.zh-CN.*
+# Generated debug logs and Python caches stay local.
+/debug.log
+__pycache__/
+*.py[cod]
 
 # Original internal guides stay on this computer; publish sanitized editions only.
 /GitHub_Manual_Push_Guide.md

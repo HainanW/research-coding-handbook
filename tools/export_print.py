@@ -1,4 +1,4 @@
-"""Export the Q1-Q3 Markdown guides to US Letter HTML and PDF.
+"""Export the 01-09 Markdown guides to US Letter HTML and PDF.
 
 Requires Python-Markdown and an installed Chrome or Edge browser.
 Run from the repository root: python tools/export_print.py
@@ -21,9 +21,15 @@ import markdown
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DOCS = (
-    "docs/01-spyder-function-inspection.md",
-    "docs/02-markdown-images.md",
-    "docs/03-python-data-types.md",
+    "docs/01-main-spyder-function-inspection.md",
+    "docs/02-main-markdown-images.md",
+    "docs/03-main-python-data-types.md",
+    "docs/04-main-github-manual-push.md",
+    "docs/05-main-python-dunder.md",
+    "docs/06-main-github-organization.md",
+    "docs/07-main-conda-environment.md",
+    "docs/08-main-python-classes.md",
+    "docs/09-main-codex-skills.md",
 )
 
 
@@ -103,7 +109,7 @@ def render_html(source, destination, css):
         body += "</ol>"
     title_match = re.search(r"^# (.+)$", text, flags=re.M)
     title = html.escape(title_match.group(1) if title_match else source.stem)
-    language = "zh-CN" if chinese else "en"
+    language = "en"
     document = (f'<!doctype html>\n<html lang="{language}"><head><meta charset="utf-8">'
                 f'<title>{title}</title><style>{css}</style></head><body>{body}</body></html>')
     destination.write_text(document, encoding="utf-8")
@@ -144,6 +150,8 @@ def main():
     parser.add_argument("documents", nargs="*", help="Markdown files, relative to the repository root")
     parser.add_argument("--output-dir", type=Path, default=ROOT / "docs/print")
     parser.add_argument("--browser", help="Full path to Chrome or Edge")
+    parser.add_argument("--bilingual", action="store_true",
+                        help="Export bilingual .zh-CN.md sources to HTML and PDF")
     args = parser.parse_args()
     browser = find_browser(args.browser)
     output = args.output_dir.resolve()
@@ -151,6 +159,8 @@ def main():
     css = (ROOT / "tools/print.css").read_text(encoding="utf-8")
     for document in args.documents or DEFAULT_DOCS:
         source = (ROOT / document).resolve()
+        if args.bilingual and ".zh-CN" not in source.stem:
+            source = source.with_name(source.stem + ".zh-CN.md")
         html_path = output / (source.stem + ".html")
         pdf_path = output / (source.stem + ".pdf")
         render_html(source, html_path, css)

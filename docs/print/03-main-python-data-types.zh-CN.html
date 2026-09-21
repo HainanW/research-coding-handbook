@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>03 — Python data types through a Case 1 profit equation / 03 — 结合 Case 1 利润方程理解 Python 数据类型</title><style>@page {
+  size: letter;
+  margin: 17mm 16mm 18mm;
+  @top-left { content: "RESEARCH CODING HANDBOOK"; font: 7.5pt Arial, sans-serif; color: #555; }
+  @bottom-right { content: counter(page) " / " counter(pages); font: 8pt Arial, sans-serif; color: #444; }
+}
+* { box-sizing: border-box; }
+html { color: #111; background: white; }
+body {
+  font-family: Arial, "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  font-size: 10pt;
+  line-height: 1.48;
+  margin: 0;
+}
+h1 { font-size: 19pt; line-height: 1.3; margin: 0 0 12pt; font-weight: 700; }
+h2 { font-size: 13pt; line-height: 1.35; margin: 15pt 0 7pt; border-bottom: 0.5pt solid #999; padding-bottom: 4pt; }
+h3 { font-size: 11pt; margin: 12pt 0 5pt; }
+h1, h2, h3 { break-after: avoid; page-break-after: avoid; }
+p { margin: 0 0 8pt; orphans: 3; widows: 3; break-inside: avoid; }
+ul, ol { margin: 5pt 0 9pt; padding-left: 19pt; }
+li { margin-bottom: 4pt; orphans: 2; widows: 2; }
+blockquote { margin: 8pt 0 10pt; padding: 1pt 0 1pt 10pt; border-left: 2pt solid #777; }
+blockquote p { margin: 0; }
+a { color: #111; text-decoration: underline; text-decoration-color: #999; }
+code { font-family: Consolas, "Microsoft YaHei", monospace; font-size: 0.88em; overflow-wrap: anywhere; }
+pre {
+  font-family: Consolas, "Microsoft YaHei", monospace;
+  font-size: 8.2pt;
+  line-height: 1.32;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  tab-size: 4;
+  border: 0.5pt solid #aaa;
+  background: white;
+  padding: 7pt 8pt;
+  margin: 7pt 0 9pt;
+  break-inside: avoid;
+}
+pre code { font-size: inherit; }
+table { width: 100%; table-layout: fixed; border-collapse: collapse; margin: 8pt 0 11pt; font-size: 8.8pt; line-height: 1.38; break-inside: auto; }
+thead { display: table-header-group; }
+tr { break-inside: avoid; }
+th, td { border: 0.5pt solid #999; padding: 5pt 6pt; vertical-align: top; overflow-wrap: anywhere; }
+th { font-weight: bold; background: white; border-bottom: 1pt solid #444; }
+table code { font-size: 0.93em; }
+figure { margin: 9pt 0 12pt; break-inside: avoid; }
+figure p { margin: 0; }
+img { display: block; width: 100%; height: auto; filter: grayscale(1); }
+figcaption { font-size: 8.6pt; line-height: 1.4; margin-top: 5pt; color: #333; }
+sup.reference { font-size: 7pt; margin-left: 2pt; white-space: nowrap; }
+.references { font-size: 8pt; line-height: 1.4; padding-left: 18pt; }
+.references li { margin-bottom: 5pt; overflow-wrap: anywhere; break-inside: avoid; }
+.references a { text-decoration: none; }
+@media screen { body { max-width: 8.5in; padding: 17mm 16mm 18mm; margin: 15px auto; border: 1px solid #ddd; } }
+@media print { body { padding: 0; } }
+
+p:has(+ table) { break-after: avoid; }
+thead { break-after: avoid; }
+table:not(:has(tbody tr:nth-child(9))) { break-inside: avoid; }
+
+/* Bilingual table cells contain both languages and may span many pages. */
+table:has(br), table:has(br):not(:has(tbody tr:nth-child(9))) { break-inside: auto; }
+</style></head><body><h1>03 — Python data types through a Case 1 profit equation / 03 — 结合 Case 1 利润方程理解 Python 数据类型</h1>
+<!-- bilingual: en-zh -->
+
+<h2>The question / 原始问题（Question）</h2>
+<blockquote>
+<p>As a beginner, I want to understand Python's different kinds of variables, such as <code>float</code> and <code>tuple</code>, rather than just naming conventions. Can we cover the main data types, inspect their size where applicable, and connect them to a real equation and function from Case 1?</p>
+<p>作为新手，我希望理解 Python 几乎全部常见的“变量种类”，例如 <code>float</code>、<code>tuple</code>，而不只是变量如何命名。能否系统介绍主要数据类型（data types），查看适用的大小信息（size），再结合 Case 1 的真实函数与方程逐行解析？</p>
+</blockquote>
+<p>This chapter covers the main built-in value types, NumPy arrays, and a short tour of other objects found in research code. Python also permits user-defined and library-defined types, so there is no finite list of every possible type. Learn the numeric and container sections first; the binary and further-object sections are reference material.</p>
+<p>本章覆盖主要内置值类型（built-in value types）、NumPy 数组（arrays），并简要介绍科研代码中的其他对象（objects）。Python 允许自定义类型和库类型，因此不存在“所有可能类型”的有限清单。建议先掌握数值和容器；二进制与扩展对象部分可作为速查。</p>
+<p>Run <a href="../../examples/03_python_data_types.py">the complete example</a> with Python 3.9+ and NumPy: <code>python examples/03_python_data_types.py</code>. It also contains numbered Spyder cells. The small inputs are teaching data, not a reproduction of the paper's optimal decisions. The example was checked with Python 3.9.25 and NumPy 1.26.4.</p>
+<p><a href="../../examples/03_python_data_types.py">完整示例</a> 需要 Python 3.9+ 和 NumPy。在仓库根目录运行 <code>python examples/03_python_data_types.py</code>，或在 Spyder 按编号执行代码单元（cells）。小规模输入是教学数据，并非论文最优决策的复现。示例已在 Python 3.9.25、NumPy 1.26.4 下检查。</p>
+<h2>1. Name, object, type, and value / 1. 变量名、对象、类型和值（Name, object, type, value）</h2>
+<pre><code class="language-python">noise_std = 0.12
+print(type(noise_std))     # &lt;class 'float'&gt;
+print(noise_std)           # 0.12
+</code></pre>
+<p><code>noise_std</code> is a name bound to an object; that object has type <code>float</code> and value <code>0.12</code>. <code>float</code> is itself the name of a built-in type, not a declaration attached to <code>noise_std</code>. Assigning <code>noise_std = "unknown"</code> later binds that name to a string. It does not convert the previous float object into a string.</p>
+<p><code>noise_std</code> 是绑定（binding）到对象的名字；对象的类型是 <code>float</code>，值是 <code>0.12</code>。<code>float</code> 本身是内置类型的名称，不是附着在变量名上的永久声明。之后写 <code>noise_std = "unknown"</code>，是把名字重新绑定到字符串（string），不是把原来的浮点对象变成字符串。</p>
+<p>Use <code>type(value)</code> to inspect the exact type and <code>isinstance(value, float)</code> to ask whether an object belongs to a type or its subclasses. <code>isinstance(True, int)</code> is also true because <code>bool</code> subclasses <code>int</code>. Avoid using built-in names such as <code>list</code>, <code>str</code>, or <code>float</code> for your own variables: <code>list = [1, 2]</code> hides the constructor <code>list()</code> in that scope.</p>
+<p>用 <code>type(value)</code> 查看确切类型；用 <code>isinstance(value, float)</code> 判断是否属于某类型或其子类（subclass）。由于 <code>bool</code> 是 <code>int</code> 的子类，<code>isinstance(True, int)</code> 也为真。不要将自己的变量命名为 <code>list</code>、<code>str</code> 或 <code>float</code>：例如 <code>list = [1, 2]</code> 会在该作用域（scope）遮蔽内置构造器（constructor）<code>list()</code>。</p>
+<p>A type annotation such as <code>noise_std: float = 0.12</code> communicates an intended type. By itself, it neither converts the value nor enforces the type at runtime.</p>
+<p><code>noise_std: float = 0.12</code> 中的类型注解（type annotation）表达预期类型。单独使用注解不会自动转换数值，也不会在运行时强制检查类型。</p>
+<h2>2. Numbers, text, and missing values / 2. 数值、文本与空值（Numbers, text, missing values）</h2>
+<p>These objects do not allow their contents to be changed in place. Reassigning a name is still allowed.</p>
+<p>以下对象不可原地修改（immutable）；但变量名仍可以重新赋值（reassignment）。</p>
+<table>
+<thead>
+<tr>
+<th>Type<br>类型（type）</th>
+<th>Create a value<br>创建示例（creation）</th>
+<th>Inspect or use it<br>查看或使用（inspection / use）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>int</code></td>
+<td><code>count = 3</code></td>
+<td><code>count + 1</code>; an integer count<br>整数（integer）；<code>count + 1</code></td>
+</tr>
+<tr>
+<td><code>float</code></td>
+<td><code>noise_std = 0.12</code></td>
+<td><code>noise_std ** 2</code>; a real-valued approximation<br>浮点数（floating point）；<code>noise_std ** 2</code></td>
+</tr>
+<tr>
+<td><code>complex</code></td>
+<td><code>z = 2 + 3j</code></td>
+<td><code>z.real</code>, <code>z.imag</code>, <code>abs(z)</code><br>复数；<code>z.real</code>、<code>z.imag</code>、<code>abs(z)</code></td>
+</tr>
+<tr>
+<td><code>bool</code></td>
+<td><code>converged = True</code></td>
+<td><code>if converged:</code>; a logical condition<br>布尔值；<code>if converged:</code></td>
+</tr>
+<tr>
+<td><code>str</code></td>
+<td><code>label = "Case 1"</code></td>
+<td><code>label[0]</code> gives <code>"C"</code>; <code>len(label)</code> gives 6<br>字符串；<code>label[0]</code> 为 <code>"C"</code>，长度为 6</td>
+</tr>
+<tr>
+<td><code>NoneType</code></td>
+<td><code>result = None</code></td>
+<td><code>result is None</code>; no result yet<br>空值；用 <code>result is None</code> 判断</td>
+</tr>
+</tbody>
+</table>
+<p>Python <code>float</code> normally uses binary double precision. Decimal fractions may not be exact: <code>0.1 + 0.2 == 0.3</code> is false. Use <code>math.isclose</code> or <code>np.isclose</code> with tolerances suited to the problem. <code>None</code> is not zero, an empty string, or NumPy's numerical <code>nan</code>; <code>type(None)</code> gives <code>NoneType</code>. Numerical <code>nan</code> is a floating-point value, and <code>np.isnan</code> checks for it.</p>
+<p>Python <code>float</code> 通常使用二进制双精度（binary double precision）。十进制小数未必精确可表示，因此 <code>0.1 + 0.2 == 0.3</code> 为假。数值比较可使用 <code>math.isclose</code> 或 <code>np.isclose</code>，并根据问题选容差（tolerance）。<code>None</code> 不等于零、空字符串或数值缺失标记 <code>nan</code>；<code>type(None)</code> 得到 <code>NoneType</code>。数值 <code>nan</code> 是浮点值，可以用 <code>np.isnan</code> 检查。</p>
+<p>English example:</p>
+<pre><code class="language-python">float(&quot;0.12&quot;)       # 0.12: parse text
+int(3.9)            # 3: truncate toward zero
+str(3)              # &quot;3&quot;: produce text
+bool(0)             # False
+bool(&quot;False&quot;)       # True: a nonempty string
+</code></pre>
+<p>中文示例：</p>
+<pre><code class="language-python">float(&quot;0.12&quot;)       # 0.12
+int(3.9)            # 3
+str(3)              # &quot;3&quot;
+bool(0)             # False
+bool(&quot;False&quot;)       # True
+</code></pre>
+<p>These operations parse text, truncate toward zero (not rounding), produce text, test zero, and test a nonempty string. The string <code>"False"</code> is not automatically interpreted as the Boolean value False.</p>
+<p>这些操作依次是解析文本、向零截断（不是四舍五入）、转换为文本、判断零的真假、判断非空字符串的真假。不要以为字符串 <code>"False"</code> 会自动解释为布尔假值。</p>
+<p><code>len(3)</code> and <code>0.12.shape</code> are invalid. Scalar values are not one-element sequences. <code>len("你好")</code> is 2 Unicode code points; encoded byte length is a different quantity.</p>
+<p><code>len(3)</code> 和 <code>0.12.shape</code> 都不合法。标量（scalar）不是长度为 1 的序列。<code>len("你好")</code> 是 2 个 Unicode 码点（code points），与编码后的字节长度（byte length）不同。</p>
+<h2>3. Sequences: list, tuple, and range / 3. 序列（Sequences）：list、tuple、range</h2>
+<table>
+<thead>
+<tr>
+<th>Type<br>类型（type）</th>
+<th>Construction and access<br>创建与访问（creation / access）</th>
+<th>Can its slots change?<br>能否改变元素位置上的内容？</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>list</code><br><code>list</code> 列表</td>
+<td><code>q = [1.0, 2.0, 3.0]</code>; <code>q[0]</code><br><code>q = [1.0, 2.0, 3.0]</code>；<code>q[0]</code></td>
+<td>Yes: <code>q[0] = 4.0</code>, <code>q.append(5.0)</code><br>可变：<code>q[0] = 4.0</code>、<code>q.append(5.0)</code></td>
+</tr>
+<tr>
+<td><code>tuple</code><br><code>tuple</code> 元组</td>
+<td><code>bounds = (0.0, 6.0)</code>; <code>bounds[1]</code><br><code>bounds = (0.0, 6.0)</code>；<code>bounds[1]</code></td>
+<td>No reassignment of tuple slots<br>不可替换元组中的元素引用</td>
+</tr>
+<tr>
+<td><code>range</code><br><code>range</code> 整数范围</td>
+<td><code>indices = range(3)</code>; <code>indices[0]</code><br><code>indices = range(3)</code>；<code>indices[0]</code></td>
+<td>No; describes 0, 1, 2 without storing a list<br>不可变；表示 0、1、2，不创建完整列表</td>
+</tr>
+</tbody>
+</table>
+<p>Indexing starts at zero. <code>q[-1]</code> selects the last item; <code>q[0:2]</code> selects the first two. <code>len(q)</code> counts top-level items. Lists and tuples can contain mixed types, for example <code>("seed", 5, True)</code>, though numerical calculations usually benefit from homogeneous arrays.</p>
+<p>索引（index）从 0 开始。<code>q[-1]</code> 是最后一个元素；切片（slice）<code>q[0:2]</code> 取前两个。<code>len(q)</code> 只统计最外层元素数。列表和元组可以混合类型，例如 <code>("seed", 5, True)</code>；数值计算通常更适合元素类型统一的数组。</p>
+<p>English example:</p>
+<pre><code class="language-python">single = (3,)                  # a one-item tuple
+not_a_tuple = (3)              # an int
+lower, upper = (0.0, 6.0)      # unpack two values
+values = list(range(3))        # [0, 1, 2]
+</code></pre>
+<p>中文示例：</p>
+<pre><code class="language-python">single = (3,)                  # tuple
+not_a_tuple = (3)              # int
+lower, upper = (0.0, 6.0)      # unpacking
+values = list(range(3))        # [0, 1, 2]
+</code></pre>
+<p>The comma makes a one-item tuple. In Q1, <code>return x, y</code> returns a tuple of two arrays, which the caller unpacks. An array's <code>shape</code>, such as <code>(4, 3)</code>, is also a tuple.</p>
+<p>单元素元组靠逗号区分，而非仅靠括号。<code>lower, upper = ...</code> 是解包（unpacking）。01 中的 <code>return x, y</code> 返回包含两个数组的元组，再由调用方解包。数组的形状（shape），例如 <code>(4, 3)</code>，也是元组。</p>
+<h2>4. Mapping and sets / 4. 映射与集合（Mapping and sets）</h2>
+<table>
+<thead>
+<tr>
+<th>Type<br>类型（type）</th>
+<th>Construction<br>创建（creation）</th>
+<th>Access and purpose<br>访问及用途（access / purpose）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dict</code><br><code>dict</code> 字典</td>
+<td><code>cfg = {"seed": 5, "std": 0.12}</code></td>
+<td><code>cfg["seed"]</code>; named settings<br><code>cfg["seed"]</code>；具名配置</td>
+</tr>
+<tr>
+<td><code>set</code><br><code>set</code> 集合</td>
+<td><code>ids = {1, 2, 2}</code></td>
+<td><code>2 in ids</code>; unique members<br><code>2 in ids</code>；唯一成员</td>
+</tr>
+<tr>
+<td><code>frozenset</code><br><code>frozenset</code> 不可变集合</td>
+<td><code>fixed = frozenset({1, 2})</code></td>
+<td><code>2 in fixed</code>; immutable set<br><code>2 in fixed</code>；固定成员集合</td>
+</tr>
+</tbody>
+</table>
+<p>A dictionary maps unique, hashable keys to values; <code>len(cfg)</code> counts entries. <code>cfg["seed"] = 6</code> updates a value. <code>cfg.get("missing")</code> returns <code>None</code> by default, while <code>cfg["missing"]</code> raises <code>KeyError</code>. Dictionaries preserve insertion order. Sets have no positional indexing or promised iteration order; <code>ids[0]</code> is invalid. Use <code>ids.add(3)</code> to modify a set.</p>
+<p>字典将唯一且可哈希（hashable）的键（key）映射到值（value）；<code>len(cfg)</code> 是条目数。<code>cfg["seed"] = 6</code> 更新数值。<code>cfg.get("missing")</code> 默认返回 <code>None</code>，而 <code>cfg["missing"]</code> 会抛出 <code>KeyError</code>。字典保留插入顺序（insertion order）。集合不支持位置索引，也不保证迭代顺序；<code>ids[0]</code> 不合法，可用 <code>ids.add(3)</code> 添加成员。</p>
+<p><code>{}</code> is an empty dictionary; <code>set()</code> is an empty set. Hashability means an object can safely serve as a dictionary key or set member under Python's hashing rules. Lists cannot; tuples can only when all their elements are hashable. Do not assume that every immutable container is hashable regardless of its contents.</p>
+<p><code>{}</code> 是空字典，<code>set()</code> 才是空集合。可哈希表示对象符合 Python 的哈希规则，能够用作字典键或集合成员。列表不可以；元组只有在所有元素都可哈希时才可以。不能只看容器自身不可变，就认定它一定可哈希。</p>
+<h2>5. Binary values: useful when reading files or buffers / 5. 二进制类型（Binary types）：文件和缓冲区</h2>
+<table>
+<thead>
+<tr>
+<th>Type<br>类型（type）</th>
+<th>Example<br>示例（example）</th>
+<th>Access and mutability<br>访问与可变性（access / mutability）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bytes</code></td>
+<td><code>raw = b"ABC"</code></td>
+<td><code>raw[0] == 65</code>; immutable bytes<br><code>raw[0] == 65</code>；不可变字节串</td>
+</tr>
+<tr>
+<td><code>bytearray</code></td>
+<td><code>buf = bytearray(b"ABC")</code></td>
+<td><code>buf[0] = 90</code>; mutable bytes<br><code>buf[0] = 90</code>；可变字节数组</td>
+</tr>
+<tr>
+<td><code>memoryview</code></td>
+<td><code>view = memoryview(buf)</code></td>
+<td><code>view[0] = 90</code> modifies the backing buffer<br><code>view[0] = 90</code> 会修改底层缓冲区</td>
+</tr>
+</tbody>
+</table>
+<p>For these one-dimensional byte examples, <code>len()</code> is 3. <code>raw.decode("utf-8")</code> produces text; <code>"ABC".encode("utf-8")</code> produces bytes. A memory view exposes an existing buffer without copying its data. Writability depends on the backing object: a view over <code>bytes</code> is read-only. More general memory views can have their own <code>shape</code>, <code>format</code>, and <code>nbytes</code>.</p>
+<p>在这些一维字节示例中，<code>len()</code> 均为 3。<code>raw.decode("utf-8")</code> 解码为文本；<code>"ABC".encode("utf-8")</code> 编码为字节。内存视图（memory view）直接访问已有缓冲区（buffer），无需复制数据。能否写入取决于底层对象：基于 <code>bytes</code> 的视图是只读的。更一般的内存视图还可以有 <code>shape</code>、<code>format</code> 和 <code>nbytes</code>。</p>
+<h2>6. Mutation, aliases, and copies / 6. 可变性、别名与复制（Mutation, aliases, copies）</h2>
+<p>English example:</p>
+<pre><code class="language-python">q = [1.0, 2.0]
+alias = q
+copied = q.copy()
+alias[0] = 9.0
+# q is now [9.0, 2.0]; copied is still [1.0, 2.0]
+</code></pre>
+<p>中文示例：</p>
+<pre><code class="language-python">q = [1.0, 2.0]
+alias = q
+copied = q.copy()
+alias[0] = 9.0
+# q: [9.0, 2.0]; copied: [1.0, 2.0]
+</code></pre>
+<p><code>alias = q</code> adds another name for the same list. It does not copy the list. A shallow copy creates a new outer container but shares references to nested objects. A tuple can hold a mutable object: <code>t = ([1, 2],)</code> permits <code>t[0].append(3)</code>, even though replacing the tuple slot with <code>t[0] = []</code> is forbidden.</p>
+<p><code>alias = q</code> 让两个名字指向同一个列表，不会复制列表。浅复制（shallow copy）只创建新的外层容器，内部嵌套对象仍可能共享。元组可以包含可变对象：<code>t = ([1, 2],)</code> 允许 <code>t[0].append(3)</code>，但不允许 <code>t[0] = []</code> 替换元组中的元素引用。</p>
+<p>For numeric NumPy arrays, basic slices normally share data with the original array, while <code>a.copy()</code> copies the data. Inspect <code>np.shares_memory(a, b)</code> when the relationship matters. An object-dtype array can still contain references to shared Python objects after a shallow array copy.</p>
+<p>对于数值 NumPy 数组，基本切片（basic slicing）通常共享原始数据，而 <code>a.copy()</code> 复制数据。必要时用 <code>np.shares_memory(a, b)</code> 检查。对于对象类型数组（object-dtype array），复制数组后，元素仍可能引用相同的 Python 对象。</p>
+<h2>7. NumPy: type, dtype, shape, size, and len / 7. NumPy：type、dtype、shape、size、len</h2>
+<pre><code class="language-python">import numpy as np
+a = np.array([[1, 2, 3], [4, 5, 6]], dtype=np.float64)
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Inspection<br>检查（inspection）</th>
+<th>Result<br>结果（result）</th>
+<th>Meaning in this example<br>本例含义（meaning）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>type(a)</code></td>
+<td><code>numpy.ndarray</code></td>
+<td>Type of the whole array object<br>整个数组对象的类型</td>
+</tr>
+<tr>
+<td><code>a.dtype</code></td>
+<td><code>float64</code></td>
+<td>Element storage type<br>元素存储类型（element storage type）</td>
+</tr>
+<tr>
+<td><code>a.shape</code></td>
+<td><code>(2, 3)</code></td>
+<td>Two rows, three columns<br>两行三列</td>
+</tr>
+<tr>
+<td><code>a.ndim</code></td>
+<td><code>2</code></td>
+<td>Number of axes<br>轴数（number of axes）</td>
+</tr>
+<tr>
+<td><code>a.size</code></td>
+<td><code>6</code></td>
+<td>Total number of elements<br>总元素数</td>
+</tr>
+<tr>
+<td><code>len(a)</code></td>
+<td><code>2</code></td>
+<td>Length of the first axis<br>第一条轴的长度</td>
+</tr>
+<tr>
+<td><code>a.itemsize</code></td>
+<td><code>8</code></td>
+<td>Bytes per element<br>每个元素的字节数</td>
+</tr>
+<tr>
+<td><code>a.nbytes</code></td>
+<td><code>48</code></td>
+<td>Element buffer bytes, excluding object overhead<br>元素缓冲区字节数，不含对象管理开销</td>
+</tr>
+</tbody>
+</table>
+<p><code>type(a[0, 0])</code> is <code>np.float64</code>; <code>type(a[0, 0].item())</code> is Python <code>float</code>. A NumPy scalar and a zero-dimensional array differ: <code>np.array(0.12)</code> is an <code>ndarray</code> with <code>shape == ()</code> and <code>size == 1</code>, but <code>len()</code> is invalid. <code>float64</code>, <code>int64</code>, and <code>bool</code> describe common element dtypes; they do not determine an array's shape.</p>
+<p><code>type(a[0, 0])</code> 是 <code>np.float64</code>，而 <code>type(a[0, 0].item())</code> 是 Python <code>float</code>。NumPy 标量与零维数组（zero-dimensional array）也不同：<code>np.array(0.12)</code> 是 <code>ndarray</code>，<code>shape == ()</code>、<code>size == 1</code>，但不能调用 <code>len()</code>。<code>float64</code>、<code>int64</code>、<code>bool</code> 是常见元素类型，并不决定数组形状。</p>
+<p>Lists do not have array <code>shape</code> or <code>dtype</code>. <code>[1, 2] * 2</code> repeats a list; <code>np.array([1, 2]) * 2</code> multiplies each element. Prefer explicit dtypes for reproducible storage choices; default integer widths can depend on the NumPy version and platform.</p>
+<p>列表没有数组的 <code>shape</code> 或 <code>dtype</code>。<code>[1, 2] * 2</code> 重复列表，而 <code>np.array([1, 2]) * 2</code> 是逐元素乘法（elementwise multiplication）。需要固定存储类型时，显式指定 <code>dtype</code>；默认整数宽度可能随 NumPy 版本与平台变化。</p>
+<h2>8. The real Case 1 function / 8. Case 1 的真实函数（Original function）</h2>
+<p>Source: <code>Code_Python_rogp39/Case1-Production-Planning/</code> → <code>comparative-study-production-planning_v2_revised_eng.ipynb</code>, section <strong>S6.1</strong>, in the separate GaussianProcess-Integrated-Optimization repository. The following two functions retain the notebook's executable statements. Extra type demonstrations elsewhere in this chapter are teaching additions, not claims about types used by this function.</p>
+<p>来源：另一个仓库 GaussianProcess-Integrated-Optimization 中的 <code>Code_Python_rogp39/Case1-Production-Planning/</code> → <code>comparative-study-production-planning_v2_revised_eng.ipynb</code>，<strong>S6.1</strong>。下方两个函数保留原 Notebook 的可执行语句。其他类型示例是教学补充，不代表该函数实际使用了所有这些类型。</p>
+<pre><code class="language-python">def true_price_fn(x):
+    x = np.asarray(x, dtype=float)
+    return np.exp(-x / 2.0)
+
+
+def realized_profit_samples(x, noise_matrix, cost_vec):
+    x = np.asarray(x, dtype=float).reshape(1, -1)
+    cost_vec = np.asarray(cost_vec, dtype=float).reshape(1, -1)
+    realized_price = true_price_fn(x) + noise_matrix
+    return np.sum(x * (realized_price - cost_vec), axis=1)
+</code></pre>
+<p>The equation below uses plain text so it renders identically in Markdown and offline PDF:</p>
+<p>方程采用纯文本表示，使 Markdown 与离线 PDF 的显示一致：</p>
+<pre><code class="language-text">price[s, j] = exp(-x[j] / 2) + noise[s, j]
+profit[s]  = SUM over j of x[j] * (price[s, j] - cost[j])
+</code></pre>
+<p><code>s</code> is the scenario index and <code>j</code> is the production component index. Each scenario profit sums production quantity times price minus unit cost across components.</p>
+<p><code>s</code> 是情景索引（scenario index），<code>j</code> 是生产分量索引（production component index）。每个情景的利润，就是各项“生产量 ×（价格 − 单位成本）”之和。</p>
+<table>
+<thead>
+<tr>
+<th>Python name<br>Python 名称（name）</th>
+<th>Role in the equation<br>方程中的角色（role）</th>
+<th>Shape after conversion<br>转换后的形状（shape）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>x</code></td>
+<td>Production quantities x[j]<br>生产量 x[j]</td>
+<td><code>(1, J)</code></td>
+</tr>
+<tr>
+<td><code>cost_vec</code></td>
+<td>Unit costs cost[j]<br>单位成本 cost[j]</td>
+<td><code>(1, J)</code></td>
+</tr>
+<tr>
+<td><code>noise_matrix</code></td>
+<td>Price errors noise[s, j]<br>价格噪声 noise[s, j]</td>
+<td><code>(S, J)</code> expected<br>预期 <code>(S, J)</code></td>
+</tr>
+<tr>
+<td><code>realized_price</code></td>
+<td>Scenario prices<br>各情景的实际价格</td>
+<td><code>(S, J)</code></td>
+</tr>
+<tr>
+<td>Returned array<br>返回数组（returned array）</td>
+<td>One profit per scenario<br>每个情景一个利润</td>
+<td><code>(S,)</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>x</code>, <code>noise_matrix</code>, and <code>cost_vec</code> are parameters; <code>realized_price</code> is a local name. On the first line, <code>np.asarray(..., dtype=float)</code> converts a list or tuple to a floating-point array, or may reuse compatible array storage. <code>reshape(1, -1)</code> creates one row and infers the column count; <code>-1</code> is not negative indexing here. Local reassignment of <code>x</code> does not rebind the caller's <code>x_input</code> name.</p>
+<p><code>x</code>、<code>noise_matrix</code>、<code>cost_vec</code> 是参数（parameters），<code>realized_price</code> 是局部变量名（local name）。第一行 <code>np.asarray(..., dtype=float)</code> 把列表或元组转换为浮点数组，也可能复用已有兼容数组的存储。<code>reshape(1, -1)</code> 设为一行并自动推断列数；这里的 <code>-1</code> 不是负索引（negative indexing）。函数内部重新绑定 <code>x</code> 不会重新绑定调用方的 <code>x_input</code>。</p>
+<p>The helper computes the noiseless price element by element. Adding the <code>(S, J)</code> noise matrix broadcasts the <code>(1, J)</code> prices across scenarios. Subtracting costs and multiplying quantities is elementwise. Finally, <code>axis=1</code> sums across columns, leaving one value for each row. Omitting <code>axis</code> would combine all scenarios into one scalar.</p>
+<p>辅助函数逐元素计算无噪声价格。加上 <code>(S, J)</code> 噪声时，形状为 <code>(1, J)</code> 的价格沿情景方向广播（broadcasting）。减成本、乘生产量都是逐元素运算。最后 <code>axis=1</code> 沿列求和，每行留下一个利润。如果省略 <code>axis</code>，则会把所有情景一起求和为一个标量。</p>
+<p><code>float</code> is a type passed as an argument; <code>dtype</code> and <code>axis</code> are keyword parameter names; <code>reshape</code> is a method. These are different roles despite appearing on the same line.</p>
+<p>这一行中，<code>float</code> 是作为参数传入的类型，<code>dtype</code> 与 <code>axis</code> 是关键字参数名（keyword parameter names），<code>reshape</code> 是方法（method）。它们出现在相同语句里，但角色不同。</p>
+<p>The original function assumes compatible numeric inputs; it does not validate dimensions or enforce economic constraints. In particular, a <code>(S, 1)</code> noise array can broadcast the same shock across every component. Verify the intended <code>(S, J)</code> shape before calling it; successful broadcasting alone does not prove the model is correct.</p>
+<p>原函数假定输入为兼容的数值数据，没有验证维度或经济约束。特别是 <code>(S, 1)</code> 噪声也可能成功广播，却会把每个情景的同一个扰动用于所有生产分量。调用前应核对预期形状 <code>(S, J)</code>；能够运行不等于模型含义正确。</p>
+<h2>9. A hand-checkable run and Spyder inspection / 9. 可手算的案例与 Spyder 检查（Worked run and inspection）</h2>
+<p>The script uses three quantities <code>[1.0, 2.0, 3.0]</code>, costs <code>(0.1, 0.2, 0.3)</code>, and four explicit noise rows:</p>
+<p>脚本使用生产量 <code>[1.0, 2.0, 3.0]</code>、成本 <code>(0.1, 0.2, 0.3)</code>，以及四行情景噪声：</p>
+<pre><code class="language-text">[ 0.00,  0.00,  0.00]
+[ 0.10,  0.00, -0.10]
+[-0.10,  0.10,  0.00]
+[ 0.02, -0.03,  0.04]
+</code></pre>
+<p>The zero-noise profit is approximately <code>0.61168002</code>. Relative to it, the other scenarios change profit by <code>-0.20</code>, <code>+0.10</code>, and <code>+0.08</code>: multiply each noise row by the three quantities and add. Expected output:</p>
+<p>无噪声利润约为 <code>0.61168002</code>。其余情景的利润变化分别为 <code>-0.20</code>、<code>+0.10</code>、<code>+0.08</code>：将每行噪声与三个生产量对应相乘再求和即可核对。预期输出（expected output）：</p>
+<pre><code class="language-text">profits = [0.61168002 0.41168002 0.71168002 0.69168002]
+profit shape = (4,)
+Verification passed.
+</code></pre>
+<ol>
+<li>Run cells 1–3 to inspect scalar and container names in Spyder's Variable Explorer. The <code>samples</code> dictionary collects all 15 core types in one place. Some object types may be filtered or lack a graphical editor; <code>type(value)</code> in the console remains useful.</li>
+</ol>
+<p>执行代码单元 1–3，在变量浏览器（Variable Explorer）查看标量和容器。<code>samples</code> 字典集中保存了 15 种核心类型。有些对象可能被过滤或没有图形编辑器，此时仍可在控制台用 <code>type(value)</code> 检查。</p>
+<ol start="2">
+<li>Place a breakpoint on the return line marked <code>P1</code>, then debug the script. At that point, the preceding assignments have executed and the return has not.</li>
+</ol>
+<p>在标记 <code>P1</code> 的返回语句上设置断点（breakpoint），调试脚本。暂停时前面的赋值已完成，返回语句尚未执行。</p>
+<ol start="3">
+<li>Inspect <code>type(x)</code>, <code>x.dtype</code>, <code>x.shape</code>, <code>noise_matrix.shape</code>, <code>realized_price.shape</code>, and <code>type(x.shape)</code>. Expect <code>(1, 3)</code>, <code>(4, 3)</code>, <code>(4, 3)</code>, and a tuple for the shape object.</li>
+</ol>
+<p>检查 <code>type(x)</code>、<code>x.dtype</code>、<code>x.shape</code>、<code>noise_matrix.shape</code>、<code>realized_price.shape</code>、<code>type(x.shape)</code>。对应形状应为 <code>(1, 3)</code>、<code>(4, 3)</code>、<code>(4, 3)</code>，而形状对象自身是元组。</p>
+<ol start="4">
+<li>After returning, inspect <code>profits</code> and compare with <code>reference</code>, calculated using nested loops rather than broadcasting. The script checks their agreement and the scenario profit changes.</li>
+</ol>
+<p>返回后查看 <code>profits</code>，与使用嵌套循环（nested loops）计算的 <code>reference</code> 比较。脚本验证两种计算结果一致，并检查每个情景的利润变化。</p>
+<h2>10. Other objects you will meet / 10. 科研代码中的其他对象（Further objects）</h2>
+<p>This is a recognition guide, not a requirement to learn every advanced class now. The final script cell creates inspectable examples without writing files or raising exceptions.</p>
+<p>本节用于识别，不要求立即掌握所有高级类型。脚本最后一个单元创建可检查对象，不写文件，也不主动抛异常。</p>
+<table>
+<thead>
+<tr>
+<th>Object family<br>对象类别（family）</th>
+<th>Example<br>示例（example）</th>
+<th>What to recognize<br>需要识别的特点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Exact decimal / rational<br>十进制／有理数</td>
+<td><code>Decimal("0.1")</code>, <code>Fraction(1, 3)</code><br><code>Decimal("0.1")</code>、<code>Fraction(1, 3)</code></td>
+<td>Standard-library numeric classes; not built-in float<br>标准库数值类，不是内置 float</td>
+</tr>
+<tr>
+<td>File-system path<br>文件路径（path）</td>
+<td><code>Path("results")</code></td>
+<td>Library object representing a path<br>表示路径的库对象</td>
+</tr>
+<tr>
+<td>Function / module / class<br>函数／模块／类</td>
+<td><code>true_price_fn</code>, <code>np</code>, <code>float</code><br><code>true_price_fn</code>、<code>np</code>、<code>float</code></td>
+<td>Callable function, imported module, type object<br>函数对象、模块对象、类型对象</td>
+</tr>
+<tr>
+<td>Iterator / generator<br>迭代器／生成器</td>
+<td><code>iter([1, 2])</code>, <code>(i*i for i in range(3))</code><br><code>iter([1, 2])</code>、<code>(i*i for i in range(3))</code></td>
+<td><code>next()</code> consumes values; usually no <code>len()</code><br><code>next()</code> 消耗元素，通常没有 <code>len()</code></td>
+</tr>
+<tr>
+<td>Slice<br>切片（slice）</td>
+<td><code>slice(0, 2)</code></td>
+<td>Reusable indexing selection<br>可复用的索引选择</td>
+</tr>
+<tr>
+<td>Exception instance<br>异常实例（exception）</td>
+<td><code>ValueError("bad input")</code></td>
+<td>An object that can be raised with <code>raise</code><br>可以用 <code>raise</code> 抛出的对象</td>
+</tr>
+<tr>
+<td>Special singleton values<br>特殊单例值（singletons）</td>
+<td><code>Ellipsis</code>, <code>NotImplemented</code><br><code>Ellipsis</code>、<code>NotImplemented</code></td>
+<td>Extended slicing; unsupported operator protocol<br>扩展切片；不支持某运算的协议返回值</td>
+</tr>
+</tbody>
+</table>
+<p><code>NotImplemented</code> is distinct from the exception <code>NotImplementedError</code>; it is not a generic missing-value marker. Files, custom class instances, pandas tables, and optimization model objects also have their own types. Inspect their type and documented interface instead of assuming they behave like an array.</p>
+<p><code>NotImplemented</code> 与异常 <code>NotImplementedError</code> 不同，也不是通用空值标记。文件对象、自定义类实例、pandas 表格和优化模型对象都有自己的类型。应检查其类型及文档接口，不要假设它们都像数组一样使用。</p>
+<h2>11. Practice and source notes / 11. 小练习与资料（Practice and sources）</h2>
+<p>Predict before running: What is the type of <code>(3)</code> versus <code>(3,)</code>? Why does <code>len(a)</code> differ from <code>a.size</code>? Why does assigning <code>alias = q</code> affect the original list later? Why does a profit array have shape <code>(4,)</code> instead of <code>(4, 3)</code>? The answers are in sections 3, 7, 6, and 8 respectively.</p>
+<p>先预测再运行：<code>(3)</code> 与 <code>(3,)</code> 各是什么类型？为什么 <code>len(a)</code> 与 <code>a.size</code> 不同？为什么 <code>alias = q</code> 后修改别名会影响原列表？为什么利润数组是 <code>(4,)</code> 而不是 <code>(4, 3)</code>？答案分别见第 3、7、6、8 节。</p>
+<p>The <a href="https://docs.python.org/3/library/stdtypes.html">Python built-in types reference</a><sup class="reference">[1]</sup> is the lookup source for numeric, sequence, mapping, set, and binary operations. The <a href="https://numpy.org/doc/stable/reference/arrays.ndarray.html">NumPy ndarray reference</a><sup class="reference">[2]</sup> documents array attributes and methods. The worked inputs, manual profit comparison, and teaching organization here are specific to this handbook.</p>
+<p><a href="https://docs.python.org/3/library/stdtypes.html">Python 内置类型参考（built-in types）</a><sup class="reference">[1]</sup> 可用于查阅数值、序列、映射、集合和二进制操作。<a href="https://numpy.org/doc/stable/reference/arrays.ndarray.html">NumPy 数组参考（ndarray）</a><sup class="reference">[2]</sup> 说明数组属性和方法。本章小规模输入、利润手算核对及教学安排为手册专门编写。</p><h2>参考资料（References）</h2><ol class="references"><li><a href="https://docs.python.org/3/library/stdtypes.html">https://docs.python.org/3/library/stdtypes.html</a></li><li><a href="https://numpy.org/doc/stable/reference/arrays.ndarray.html">https://numpy.org/doc/stable/reference/arrays.ndarray.html</a></li></ol></body></html>

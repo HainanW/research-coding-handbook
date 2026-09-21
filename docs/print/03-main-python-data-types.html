@@ -58,6 +58,9 @@ sup.reference { font-size: 7pt; margin-left: 2pt; white-space: nowrap; }
 p:has(+ table) { break-after: avoid; }
 thead { break-after: avoid; }
 table:not(:has(tbody tr:nth-child(9))) { break-inside: avoid; }
+
+/* Bilingual table cells contain both languages and may span many pages. */
+table:has(br), table:has(br):not(:has(tbody tr:nth-child(9))) { break-inside: auto; }
 </style></head><body><h1>03 — Python data types through a Case 1 profit equation</h1>
 <h2>The question</h2>
 <blockquote>
@@ -123,6 +126,7 @@ str(3)              # &quot;3&quot;: produce text
 bool(0)             # False
 bool(&quot;False&quot;)       # True: a nonempty string
 </code></pre>
+<p>These operations parse text, truncate toward zero (not rounding), produce text, test zero, and test a nonempty string. The string <code>"False"</code> is not automatically interpreted as the Boolean value False.</p>
 <p><code>len(3)</code> and <code>0.12.shape</code> are invalid. Scalar values are not one-element sequences. <code>len("你好")</code> is 2 Unicode code points; encoded byte length is a different quantity.</p>
 <h2>3. Sequences: list, tuple, and range</h2>
 <table>
@@ -297,8 +301,8 @@ def realized_profit_samples(x, noise_matrix, cost_vec):
 <p>The equation below uses plain text so it renders identically in Markdown and offline PDF:</p>
 <pre><code class="language-text">price[s, j] = exp(-x[j] / 2) + noise[s, j]
 profit[s]  = SUM over j of x[j] * (price[s, j] - cost[j])
-s = scenario index; j = production component index
 </code></pre>
+<p><code>s</code> is the scenario index and <code>j</code> is the production component index. Each scenario profit sums production quantity times price minus unit cost across components.</p>
 <table>
 <thead>
 <tr>
@@ -336,7 +340,8 @@ s = scenario index; j = production component index
 </tbody>
 </table>
 <p><code>x</code>, <code>noise_matrix</code>, and <code>cost_vec</code> are parameters; <code>realized_price</code> is a local name. On the first line, <code>np.asarray(..., dtype=float)</code> converts a list or tuple to a floating-point array, or may reuse compatible array storage. <code>reshape(1, -1)</code> creates one row and infers the column count; <code>-1</code> is not negative indexing here. Local reassignment of <code>x</code> does not rebind the caller's <code>x_input</code> name.</p>
-<p>The helper computes the noiseless price element by element. Adding the <code>(S, J)</code> noise matrix broadcasts the <code>(1, J)</code> prices across scenarios. Subtracting costs and multiplying quantities is elementwise. Finally, <code>axis=1</code> sums across columns, leaving one value for each row. Omitting <code>axis</code> would combine all scenarios into one scalar. <code>float</code> is a type passed as an argument; <code>dtype</code> and <code>axis</code> are keyword parameter names; <code>reshape</code> is a method. These are different roles despite appearing on the same line.</p>
+<p>The helper computes the noiseless price element by element. Adding the <code>(S, J)</code> noise matrix broadcasts the <code>(1, J)</code> prices across scenarios. Subtracting costs and multiplying quantities is elementwise. Finally, <code>axis=1</code> sums across columns, leaving one value for each row. Omitting <code>axis</code> would combine all scenarios into one scalar.</p>
+<p><code>float</code> is a type passed as an argument; <code>dtype</code> and <code>axis</code> are keyword parameter names; <code>reshape</code> is a method. These are different roles despite appearing on the same line.</p>
 <p>The original function assumes compatible numeric inputs; it does not validate dimensions or enforce economic constraints. In particular, a <code>(S, 1)</code> noise array can broadcast the same shock across every component. Verify the intended <code>(S, J)</code> shape before calling it; successful broadcasting alone does not prove the model is correct.</p>
 <h2>9. A hand-checkable run and Spyder inspection</h2>
 <p>The script uses three quantities <code>[1.0, 2.0, 3.0]</code>, costs <code>(0.1, 0.2, 0.3)</code>, and four explicit noise rows:</p>

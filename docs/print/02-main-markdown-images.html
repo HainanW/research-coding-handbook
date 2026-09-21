@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>Q2. What is a practical way to insert images into Markdown?</title><style>@page {
+<html lang="en"><head><meta charset="utf-8"><title>02 — What is a practical way to insert images into Markdown?</title><style>@page {
   size: letter;
   margin: 17mm 16mm 18mm;
   @top-left { content: "RESEARCH CODING HANDBOOK"; font: 7.5pt Arial, sans-serif; color: #555; }
@@ -58,7 +58,10 @@ sup.reference { font-size: 7pt; margin-left: 2pt; white-space: nowrap; }
 p:has(+ table) { break-after: avoid; }
 thead { break-after: avoid; }
 table:not(:has(tbody tr:nth-child(9))) { break-inside: avoid; }
-</style></head><body><h1>Q2. What is a practical way to insert images into Markdown?</h1>
+
+/* Bilingual table cells contain both languages and may span many pages. */
+table:has(br), table:has(br):not(:has(tbody tr:nth-child(9))) { break-inside: auto; }
+</style></head><body><h1>02 — What is a practical way to insert images into Markdown?</h1>
 <h2>Question</h2>
 <blockquote>
 <p>How should I insert screenshots or figures into a <code>.md</code> file and organize their image files?</p>
@@ -69,8 +72,8 @@ table:not(:has(tbody tr:nth-child(9))) { break-inside: avoid; }
 <pre><code class="language-text">research-coding-handbook/
 ├── README.md
 └── docs/
-    ├── 01-spyder-function-inspection.md
-    ├── 02-markdown-images.md
+    ├── 01-main-spyder-function-inspection.md
+    ├── 02-main-markdown-images.md
     └── images/
         └── 01-generated-data.png
 </code></pre>
@@ -107,6 +110,6 @@ table:not(:has(tbody tr:nth-child(9))) { break-inside: avoid; }
 <ul>
 <li>Use descriptive filenames, such as <code>01-spyder-local-breakpoint.png</code>. PNG is a practical choice for screenshots; for generated plots, retain the script so labels or resolution can be changed later.</li>
 <li>Keep the image and its Markdown reference together in version control when the image should be shared. Ignoring a Markdown file does not automatically ignore the images it references.</li>
-<li>The two language versions can reference the same image; each supplies its own alternative text and caption. This repository ignores <code>README.zh-CN.md</code> and <code>docs/*.zh-CN.md</code>, while the shared example PNG remains eligible for Git tracking.</li>
+<li>The two language versions can reference the same image; each supplies its own alternative text and caption. This repository tracks both language versions, their HTML/PDF print editions, and the shared example PNG in Git.</li>
 <li>If an image does not display, check that it exists, that the path is relative to the current <code>.md</code> file, and that filename capitalization matches. Also check that you wrote <code>![description](path)</code>: omitting <code>!</code> produces a link instead of an image.</li>
 </ul><h2>References</h2><ol class="references"><li><a href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#images">https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#images</a></li><li><a href="https://code.visualstudio.com/docs/languages/markdown">https://code.visualstudio.com/docs/languages/markdown</a></li></ol></body></html>

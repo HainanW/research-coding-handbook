@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>08 — Understanding Python classes with an experiment record</title><style>@page {
+  size: letter;
+  margin: 17mm 16mm 18mm;
+  @top-left { content: "RESEARCH CODING HANDBOOK"; font: 7.5pt Arial, sans-serif; color: #555; }
+  @bottom-right { content: counter(page) " / " counter(pages); font: 8pt Arial, sans-serif; color: #444; }
+}
+* { box-sizing: border-box; }
+html { color: #111; background: white; }
+body {
+  font-family: Arial, "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  font-size: 10pt;
+  line-height: 1.48;
+  margin: 0;
+}
+h1 { font-size: 19pt; line-height: 1.3; margin: 0 0 12pt; font-weight: 700; }
+h2 { font-size: 13pt; line-height: 1.35; margin: 15pt 0 7pt; border-bottom: 0.5pt solid #999; padding-bottom: 4pt; }
+h3 { font-size: 11pt; margin: 12pt 0 5pt; }
+h1, h2, h3 { break-after: avoid; page-break-after: avoid; }
+p { margin: 0 0 8pt; orphans: 3; widows: 3; break-inside: avoid; }
+ul, ol { margin: 5pt 0 9pt; padding-left: 19pt; }
+li { margin-bottom: 4pt; orphans: 2; widows: 2; }
+blockquote { margin: 8pt 0 10pt; padding: 1pt 0 1pt 10pt; border-left: 2pt solid #777; }
+blockquote p { margin: 0; }
+a { color: #111; text-decoration: underline; text-decoration-color: #999; }
+code { font-family: Consolas, "Microsoft YaHei", monospace; font-size: 0.88em; overflow-wrap: anywhere; }
+pre {
+  font-family: Consolas, "Microsoft YaHei", monospace;
+  font-size: 8.2pt;
+  line-height: 1.32;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  tab-size: 4;
+  border: 0.5pt solid #aaa;
+  background: white;
+  padding: 7pt 8pt;
+  margin: 7pt 0 9pt;
+  break-inside: avoid;
+}
+pre code { font-size: inherit; }
+table { width: 100%; table-layout: fixed; border-collapse: collapse; margin: 8pt 0 11pt; font-size: 8.8pt; line-height: 1.38; break-inside: auto; }
+thead { display: table-header-group; }
+tr { break-inside: avoid; }
+th, td { border: 0.5pt solid #999; padding: 5pt 6pt; vertical-align: top; overflow-wrap: anywhere; }
+th { font-weight: bold; background: white; border-bottom: 1pt solid #444; }
+table code { font-size: 0.93em; }
+figure { margin: 9pt 0 12pt; break-inside: avoid; }
+figure p { margin: 0; }
+img { display: block; width: 100%; height: auto; filter: grayscale(1); }
+figcaption { font-size: 8.6pt; line-height: 1.4; margin-top: 5pt; color: #333; }
+sup.reference { font-size: 7pt; margin-left: 2pt; white-space: nowrap; }
+.references { font-size: 8pt; line-height: 1.4; padding-left: 18pt; }
+.references li { margin-bottom: 5pt; overflow-wrap: anywhere; break-inside: avoid; }
+.references a { text-decoration: none; }
+@media screen { body { max-width: 8.5in; padding: 17mm 16mm 18mm; margin: 15px auto; border: 1px solid #ddd; } }
+@media print { body { padding: 0; } }
+
+p:has(+ table) { break-after: avoid; }
+thead { break-after: avoid; }
+table:not(:has(tbody tr:nth-child(9))) { break-inside: avoid; }
+
+/* Bilingual table cells contain both languages and may span many pages. */
+table:has(br), table:has(br):not(:has(tbody tr:nth-child(9))) { break-inside: auto; }
+</style></head><body><h1>08 — Understanding Python classes with an experiment record</h1>
+<h2>The question</h2>
+<blockquote>
+<p>What is a class? How are a class, an object, and an instance related? What do <code>self</code>, <code>__init__</code>, attributes, and methods actually do in research code?</p>
+</blockquote>
+<p>This chapter builds a small record for one experiment run. Its measurements are invented teaching data, not actual experimental results. Review <a href="../03-main-python-data-types.md">03 — Python data types</a> if lists and dictionaries are unfamiliar. <a href="../05-main-python-dunder.md">05 — Dunder methods</a> explains special methods after the class basics make sense.</p>
+<p>Run <a href="../../examples/08_python_classes.py">the complete example</a> with Python 3.9+; it needs no external packages. Read sections 1–6 first, then run the example and inspect it in Spyder. Inheritance near the end is optional.</p>
+<h2>1. Start with data and an operation</h2>
+<p>Suppose one run has a name and several measurements in milliseconds:</p>
+<pre><code class="language-python">name = &quot;run A&quot;
+measurements = [10.0, 12.0]
+mean_value = sum(measurements) / len(measurements)
+</code></pre>
+<p>This is already useful code. With many runs, you may want each name and measurement list to stay together, along with operations for adding a measurement and calculating its mean. A class lets us define that kind of record and its operations once, then create several records.</p>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Meaning in our example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Class</td>
+<td><code>ExperimentRun</code>: a type we define for experiment records</td>
+</tr>
+<tr>
+<td>Object</td>
+<td>A value Python can work with; numbers, lists, and our records are all objects</td>
+</tr>
+<tr>
+<td>Instance</td>
+<td>One object of a particular class; <code>run_a</code> refers to an instance of <code>ExperimentRun</code></td>
+</tr>
+<tr>
+<td>Attribute</td>
+<td>A named item reached with a dot, such as <code>run_a.name</code></td>
+</tr>
+<tr>
+<td>Method</td>
+<td>An operation accessed through an object, such as <code>run_a.mean()</code></td>
+</tr>
+</tbody>
+</table>
+<p>“Object” and “instance” are not opposing categories: the same record is an object and an instance of <code>ExperimentRun</code>. The class itself is also an object. Here we focus on the records created by calling that class. Python's <a href="https://docs.python.org/3/tutorial/classes.html">classes tutorial</a><sup class="reference">[1]</sup> introduces these relationships.</p>
+<h2>2. Define a complete small class</h2>
+<pre><code class="language-python">class ExperimentRun:
+    unit = &quot;ms&quot;
+
+    def __init__(self, name, measurements):
+        self.name = name
+        self.measurements = list(measurements)
+
+    def add_measurement(self, value):
+        self.measurements.append(value)
+
+    def mean(self):
+        if not self.measurements:
+            raise ValueError(&quot;Cannot calculate a mean without measurements.&quot;)
+        return sum(self.measurements) / len(self.measurements)
+</code></pre>
+<p>Read it from the outside inward:</p>
+<ol>
+<li><code>class ExperimentRun:</code> defines our new type. Class names conventionally use capitalized words; this is a naming convention, not a requirement for execution.</li>
+<li>The indented <code>def</code> blocks define methods. Their bodies are indented one level further, just like an ordinary function body.</li>
+<li><code>__init__</code> sets the starting state: a name and a measurement list. <code>self.name</code> and <code>self.measurements</code> are instance attributes.</li>
+<li><code>add_measurement</code> changes that instance's list. It has no explicit <code>return</code>, so its result is <code>None</code>.</li>
+<li><code>mean</code> returns a number without changing the list. An empty list raises a clear <code>ValueError</code>; its mean is not silently treated as zero.</li>
+</ol>
+<p>The input contract for this teaching class is a string name and a flat sequence of numeric measurements in milliseconds. It does not validate every input or convert units. <code>unit = "ms"</code> is a label, not an instruction that performs numerical conversion.</p>
+<h2>3. Create an instance: what runs, and in which order?</h2>
+<pre><code class="language-python">run_a = ExperimentRun(&quot;run A&quot;, [10.0, 12.0])
+</code></pre>
+<p>For this ordinary class, read that line as follows:</p>
+<ol>
+<li>Calling <code>ExperimentRun(...)</code> begins creating an instance. Python's inherited <code>__new__</code> supplies the new object; we do not need to implement it.</li>
+<li>Python calls <code>__init__</code> with the new object as <code>self</code>, <code>"run A"</code> as <code>name</code>, and the list as <code>measurements</code>.</li>
+<li>The assignments inside <code>__init__</code> store attributes on that object. The initialized object is returned by the class call and bound to the name <code>run_a</code>.</li>
+</ol>
+<p>Strictly, <code>__init__</code> is an <strong>initializer</strong>, not the operation that creates the object. It must not return a non-<code>None</code> value; normally write no <code>return</code> in it. The <a href="https://docs.python.org/3/reference/datamodel.html#object.__init__">Python data model</a><sup class="reference">[2]</sup> distinguishes it from <code>__new__</code>.</p>
+<p>Defining the class does not run these method bodies. Calling the class creates a record; calling a method later performs that operation. <code>ExperimentRun</code> refers to the class, whereas <code>ExperimentRun(...)</code> calls it.</p>
+<h2>4. Understand <code>self</code>, parameters, and the dot</h2>
+<p><code>self</code> means “the instance receiving this method call.” It is a conventional parameter name, not a keyword, global variable, or a second record. For our class, these calls have the same effect; execute only one if you want to add one value:</p>
+<pre><code class="language-python">run_a.add_measurement(14.0)                 # usual form
+# ExperimentRun.add_measurement(run_a, 14.0)  # equivalent explicit form
+</code></pre>
+<p>Python supplies <code>run_a</code> as <code>self</code> in the first form. You supply only <code>14.0</code>, which becomes <code>value</code>. When you call <code>run_b.add_measurement(...)</code>, the same method works with <code>run_b</code> as <code>self</code>.</p>
+<p>Inside <code>__init__</code>, <code>name</code> is a local parameter; <code>self.name</code> is an attribute that remains on the instance after the method finishes. Writing only <code>name = name</code> would not store an instance attribute. The two names need not match: <code>self.name = label</code> works if the parameter is named <code>label</code>.</p>
+<pre><code class="language-python">print(run_a.name)             # run A: read an attribute
+run_a.name = &quot;baseline&quot;       # replace that attribute
+print(run_a.measurements)     # [10.0, 12.0, 14.0]
+print(run_a.mean())           # 12.0: call a method
+calculate = run_a.mean        # store a bound method; no calculation yet
+print(calculate())            # 12.0: now call it
+</code></pre>
+<p>The dot selects an attribute; parentheses call the selected method. <code>run_a.mean</code> and <code>run_a.mean()</code> are different expressions. Our attributes are public, so <code>run_a.measurements.append(16.0)</code> also changes the list. A class does not automatically prevent outside changes or ensure valid data.</p>
+<h2>5. Separate instances, copies, and aliases</h2>
+<p>Start this section with fresh records; it does not continue the optional changes above.</p>
+<pre><code class="language-python">source = [10.0, 12.0]
+run_a = ExperimentRun(&quot;run A&quot;, source)
+run_b = ExperimentRun(&quot;run B&quot;, source)
+run_a.add_measurement(14.0)
+source.append(99.0)
+
+print(run_a.measurements)   # [10.0, 12.0, 14.0]
+print(run_b.measurements)   # [10.0, 12.0]
+print(source)               # [10.0, 12.0, 99.0]
+print(run_a is run_b)       # False
+</code></pre>
+<p><code>list(measurements)</code> creates a new outer list on every initialization. Therefore the two records and <code>source</code> have three different lists. Replacing it with <code>self.measurements = measurements</code> would share the supplied list, so changing one record could unexpectedly affect the other record and the caller.</p>
+<p>This is a <strong>shallow copy</strong>. It suffices for our flat list of immutable numbers; nested mutable objects would still be shared. Class instances are not automatically independent: the way their attributes are assigned determines what is shared.</p>
+<pre><code class="language-python">alias = run_a
+alias.name = &quot;renamed A&quot;
+print(run_a.name)           # renamed A
+print(alias is run_a)      # True
+</code></pre>
+<p><code>alias = run_a</code> creates another reference to the same instance, not a new record. This is the same assignment rule you learned for lists in chapter 03.</p>
+<h2>6. Instance attributes and class attributes</h2>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Where we assign it</th>
+<th>Intended role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>self.name</code></td>
+<td>Inside <code>__init__</code></td>
+<td>This record's name</td>
+</tr>
+<tr>
+<td><code>self.measurements</code></td>
+<td>Inside <code>__init__</code></td>
+<td>This record's own list</td>
+</tr>
+<tr>
+<td><code>unit</code></td>
+<td>Directly in the class body</td>
+<td>A common label, accessed as <code>ExperimentRun.unit</code> or <code>run_a.unit</code></td>
+</tr>
+</tbody>
+</table>
+<p>In this simple class, reading <code>run_a.unit</code> falls back to the class attribute if the instance has no attribute called <code>unit</code>. Assigning <code>run_a.unit = "s"</code> adds an instance attribute that hides the class label for that record. Assigning <code>ExperimentRun.unit = "s"</code> changes the class label seen by instances without their own override. Neither assignment converts measurements. See Python's <a href="https://docs.python.org/3/tutorial/classes.html#class-and-instance-variables">class and instance variables</a><sup class="reference">[3]</sup>.</p>
+<p>A common mistake is putting a mutable list in the class body:</p>
+<pre><code class="language-python">class BadRun:
+    measurements = []       # one list shared through the class
+
+first = BadRun()
+second = BadRun()
+first.measurements.append(10.0)
+print(second.measurements)  # [10.0]: surprising shared state
+</code></pre>
+<p>For one list per record, assign a fresh list to <code>self.measurements</code> in <code>__init__</code>. Also avoid a mutable default such as <code>def __init__(self, measurements=[]):</code>: a default is evaluated once when the function is defined. If measurements are optional, use <code>measurements=None</code> and create a new list when it is <code>None</code>.</p>
+<h2>7. Run the example and check the result</h2>
+<p>From the repository root, run:</p>
+<pre><code class="language-powershell">python examples/08_python_classes.py
+</code></pre>
+<p>Expected output:</p>
+<pre><code class="language-text">run A: [10.0, 12.0, 14.0], mean = 12.0 ms
+run B: [10.0, 12.0], mean = 11.0 ms
+source: [10.0, 12.0, 99.0]
+same instance: False
+same measurement list: False
+empty run: Cannot calculate a mean without measurements.
+Verification passed.
+</code></pre>
+<p>Check the arithmetic yourself: <code>(10 + 12 + 14) / 3 = 12</code> and <code>(10 + 12) / 2 = 11</code>. The script checks these values, list independence, and independence from the caller's list. It catches the intended empty-list error so execution can finish.</p>
+<p>In Spyder, open the script and use these steps:</p>
+<ol>
+<li>Run cells 1–2 in order. <code>run_a</code>, <code>run_b</code>, and <code>source</code> are top-level names so they are convenient to inspect.</li>
+<li>In the console, evaluate <code>type(run_a)</code>, <code>isinstance(run_a, ExperimentRun)</code>, <code>vars(run_a)</code>, and <code>run_a.measurements</code>. Expect the class <code>ExperimentRun</code>, <code>True</code>, the instance's attribute dictionary, and <code>[10.0, 12.0, 14.0]</code>. A module prefix in the displayed type can vary with how you run the file.</li>
+<li>Put a breakpoint on the <code>return sum(...)</code> line marked <code>P1</code>, then debug the whole file. On the first stop, <code>self.name</code> is <code>"run A"</code> and <code>self.measurements</code> has three numbers. Continue to the next call to see <code>"run B"</code> and two numbers.</li>
+<li>Use the console if your Variable Explorer filters out custom objects. After editing and rerunning a class definition, recreate its instances too; existing instances still belong to the previous class object.</li>
+</ol>
+<p>Spyder's <a href="https://docs.spyder-ide.org/current/panes/debugging.html">debugger guide</a><sup class="reference">[4]</sup> explains inspecting local variables at breakpoints. In this class, <code>vars(run_a)</code> shows instance attributes; <code>unit</code> is on the class and therefore does not appear there unless you assign an instance override.</p>
+<p><strong>Screenshot placeholder:</strong> Show Spyder paused at <code>P1</code>, with <code>self.name</code> and <code>self.measurements</code> visible in the console or Variable Explorer. Suggested file: <code>docs/images/08-class-self-inspection.png</code>. Replace this paragraph with the image when a screenshot is available.</p>
+<!-- ![Inspecting an ExperimentRun instance in Spyder](images/08-class-self-inspection.png) -->
+
+<h2>8. When should you use a class?</h2>
+<table>
+<thead>
+<tr>
+<th>Situation</th>
+<th>A suitable starting point</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Calculate a mean from a list once</td>
+<td>A function, such as <code>mean(values)</code></td>
+</tr>
+<tr>
+<td>Group a few settings or exchange simple records</td>
+<td>A dictionary, such as <code>{"name": "A", "measurements": [10, 12]}</code></td>
+</tr>
+<tr>
+<td>Several records each keep state and use the same related operations</td>
+<td>A class such as <code>ExperimentRun</code></td>
+</tr>
+<tr>
+<td>Work with a numerical array or table</td>
+<td>An existing NumPy or pandas type, when appropriate</td>
+</tr>
+</tbody>
+</table>
+<p>A class is not required for research code. Choose it when it makes relationships clearer, not because a longer program must be object-oriented. Functions can still do the calculations used by methods; methods do not require different mathematics.</p>
+<h2>9. Recognize inheritance and composition</h2>
+<p><strong>Inheritance</strong> defines a specialized kind of an existing class. This optional example adds an operator name while reusing the measurement methods:</p>
+<pre><code class="language-python">class LabeledRun(ExperimentRun):
+    def __init__(self, name, measurements, operator):
+        super().__init__(name, measurements)
+        self.operator = operator
+
+labeled = LabeledRun(&quot;run C&quot;, [8.0, 10.0], &quot;student&quot;)
+print(labeled.mean())                       # 9.0: inherited method
+print(isinstance(labeled, ExperimentRun))    # True
+</code></pre>
+<p>For this single-inheritance example, <code>super().__init__(...)</code> initializes the base-class part of the same instance; it does not create another record. If you write a new initializer, call the base initializer when its setup is needed.</p>
+<p><strong>Composition</strong> means keeping another object as part of your object. <code>ExperimentRun</code> already uses composition: it contains a list in <code>self.measurements</code> and delegates storage to that list. A future study record could contain a list of <code>ExperimentRun</code> objects. Start with a small class; elaborate inheritance trees are unnecessary here.</p>
+<h2>10. Common mistakes and a short practice check</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom or code</th>
+<th>Explanation and correction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NameError</code> for <code>ExperimentRun</code></td>
+<td>Run the class definition before using it.</td>
+</tr>
+<tr>
+<td>An instance method is defined without <code>self</code></td>
+<td>Python supplies the instance automatically; a missing parameter can cause an argument-count <code>TypeError</code>.</td>
+</tr>
+<tr>
+<td><code>name = name</code> in the initializer</td>
+<td>This does not create an attribute; use <code>self.name = name</code>.</td>
+</tr>
+<tr>
+<td><code>run_a.mean</code> gives a method object</td>
+<td>Add parentheses to calculate: <code>run_a.mean()</code>.</td>
+</tr>
+<tr>
+<td><code>run_a = ExperimentRun</code></td>
+<td>This binds a name to the class; call <code>ExperimentRun(...)</code> to create a record.</td>
+</tr>
+<tr>
+<td><code>__init__</code> returns a number or <code>self</code></td>
+<td>Remove that return value; the class call returns the instance.</td>
+</tr>
+<tr>
+<td>One run unexpectedly changes another</td>
+<td>Check for shared lists or aliases; use the intended copy boundary.</td>
+</tr>
+<tr>
+<td>A typo such as <code>run_a.measurments</code></td>
+<td>Reading an absent attribute raises <code>AttributeError</code>; check spelling and initialization.</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>Add <code>run_b.add_measurement(16.0)</code> to the section 5 example. Predict both means before running.</li>
+<li>Add a method <code>count(self)</code> that returns <code>len(self.measurements)</code>. Explain why the call is <code>run_a.count()</code> with no explicit <code>self</code>.</li>
+<li>Predict what <code>alias = run_a; alias.add_measurement(18.0)</code> changes. Does <code>run_b</code> change?</li>
+<li>Explain why an empty run raises an error instead of returning <code>0.0</code>.</li>
+</ol>
+<p>Check: exercise 1 gives a mean of <code>12.0</code> for A and <code>38 / 3</code>, approximately <code>12.6667</code>, for B. Exercise 2 returns 3 for A at that point; Python supplies the instance. Exercise 3 changes A through its alias, leaving B unchanged. Exercise 4 has no observations to average; zero would incorrectly suggest an observed result.</p>
+<h2>Sources</h2>
+<p>Python's <a href="https://docs.python.org/3/tutorial/classes.html">classes tutorial</a><sup class="reference">[1]</sup>, <a href="https://docs.python.org/3/reference/datamodel.html#object.__init__">object initialization reference</a><sup class="reference">[2]</sup>, and <a href="https://docs.python.org/3/library/functions.html#vars">built-in inspection functions</a><sup class="reference">[5]</sup> document the language behavior. Spyder's <a href="https://docs.spyder-ide.org/current/panes/debugging.html">debugger guide</a><sup class="reference">[4]</sup> documents inspection while paused. The experiment record, numerical inputs, and exercises are teaching examples created for this handbook.</p><h2>References</h2><ol class="references"><li><a href="https://docs.python.org/3/tutorial/classes.html">https://docs.python.org/3/tutorial/classes.html</a></li><li><a href="https://docs.python.org/3/reference/datamodel.html#object.__init__">https://docs.python.org/3/reference/datamodel.html#object.__init__</a></li><li><a href="https://docs.python.org/3/tutorial/classes.html#class-and-instance-variables">https://docs.python.org/3/tutorial/classes.html#class-and-instance-variables</a></li><li><a href="https://docs.spyder-ide.org/current/panes/debugging.html">https://docs.spyder-ide.org/current/panes/debugging.html</a></li><li><a href="https://docs.python.org/3/library/functions.html#vars">https://docs.python.org/3/library/functions.html#vars</a></li></ol></body></html>

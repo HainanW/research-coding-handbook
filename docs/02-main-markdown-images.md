@@ -1,4 +1,4 @@
-# Q2. What is a practical way to insert images into Markdown?
+# 02 — What is a practical way to insert images into Markdown?
 
 [Back to the handbook](../README.md)
 
@@ -16,8 +16,8 @@ The repository already contains this example:
 research-coding-handbook/
 ├── README.md
 └── docs/
-    ├── 01-spyder-function-inspection.md
-    ├── 02-markdown-images.md
+    ├── 01-main-spyder-function-inspection.md
+    ├── 02-main-markdown-images.md
     └── images/
         └── 01-generated-data.png
 ```
@@ -77,5 +77,5 @@ Here the path is for a Markdown file inside `docs/`; a root README needs `docs/i
 
 - Use descriptive filenames, such as `01-spyder-local-breakpoint.png`. PNG is a practical choice for screenshots; for generated plots, retain the script so labels or resolution can be changed later.
 - Keep the image and its Markdown reference together in version control when the image should be shared. Ignoring a Markdown file does not automatically ignore the images it references.
-- The two language versions can reference the same image; each supplies its own alternative text and caption. This repository ignores `README.zh-CN.md` and `docs/*.zh-CN.md`, while the shared example PNG remains eligible for Git tracking.
+- The two language versions can reference the same image; each supplies its own alternative text and caption. This repository tracks both language versions, their HTML/PDF print editions, and the shared example PNG in Git.
 - If an image does not display, check that it exists, that the path is relative to the current `.md` file, and that filename capitalization matches. Also check that you wrote `![description](path)`: omitting `!` produces a link instead of an image.

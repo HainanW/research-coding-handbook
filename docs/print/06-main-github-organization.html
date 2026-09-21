@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>06 — Create a GitHub organization</title><style>@page {
+  size: letter;
+  margin: 17mm 16mm 18mm;
+  @top-left { content: "RESEARCH CODING HANDBOOK"; font: 7.5pt Arial, sans-serif; color: #555; }
+  @bottom-right { content: counter(page) " / " counter(pages); font: 8pt Arial, sans-serif; color: #444; }
+}
+* { box-sizing: border-box; }
+html { color: #111; background: white; }
+body {
+  font-family: Arial, "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  font-size: 10pt;
+  line-height: 1.48;
+  margin: 0;
+}
+h1 { font-size: 19pt; line-height: 1.3; margin: 0 0 12pt; font-weight: 700; }
+h2 { font-size: 13pt; line-height: 1.35; margin: 15pt 0 7pt; border-bottom: 0.5pt solid #999; padding-bottom: 4pt; }
+h3 { font-size: 11pt; margin: 12pt 0 5pt; }
+h1, h2, h3 { break-after: avoid; page-break-after: avoid; }
+p { margin: 0 0 8pt; orphans: 3; widows: 3; break-inside: avoid; }
+ul, ol { margin: 5pt 0 9pt; padding-left: 19pt; }
+li { margin-bottom: 4pt; orphans: 2; widows: 2; }
+blockquote { margin: 8pt 0 10pt; padding: 1pt 0 1pt 10pt; border-left: 2pt solid #777; }
+blockquote p { margin: 0; }
+a { color: #111; text-decoration: underline; text-decoration-color: #999; }
+code { font-family: Consolas, "Microsoft YaHei", monospace; font-size: 0.88em; overflow-wrap: anywhere; }
+pre {
+  font-family: Consolas, "Microsoft YaHei", monospace;
+  font-size: 8.2pt;
+  line-height: 1.32;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  tab-size: 4;
+  border: 0.5pt solid #aaa;
+  background: white;
+  padding: 7pt 8pt;
+  margin: 7pt 0 9pt;
+  break-inside: avoid;
+}
+pre code { font-size: inherit; }
+table { width: 100%; table-layout: fixed; border-collapse: collapse; margin: 8pt 0 11pt; font-size: 8.8pt; line-height: 1.38; break-inside: auto; }
+thead { display: table-header-group; }
+tr { break-inside: avoid; }
+th, td { border: 0.5pt solid #999; padding: 5pt 6pt; vertical-align: top; overflow-wrap: anywhere; }
+th { font-weight: bold; background: white; border-bottom: 1pt solid #444; }
+table code { font-size: 0.93em; }
+figure { margin: 9pt 0 12pt; break-inside: avoid; }
+figure p { margin: 0; }
+img { display: block; width: 100%; height: auto; filter: grayscale(1); }
+figcaption { font-size: 8.6pt; line-height: 1.4; margin-top: 5pt; color: #333; }
+sup.reference { font-size: 7pt; margin-left: 2pt; white-space: nowrap; }
+.references { font-size: 8pt; line-height: 1.4; padding-left: 18pt; }
+.references li { margin-bottom: 5pt; overflow-wrap: anywhere; break-inside: avoid; }
+.references a { text-decoration: none; }
+@media screen { body { max-width: 8.5in; padding: 17mm 16mm 18mm; margin: 15px auto; border: 1px solid #ddd; } }
+@media print { body { padding: 0; } }
+
+p:has(+ table) { break-after: avoid; }
+thead { break-after: avoid; }
+table:not(:has(tbody tr:nth-child(9))) { break-inside: avoid; }
+
+/* Bilingual table cells contain both languages and may span many pages. */
+table:has(br), table:has(br):not(:has(tbody tr:nth-child(9))) { break-inside: auto; }
+</style></head><body><h1>06 — Create a GitHub organization</h1>
+<h2>Question and scope</h2>
+<blockquote>
+<p>How do I create a GitHub organization for research collaboration and make sure a repository belongs to it?</p>
+</blockquote>
+<p>An organization groups repositories and access permissions; each collaborator still uses their own personal account. This is a walkthrough, not a record that an organization has already been created. The sample name <code>research-lab-example</code> is a placeholder; choose an available name for your own group. Interface wording was checked against GitHub documentation on 2026-09-20.</p>
+<h2>1. Identify the three names</h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Example</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Personal account</td>
+<td><code>HainanW</code></td>
+<td>The person who signs in</td>
+</tr>
+<tr>
+<td>Organization account</td>
+<td><code>research-lab-example</code></td>
+<td>A shared owner for repositories</td>
+</tr>
+<tr>
+<td>Repository</td>
+<td><code>research-coding-handbook</code></td>
+<td>A particular project</td>
+</tr>
+</tbody>
+</table>
+<p>A personal repository has an address like <code>github.com/HainanW/research-coding-handbook</code>. An organization-owned repository would instead use <code>github.com/research-lab-example/research-coding-handbook</code>. Creating an organization does not move your existing personal repository.</p>
+<h2>2. Open the creation page</h2>
+<p>Sign in to GitHub. Open your profile picture menu, choose <strong>Settings</strong>, then <strong>Organizations</strong> in the Access section. Select <strong>New organization</strong> and follow the setup prompts. This is the route documented in <a href="https://docs.github.com/en/organizations/collaborating-with-groups-in-organizations/creating-a-new-organization-from-scratch">GitHub's creation guide</a><sup class="reference">[1]</sup>.</p>
+<blockquote>
+<p><strong>Screenshot placeholder 06-1</strong> — Settings → Organizations → New organization.
+Suggested file: <code>docs/images/06-organization-entry.png</code></p>
+</blockquote>
+<!-- Replace the placeholder above after saving the screenshot:
+![Settings → Organizations → New organization.](images/06-organization-entry.png)
+-->
+
+<h2>3. Complete the setup</h2>
+<p>Prepare an available organization account name and a contact email. Read the current plan choices and select the one that meets your group's needs; record the plan you select rather than assuming a particular price or feature list. Complete any account verification and required setup fields shown by GitHub. If the flow offers member invitations, you can handle membership when ready.</p>
+<blockquote>
+<p><strong>Screenshot placeholder 06-2</strong> — Organization setup: account name and selected plan; hide contact and billing details.
+Suggested file: <code>docs/images/06-organization-setup.png</code></p>
+</blockquote>
+<!-- Replace the placeholder above after saving the screenshot:
+![Organization setup: account name and selected plan; hide contact and billing details.](images/06-organization-setup.png)
+-->
+
+<p>After creation, open the organization's page and check that its account name matches your intention. A newly created organization has no repositories. For your own notes, fill in:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Your record</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Organization account name</td>
+<td>To fill in</td>
+</tr>
+<tr>
+<td>Organization URL</td>
+<td>To fill in</td>
+</tr>
+<tr>
+<td>Selected plan</td>
+<td>To fill in</td>
+</tr>
+<tr>
+<td>Creation date</td>
+<td>To fill in</td>
+</tr>
+<tr>
+<td>Intended projects</td>
+<td>To fill in</td>
+</tr>
+</tbody>
+</table>
+<h2>4. Choose between a new repository and an existing one</h2>
+<p>For a <strong>new project</strong>, use GitHub's new-repository form and choose the organization in <strong>Owner</strong>. Enter the repository name, description, and intended visibility. Check the resulting address after creating it. See <a href="https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-new-repository">creating a repository</a><sup class="reference">[2]</sup>.</p>
+<blockquote>
+<p><strong>Screenshot placeholder 06-3</strong> — Repository creation form showing the organization as Owner.
+Suggested file: <code>docs/images/06-repository-owner.png</code></p>
+</blockquote>
+<!-- Replace the placeholder above after saving the screenshot:
+![Repository creation form showing the organization as Owner.](images/06-repository-owner.png)
+-->
+
+<p>For an <strong>existing personal project</strong>, creation and transfer are separate actions. If the intended goal is to move <code>HainanW/research-coding-handbook</code>, first review its collaborators, destination, and any name conflict, then follow <a href="https://docs.github.com/en/repositories/creating-and-managing-repositories/transferring-a-repository">GitHub's repository transfer guide</a><sup class="reference">[3]</sup>. Do not create a same-named empty repository in the organization if you intend to transfer the existing one there.</p>
+<p>Only after an actual transfer, update the existing clone's remote using its real new URL:</p>
+<pre><code class="language-powershell">git remote -v
+# Replace YOUR-ORG and YOUR-REPO with the actual destination.
+git remote set-url origin https://github.com/YOUR-ORG/YOUR-REPO.git
+git remote -v
+git fetch origin
+</code></pre>
+<p><code>git remote set-url</code> only changes the local connection address; it does not transfer a repository or upload any files.</p>
+<h2>5. Verify the result</h2>
+<ul>
+<li>The organization page exists with the intended account name.</li>
+<li>The repository address begins with the intended organization name.</li>
+<li>The repository's public/private setting is the one you selected.</li>
+<li>The intended collaborators have access through their own accounts.</li>
+<li>If you moved an existing repository, the local <code>origin</code> now targets its new location.</li>
+</ul>
+<h2>6. Add screenshots later</h2>
+<p>The three visible blocks are intentional placeholders, not missing image files. They remain readable in Markdown and the PDF. Save each future screenshot under the suggested filename, replace its block with the image line stored in the adjacent HTML comment, and remove the comment markers. Both language editions can use the same image. See <a href="../02-main-markdown-images.md">02, Markdown images</a>.</p>
+<p>Regenerate with <code>python tools/export_print.py docs/06-main-github-organization.md</code>. The image will then be embedded into the print HTML and PDF.</p><h2>References</h2><ol class="references"><li><a href="https://docs.github.com/en/organizations/collaborating-with-groups-in-organizations/creating-a-new-organization-from-scratch">https://docs.github.com/en/organizations/collaborating-with-groups-in-organizations/creating-a-new-organization-from-scratch</a></li><li><a href="https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-new-repository">https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-new-repository</a></li><li><a href="https://docs.github.com/en/repositories/creating-and-managing-repositories/transferring-a-repository">https://docs.github.com/en/repositories/creating-and-managing-repositories/transferring-a-repository</a></li></ol></body></html>

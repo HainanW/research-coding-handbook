@@ -3,7 +3,7 @@
 <!-- print:omit -->
 [Back to the handbook](../README.md)
 
-[Print PDF](print/03-python-data-types.pdf) · [Print HTML](print/03-python-data-types.html)
+[Print PDF](print/03-main-python-data-types.pdf) · [Print HTML](print/03-main-python-data-types.html)
 <!-- /print:omit -->
 
 ## The question
@@ -50,6 +50,8 @@ str(3)              # "3": produce text
 bool(0)             # False
 bool("False")       # True: a nonempty string
 ```
+
+These operations parse text, truncate toward zero (not rounding), produce text, test zero, and test a nonempty string. The string `"False"` is not automatically interpreted as the Boolean value False.
 
 `len(3)` and `0.12.shape` are invalid. Scalar values are not one-element sequences. `len("你好")` is 2 Unicode code points; encoded byte length is a different quantity.
 
@@ -152,8 +154,9 @@ The equation below uses plain text so it renders identically in Markdown and off
 ```text
 price[s, j] = exp(-x[j] / 2) + noise[s, j]
 profit[s]  = SUM over j of x[j] * (price[s, j] - cost[j])
-s = scenario index; j = production component index
 ```
+
+`s` is the scenario index and `j` is the production component index. Each scenario profit sums production quantity times price minus unit cost across components.
 
 | Python name | Role in the equation | Shape after conversion |
 | --- | --- | --- |
@@ -165,7 +168,9 @@ s = scenario index; j = production component index
 
 `x`, `noise_matrix`, and `cost_vec` are parameters; `realized_price` is a local name. On the first line, `np.asarray(..., dtype=float)` converts a list or tuple to a floating-point array, or may reuse compatible array storage. `reshape(1, -1)` creates one row and infers the column count; `-1` is not negative indexing here. Local reassignment of `x` does not rebind the caller's `x_input` name.
 
-The helper computes the noiseless price element by element. Adding the `(S, J)` noise matrix broadcasts the `(1, J)` prices across scenarios. Subtracting costs and multiplying quantities is elementwise. Finally, `axis=1` sums across columns, leaving one value for each row. Omitting `axis` would combine all scenarios into one scalar. `float` is a type passed as an argument; `dtype` and `axis` are keyword parameter names; `reshape` is a method. These are different roles despite appearing on the same line.
+The helper computes the noiseless price element by element. Adding the `(S, J)` noise matrix broadcasts the `(1, J)` prices across scenarios. Subtracting costs and multiplying quantities is elementwise. Finally, `axis=1` sums across columns, leaving one value for each row. Omitting `axis` would combine all scenarios into one scalar.
+
+`float` is a type passed as an argument; `dtype` and `axis` are keyword parameter names; `reshape` is a method. These are different roles despite appearing on the same line.
 
 The original function assumes compatible numeric inputs; it does not validate dimensions or enforce economic constraints. In particular, a `(S, 1)` noise array can broadcast the same shock across every component. Verify the intended `(S, J)` shape before calling it; successful broadcasting alone does not prove the model is correct.
 
