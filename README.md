@@ -40,6 +40,12 @@ This repository collects recurring programming practices, workflows, and templat
 - [Run the example](examples/03_python_data_types.py): inspectable type examples, four profit scenarios, and independent loop verification.
 - [US Letter PDF](docs/print/03-main-python-data-types.pdf) · [Print HTML](docs/print/03-main-python-data-types.html).
 
+- **Example 1: MO-book production planning — from equations to Python objects**
+  - [Technical learning report](docs/03-example-01-mo-book-production.md) · [English–Chinese edition](docs/03-example-01-mo-book-production.zh-CN.md).
+  - [US Letter PDF](docs/print/03-example-01-mo-book-production.pdf) · [Print HTML](docs/print/03-example-01-mo-book-production.html).
+  - [Runnable example](examples/03_example_01_mo_book_production.py) · [Verification script](examples/verify_03_example_01.py) · [Run record](examples/results/03-example-01-mo-book-production-verification.json).
+  - Textbook LP, not a factory MILP or a rolling-horizon implementation; includes symbolic variables, dictionaries, Series/DataFrame, and independently checked results.
+
 **05. Python dunder methods and special names**
 
 - [Read the guide](docs/05-main-python-dunder.md): special methods, a profit container, and the `__name__` entry-point guard.
@@ -66,6 +72,8 @@ This repository collects recurring programming practices, workflows, and templat
 - Includes copyable prompts, a Matplotlib example, and the original tutorial request. The installation commands are documented examples; adding this chapter does not install a skill or change Python environments.
 - [US Letter PDF](docs/print/09-main-codex-skills.pdf) · [Print HTML](docs/print/09-main-codex-skills.html).
 
+Reusable handbook-writing skill: [research-coding-handbook](skills/research-coding-handbook/SKILL.md). Its source captures reporting conventions, not the handbook's entire document collection. Once installed as a personal skill, invoke `$research-coding-handbook` with the target code, destination, and requested formats; this does not authorize uploads or Git pushes.
+
 ## GitHub Sync and Koopman Learning Materials
 
 - [04. Manual GitHub sync guide (sanitized, English)](docs/04-main-github-manual-push.md) · [PDF](docs/print/04-main-github-manual-push.pdf). Includes step-by-step instructions and a compact screenshot, with a link to the full image, for opening PowerShell in VS Code and confirming the project directory. Also explains `git pull --ff-only`, with fast-forward and diverged-history examples and the meaning of `origin main`.
@@ -84,6 +92,10 @@ Q1 is available as a [US Letter PDF](docs/print/01-main-spyder-function-inspecti
 To regenerate after editing the Markdown sources, run `python tools/export_print.py` in a Python environment with Python-Markdown installed and Chrome or Edge available. The exporter was verified with Python-Markdown 3.8 and Chrome 152 on Windows. Its stylesheet is `tools/print.css`; outputs go to `docs/print/`. The command updates 01–09. The `.zh-CN.md` guides contain alternating English and Chinese paragraphs, paired list items, and bilingual table cells. They retain the `.zh-CN` suffix; both language versions and their HTML/PDF print editions are tracked in Git and published together. Run `python tools/export_print.py --bilingual` to export all nine directly to HTML and PDF, or pass an individual `.zh-CN.md` path. The exporter renders this bilingual source as written; it does not merge language editions.
 
 To regenerate Q2's HTML and PDF, run `python tools/export_print.py docs/02-main-markdown-images.md`. The HTML embeds the example image so it can be viewed offline as a single file.
+
+The default export now also includes chapter 03's Example 1. Export only its two editions with `python tools/export_print.py docs/03-example-01-mo-book-production.md docs/03-example-01-mo-book-production.zh-CN.md`. Its simple equations use offline HTML subscripts and Unicode symbols, without a remote math service.
+
+Before publishing PDFs, inspect their embedded links: browsers may turn relative file links into private absolute paths. The optional [PDF link sanitizer](tools/sanitize_pdf_links.py) uses PyMuPDF to replace in-repository file links with URLs under an explicitly supplied HTTPS repository base. Run `python tools/sanitize_pdf_links.py --help` for arguments; it writes separate output PDFs, preserves input files, and fully rewrites annotations. The four updated chapter-03 PDFs have been checked and prepared this way.
 
 ## Core Principles
 
@@ -149,6 +161,8 @@ research-coding-handbook/
 │   ├── 02-main-markdown-images.zh-CN.md
 │   ├── 03-main-python-data-types.md
 │   ├── 03-main-python-data-types.zh-CN.md
+│   ├── 03-example-01-mo-book-production.md
+│   ├── 03-example-01-mo-book-production.zh-CN.md
 │   ├── 04-main-github-manual-push.md
 │   ├── 04-main-github-manual-push.zh-CN.md
 │   ├── 05-main-python-dunder.md
@@ -168,9 +182,12 @@ research-coding-handbook/
 │   ├── 01_spyder_function_inspection.py
 │   ├── 02_plot_generated_data.py
 │   ├── 03_python_data_types.py
+│   ├── 03_example_01_mo_book_production.py
+│   ├── verify_03_example_01.py
 │   ├── 05_dunder_methods.py
 │   └── 08_python_classes.py
 ├── tools/         # Print exporter and stylesheet
+├── skills/        # Reusable handbook-writing skill source
 ├── templates/     # Planned: project, experiment, and report templates
 └── references/    # Planned: source links and reading notes
 ```

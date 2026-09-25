@@ -1,4 +1,4 @@
-"""Export the 01-09 Markdown guides to US Letter HTML and PDF.
+"""Export the 01-09 guides and chapter 03 Example 1 to US Letter HTML and PDF.
 
 Requires Python-Markdown and an installed Chrome or Edge browser.
 Run from the repository root: python tools/export_print.py
@@ -24,6 +24,7 @@ DEFAULT_DOCS = (
     "docs/01-main-spyder-function-inspection.md",
     "docs/02-main-markdown-images.md",
     "docs/03-main-python-data-types.md",
+    "docs/03-example-01-mo-book-production.md",
     "docs/04-main-github-manual-push.md",
     "docs/05-main-python-dunder.md",
     "docs/06-main-github-organization.md",
@@ -77,6 +78,9 @@ def render_html(source, destination, css):
 
     def link(match):
         target, label = html.unescape(match.group(1)), match.group(2)
+        # Preserve in-document navigation instead of treating it as a file path.
+        if target.startswith("#"):
+            return f'<a href="{html.escape(target, quote=True)}">{label}</a>'
         if target.startswith(("https://", "http://")):
             if target not in references:
                 references.append(target)

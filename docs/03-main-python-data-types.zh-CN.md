@@ -6,6 +6,10 @@
 [返回手册 / Handbook](../README.zh-CN.md) · [English](03-main-python-data-types.md)
 
 [英中双语 PDF / Bilingual PDF](print/03-main-python-data-types.zh-CN.pdf) · [打印 HTML / Print HTML](print/03-main-python-data-types.zh-CN.html)
+
+**Example 1:** [MO-book production planning: equations, Python objects, and verified results](03-example-01-mo-book-production.md).
+
+**示例 1：**[MO-book 生产计划：公式、Python 对象与验证结果](03-example-01-mo-book-production.zh-CN.md) · [双语 PDF](print/03-example-01-mo-book-production.zh-CN.pdf)。
 <!-- /print:omit -->
 
 ## The question / 原始问题（Question）

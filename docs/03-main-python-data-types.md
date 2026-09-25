@@ -4,6 +4,8 @@
 [Back to the handbook](../README.md)
 
 [Print PDF](print/03-main-python-data-types.pdf) · [Print HTML](print/03-main-python-data-types.html)
+
+**Example 1:** [MO-book production planning: equations, Python objects, and verified results](03-example-01-mo-book-production.md) · [PDF](print/03-example-01-mo-book-production.pdf).
 <!-- /print:omit -->
 
 ## The question

@@ -1,0 +1,774 @@
+{
+  "schema_version": 1,
+  "run_utc": "2026-09-25T20:52:55+00:00",
+  "command": [
+    "python",
+    "examples/verify_03_example_01.py"
+  ],
+  "working_directory": ".",
+  "path_policy": "Paths relative to handbook root; external personal paths redacted.",
+  "environment": {
+    "python": "3.12.13",
+    "implementation": "CPython",
+    "platform": "Windows",
+    "machine": "AMD64",
+    "interpreter_filename": "python.exe",
+    "environment_name": "Jushi_scheduler",
+    "packages": {
+      "pyomo": "6.10.1",
+      "highspy": "1.15.1",
+      "pandas": "3.0.5",
+      "numpy": "2.5.2",
+      "spyder": null,
+      "spyder-kernels": "3.1.6"
+    },
+    "highs_solver": "1.15.1"
+  },
+  "source": {
+    "path": "examples/03_example_01_mo_book_production.py",
+    "sha256": "6c77955793ae4ce9fb32bda27b8bbf40ab7e1334bac859375442501bc56cfab3",
+    "unchanged_after_verification": true
+  },
+  "tolerance": 1e-06,
+  "residual_convention": "Feasible slacks are nonnegative within tolerance; null means unbounded or unset.",
+  "scope": "Textbook LP only. Sequential cells share a Python namespace; no Spyder GUI was tested.",
+  "independent_analytic_bound": {
+    "unit_contributions": {
+      "U": 40,
+      "V": 30
+    },
+    "derivation": "profit <= 40 U + 30 V = 20(U+V) + 10(2U+V) <= 20*80 + 10*100 = 2600",
+    "upper_bound": 2600.0,
+    "baseline_attains_bound": true
+  },
+  "cases": {
+    "baseline": {
+      "execution_mode": "runpy",
+      "in_memory_substitution": null,
+      "cell_count": null,
+      "stdout": "MO-book 1.2 | Textbook example only | LP, not MILP or rolling planning\nSolver termination: optimal\nproduct  quantity_units_per_week\n      U                     20.0\n      V                     60.0\n  resource  allocated  limit       unit\nMaterial M      740.0    NaN     g/week\n   Labor A       80.0   80.0 hours/week\n   Labor B      100.0  100.0 hours/week\nrevenue    18000.0\ncost       15400.0\nprofit      2600.0\nIndependent checks passed: True\n",
+      "stderr": "",
+      "error": null,
+      "solution_load_calls": 1,
+      "solver_status": "ok",
+      "termination_condition": "optimal",
+      "solver_solution_count": 1,
+      "values": {
+        "u_units": 20.0,
+        "v_units": 60.0,
+        "material_grams": 740.0,
+        "labor_a_hours": 80.0,
+        "labor_b_hours": 100.0,
+        "revenue": 18000.0,
+        "cost": 15400.0,
+        "profit": 2600.0
+      },
+      "source_checks": {
+        "nonnegative": true,
+        "u_market_limit": true,
+        "labor_a_limit": true,
+        "labor_b_limit": true,
+        "material_balance": true,
+        "labor_a_balance": true,
+        "labor_b_balance": true,
+        "profit_balance": true
+      },
+      "constraint_residuals": {
+        "raw_materials": {
+          "body": 0.0,
+          "lower": null,
+          "upper": 0.0,
+          "body_minus_lower": null,
+          "upper_minus_body": 0.0
+        },
+        "labor_A": {
+          "body": 0.0,
+          "lower": null,
+          "upper": 0.0,
+          "body_minus_lower": null,
+          "upper_minus_body": 0.0
+        },
+        "labor_B": {
+          "body": 0.0,
+          "lower": null,
+          "upper": 0.0,
+          "body_minus_lower": null,
+          "upper_minus_body": 0.0
+        }
+      },
+      "variable_bounds": {
+        "x_M": {
+          "value": 740.0,
+          "lower": 0,
+          "upper": null,
+          "value_minus_lower": 740.0,
+          "upper_minus_value": null
+        },
+        "x_A": {
+          "value": 80.0,
+          "lower": 0,
+          "upper": 80.0,
+          "value_minus_lower": 80.0,
+          "upper_minus_value": 0.0
+        },
+        "x_B": {
+          "value": 100.0,
+          "lower": 0,
+          "upper": 100.0,
+          "value_minus_lower": 100.0,
+          "upper_minus_value": 0.0
+        },
+        "y_U": {
+          "value": 20.0,
+          "lower": 0,
+          "upper": 40.0,
+          "value_minus_lower": 20.0,
+          "upper_minus_value": 20.0
+        },
+        "y_V": {
+          "value": 60.0,
+          "lower": 0,
+          "upper": null,
+          "value_minus_lower": 60.0,
+          "upper_minus_value": null
+        }
+      },
+      "tables": {
+        "production": [
+          {
+            "product": "U",
+            "quantity_units_per_week": 20.0
+          },
+          {
+            "product": "V",
+            "quantity_units_per_week": 60.0
+          }
+        ],
+        "resources": [
+          {
+            "resource": "Material M",
+            "allocated": 740.0,
+            "limit": null,
+            "unit": "g/week"
+          },
+          {
+            "resource": "Labor A",
+            "allocated": 80.0,
+            "limit": 80.0,
+            "unit": "hours/week"
+          },
+          {
+            "resource": "Labor B",
+            "allocated": 100.0,
+            "limit": 100.0,
+            "unit": "hours/week"
+          }
+        ],
+        "financials": {
+          "revenue": 18000.0,
+          "cost": 15400.0,
+          "profit": 2600.0
+        }
+      },
+      "expected_values": {
+        "u_units": 20.0,
+        "v_units": 60.0,
+        "material_grams": 740.0,
+        "labor_a_hours": 80.0,
+        "labor_b_hours": 100.0,
+        "revenue": 18000.0,
+        "cost": 15400.0,
+        "profit": 2600.0
+      },
+      "verification_checks": {
+        "no_exception": true,
+        "optimal_termination": true,
+        "solution_loaded_once": true,
+        "all_eight_source_checks": true,
+        "expected_u_units": true,
+        "expected_v_units": true,
+        "expected_material_grams": true,
+        "expected_labor_a_hours": true,
+        "expected_labor_b_hours": true,
+        "expected_revenue": true,
+        "expected_cost": true,
+        "expected_profit": true,
+        "raw_residuals_feasible": true
+      },
+      "passed": true
+    },
+    "labor_b_120": {
+      "execution_mode": "memory",
+      "in_memory_substitution": [
+        "labor_b_limit = 100.0",
+        "labor_b_limit = 120.0"
+      ],
+      "cell_count": null,
+      "stdout": "MO-book 1.2 | Textbook example only | LP, not MILP or rolling planning\nSolver termination: optimal\nproduct  quantity_units_per_week\n      U                     40.0\n      V                     40.0\n  resource  allocated  limit       unit\nMaterial M      760.0    NaN     g/week\n   Labor A       80.0   80.0 hours/week\n   Labor B      120.0  120.0 hours/week\nrevenue    19200.0\ncost       16400.0\nprofit      2800.0\nIndependent checks passed: True\n",
+      "stderr": "",
+      "error": null,
+      "solution_load_calls": 1,
+      "solver_status": "ok",
+      "termination_condition": "optimal",
+      "solver_solution_count": 1,
+      "values": {
+        "u_units": 40.0,
+        "v_units": 40.0,
+        "material_grams": 760.0,
+        "labor_a_hours": 80.0,
+        "labor_b_hours": 120.0,
+        "revenue": 19200.0,
+        "cost": 16400.0,
+        "profit": 2800.0
+      },
+      "source_checks": {
+        "nonnegative": true,
+        "u_market_limit": true,
+        "labor_a_limit": true,
+        "labor_b_limit": true,
+        "material_balance": true,
+        "labor_a_balance": true,
+        "labor_b_balance": true,
+        "profit_balance": true
+      },
+      "constraint_residuals": {
+        "raw_materials": {
+          "body": 0.0,
+          "lower": null,
+          "upper": 0.0,
+          "body_minus_lower": null,
+          "upper_minus_body": 0.0
+        },
+        "labor_A": {
+          "body": 0.0,
+          "lower": null,
+          "upper": 0.0,
+          "body_minus_lower": null,
+          "upper_minus_body": 0.0
+        },
+        "labor_B": {
+          "body": 0.0,
+          "lower": null,
+          "upper": 0.0,
+          "body_minus_lower": null,
+          "upper_minus_body": 0.0
+        }
+      },
+      "variable_bounds": {
+        "x_M": {
+          "value": 760.0,
+          "lower": 0,
+          "upper": null,
+          "value_minus_lower": 760.0,
+          "upper_minus_value": null
+        },
+        "x_A": {
+          "value": 80.0,
+          "lower": 0,
+          "upper": 80.0,
+          "value_minus_lower": 80.0,
+          "upper_minus_value": 0.0
+        },
+        "x_B": {
+          "value": 120.0,
+          "lower": 0,
+          "upper": 120.0,
+          "value_minus_lower": 120.0,
+          "upper_minus_value": 0.0
+        },
+        "y_U": {
+          "value": 40.0,
+          "lower": 0,
+          "upper": 40.0,
+          "value_minus_lower": 40.0,
+          "upper_minus_value": 0.0
+        },
+        "y_V": {
+          "value": 40.0,
+          "lower": 0,
+          "upper": null,
+          "value_minus_lower": 40.0,
+          "upper_minus_value": null
+        }
+      },
+      "tables": {
+        "production": [
+          {
+            "product": "U",
+            "quantity_units_per_week": 40.0
+          },
+          {
+            "product": "V",
+            "quantity_units_per_week": 40.0
+          }
+        ],
+        "resources": [
+          {
+            "resource": "Material M",
+            "allocated": 760.0,
+            "limit": null,
+            "unit": "g/week"
+          },
+          {
+            "resource": "Labor A",
+            "allocated": 80.0,
+            "limit": 80.0,
+            "unit": "hours/week"
+          },
+          {
+            "resource": "Labor B",
+            "allocated": 120.0,
+            "limit": 120.0,
+            "unit": "hours/week"
+          }
+        ],
+        "financials": {
+          "revenue": 19200.0,
+          "cost": 16400.0,
+          "profit": 2800.0
+        }
+      },
+      "expected_values": {
+        "u_units": 40.0,
+        "v_units": 40.0,
+        "material_grams": 760.0,
+        "labor_a_hours": 80.0,
+        "labor_b_hours": 120.0,
+        "revenue": 19200.0,
+        "cost": 16400.0,
+        "profit": 2800.0
+      },
+      "verification_checks": {
+        "no_exception": true,
+        "optimal_termination": true,
+        "solution_loaded_once": true,
+        "all_eight_source_checks": true,
+        "expected_u_units": true,
+        "expected_v_units": true,
+        "expected_material_grams": true,
+        "expected_labor_a_hours": true,
+        "expected_labor_b_hours": true,
+        "expected_revenue": true,
+        "expected_cost": true,
+        "expected_profit": true,
+        "raw_residuals_feasible": true
+      },
+      "passed": true
+    },
+    "zero_labor_a": {
+      "execution_mode": "memory",
+      "in_memory_substitution": [
+        "labor_a_limit = 80.0",
+        "labor_a_limit = 0.0"
+      ],
+      "cell_count": null,
+      "stdout": "MO-book 1.2 | Textbook example only | LP, not MILP or rolling planning\nSolver termination: optimal\nproduct  quantity_units_per_week\n      U                     -0.0\n      V                      0.0\n  resource  allocated  limit       unit\nMaterial M        0.0    NaN     g/week\n   Labor A        0.0    0.0 hours/week\n   Labor B        0.0  100.0 hours/week\nrevenue    0.0\ncost       0.0\nprofit     0.0\nIndependent checks passed: True\n",
+      "stderr": "",
+      "error": null,
+      "solution_load_calls": 1,
+      "solver_status": "ok",
+      "termination_condition": "optimal",
+      "solver_solution_count": 1,
+      "values": {
+        "u_units": -0.0,
+        "v_units": 0.0,
+        "material_grams": 0.0,
+        "labor_a_hours": 0.0,
+        "labor_b_hours": 0.0,
+        "revenue": 0.0,
+        "cost": 0.0,
+        "profit": 0.0
+      },
+      "source_checks": {
+        "nonnegative": true,
+        "u_market_limit": true,
+        "labor_a_limit": true,
+        "labor_b_limit": true,
+        "material_balance": true,
+        "labor_a_balance": true,
+        "labor_b_balance": true,
+        "profit_balance": true
+      },
+      "constraint_residuals": {
+        "raw_materials": {
+          "body": 0.0,
+          "lower": null,
+          "upper": 0.0,
+          "body_minus_lower": null,
+          "upper_minus_body": 0.0
+        },
+        "labor_A": {
+          "body": 0.0,
+          "lower": null,
+          "upper": 0.0,
+          "body_minus_lower": null,
+          "upper_minus_body": 0.0
+        },
+        "labor_B": {
+          "body": 0.0,
+          "lower": null,
+          "upper": 0.0,
+          "body_minus_lower": null,
+          "upper_minus_body": 0.0
+        }
+      },
+      "variable_bounds": {
+        "x_M": {
+          "value": 0.0,
+          "lower": 0,
+          "upper": null,
+          "value_minus_lower": 0.0,
+          "upper_minus_value": null
+        },
+        "x_A": {
+          "value": 0.0,
+          "lower": 0,
+          "upper": 0.0,
+          "value_minus_lower": 0.0,
+          "upper_minus_value": 0.0
+        },
+        "x_B": {
+          "value": 0.0,
+          "lower": 0,
+          "upper": 100.0,
+          "value_minus_lower": 0.0,
+          "upper_minus_value": 100.0
+        },
+        "y_U": {
+          "value": -0.0,
+          "lower": 0,
+          "upper": 40.0,
+          "value_minus_lower": -0.0,
+          "upper_minus_value": 40.0
+        },
+        "y_V": {
+          "value": 0.0,
+          "lower": 0,
+          "upper": null,
+          "value_minus_lower": 0.0,
+          "upper_minus_value": null
+        }
+      },
+      "tables": {
+        "production": [
+          {
+            "product": "U",
+            "quantity_units_per_week": 0.0
+          },
+          {
+            "product": "V",
+            "quantity_units_per_week": 0.0
+          }
+        ],
+        "resources": [
+          {
+            "resource": "Material M",
+            "allocated": 0.0,
+            "limit": null,
+            "unit": "g/week"
+          },
+          {
+            "resource": "Labor A",
+            "allocated": 0.0,
+            "limit": 0.0,
+            "unit": "hours/week"
+          },
+          {
+            "resource": "Labor B",
+            "allocated": 0.0,
+            "limit": 100.0,
+            "unit": "hours/week"
+          }
+        ],
+        "financials": {
+          "revenue": 0.0,
+          "cost": 0.0,
+          "profit": 0.0
+        }
+      },
+      "expected_values": {
+        "u_units": 0.0,
+        "v_units": 0.0,
+        "material_grams": 0.0,
+        "labor_a_hours": 0.0,
+        "labor_b_hours": 0.0,
+        "revenue": 0.0,
+        "cost": 0.0,
+        "profit": 0.0
+      },
+      "verification_checks": {
+        "no_exception": true,
+        "optimal_termination": true,
+        "solution_loaded_once": true,
+        "all_eight_source_checks": true,
+        "expected_u_units": true,
+        "expected_v_units": true,
+        "expected_material_grams": true,
+        "expected_labor_a_hours": true,
+        "expected_labor_b_hours": true,
+        "expected_revenue": true,
+        "expected_cost": true,
+        "expected_profit": true,
+        "raw_residuals_feasible": true
+      },
+      "passed": true
+    },
+    "sequential_cells": {
+      "execution_mode": "sequential_cells",
+      "in_memory_substitution": null,
+      "cell_count": 9,
+      "stdout": "MO-book 1.2 | Textbook example only | LP, not MILP or rolling planning\nSolver termination: optimal\nproduct  quantity_units_per_week\n      U                     20.0\n      V                     60.0\n  resource  allocated  limit       unit\nMaterial M      740.0    NaN     g/week\n   Labor A       80.0   80.0 hours/week\n   Labor B      100.0  100.0 hours/week\nrevenue    18000.0\ncost       15400.0\nprofit      2600.0\nIndependent checks passed: True\n",
+      "stderr": "",
+      "error": null,
+      "solution_load_calls": 1,
+      "solver_status": "ok",
+      "termination_condition": "optimal",
+      "solver_solution_count": 1,
+      "values": {
+        "u_units": 20.0,
+        "v_units": 60.0,
+        "material_grams": 740.0,
+        "labor_a_hours": 80.0,
+        "labor_b_hours": 100.0,
+        "revenue": 18000.0,
+        "cost": 15400.0,
+        "profit": 2600.0
+      },
+      "source_checks": {
+        "nonnegative": true,
+        "u_market_limit": true,
+        "labor_a_limit": true,
+        "labor_b_limit": true,
+        "material_balance": true,
+        "labor_a_balance": true,
+        "labor_b_balance": true,
+        "profit_balance": true
+      },
+      "constraint_residuals": {
+        "raw_materials": {
+          "body": 0.0,
+          "lower": null,
+          "upper": 0.0,
+          "body_minus_lower": null,
+          "upper_minus_body": 0.0
+        },
+        "labor_A": {
+          "body": 0.0,
+          "lower": null,
+          "upper": 0.0,
+          "body_minus_lower": null,
+          "upper_minus_body": 0.0
+        },
+        "labor_B": {
+          "body": 0.0,
+          "lower": null,
+          "upper": 0.0,
+          "body_minus_lower": null,
+          "upper_minus_body": 0.0
+        }
+      },
+      "variable_bounds": {
+        "x_M": {
+          "value": 740.0,
+          "lower": 0,
+          "upper": null,
+          "value_minus_lower": 740.0,
+          "upper_minus_value": null
+        },
+        "x_A": {
+          "value": 80.0,
+          "lower": 0,
+          "upper": 80.0,
+          "value_minus_lower": 80.0,
+          "upper_minus_value": 0.0
+        },
+        "x_B": {
+          "value": 100.0,
+          "lower": 0,
+          "upper": 100.0,
+          "value_minus_lower": 100.0,
+          "upper_minus_value": 0.0
+        },
+        "y_U": {
+          "value": 20.0,
+          "lower": 0,
+          "upper": 40.0,
+          "value_minus_lower": 20.0,
+          "upper_minus_value": 20.0
+        },
+        "y_V": {
+          "value": 60.0,
+          "lower": 0,
+          "upper": null,
+          "value_minus_lower": 60.0,
+          "upper_minus_value": null
+        }
+      },
+      "tables": {
+        "production": [
+          {
+            "product": "U",
+            "quantity_units_per_week": 20.0
+          },
+          {
+            "product": "V",
+            "quantity_units_per_week": 60.0
+          }
+        ],
+        "resources": [
+          {
+            "resource": "Material M",
+            "allocated": 740.0,
+            "limit": null,
+            "unit": "g/week"
+          },
+          {
+            "resource": "Labor A",
+            "allocated": 80.0,
+            "limit": 80.0,
+            "unit": "hours/week"
+          },
+          {
+            "resource": "Labor B",
+            "allocated": 100.0,
+            "limit": 100.0,
+            "unit": "hours/week"
+          }
+        ],
+        "financials": {
+          "revenue": 18000.0,
+          "cost": 15400.0,
+          "profit": 2600.0
+        }
+      },
+      "expected_values": {
+        "u_units": 20.0,
+        "v_units": 60.0,
+        "material_grams": 740.0,
+        "labor_a_hours": 80.0,
+        "labor_b_hours": 100.0,
+        "revenue": 18000.0,
+        "cost": 15400.0,
+        "profit": 2600.0
+      },
+      "verification_checks": {
+        "no_exception": true,
+        "optimal_termination": true,
+        "solution_loaded_once": true,
+        "all_eight_source_checks": true,
+        "expected_u_units": true,
+        "expected_v_units": true,
+        "expected_material_grams": true,
+        "expected_labor_a_hours": true,
+        "expected_labor_b_hours": true,
+        "expected_revenue": true,
+        "expected_cost": true,
+        "expected_profit": true,
+        "raw_residuals_feasible": true,
+        "matches_baseline_tables": true,
+        "nine_cells_executed": true
+      },
+      "passed": true
+    },
+    "negative_labor_a": {
+      "execution_mode": "memory",
+      "in_memory_substitution": [
+        "labor_a_limit = 80.0",
+        "labor_a_limit = -1.0"
+      ],
+      "cell_count": null,
+      "stdout": "",
+      "stderr": "",
+      "error": {
+        "type": "RuntimeError",
+        "message": "No proven optimal solution: infeasible"
+      },
+      "solution_load_calls": 0,
+      "solver_status": "error",
+      "termination_condition": "infeasible",
+      "solver_solution_count": 0,
+      "values": {
+        "u_units": null,
+        "v_units": null,
+        "material_grams": null,
+        "labor_a_hours": null,
+        "labor_b_hours": null,
+        "revenue": null,
+        "cost": null,
+        "profit": null
+      },
+      "source_checks": {},
+      "constraint_residuals": {
+        "raw_materials": {
+          "body": null,
+          "lower": null,
+          "upper": 0.0,
+          "body_minus_lower": null,
+          "upper_minus_body": null
+        },
+        "labor_A": {
+          "body": null,
+          "lower": null,
+          "upper": 0.0,
+          "body_minus_lower": null,
+          "upper_minus_body": null
+        },
+        "labor_B": {
+          "body": null,
+          "lower": null,
+          "upper": 0.0,
+          "body_minus_lower": null,
+          "upper_minus_body": null
+        }
+      },
+      "variable_bounds": {
+        "x_M": {
+          "value": null,
+          "lower": 0,
+          "upper": null,
+          "value_minus_lower": null,
+          "upper_minus_value": null
+        },
+        "x_A": {
+          "value": null,
+          "lower": 0,
+          "upper": -1.0,
+          "value_minus_lower": null,
+          "upper_minus_value": null
+        },
+        "x_B": {
+          "value": null,
+          "lower": 0,
+          "upper": 100.0,
+          "value_minus_lower": null,
+          "upper_minus_value": null
+        },
+        "y_U": {
+          "value": null,
+          "lower": 0,
+          "upper": 40.0,
+          "value_minus_lower": null,
+          "upper_minus_value": null
+        },
+        "y_V": {
+          "value": null,
+          "lower": 0,
+          "upper": null,
+          "value_minus_lower": null,
+          "upper_minus_value": null
+        }
+      },
+      "tables": {},
+      "expected_outcome": "Infeasible solve rejected before loading any solution.",
+      "verification_checks": {
+        "expected_runtime_error": true,
+        "infeasible_termination": true,
+        "solution_not_loaded": true,
+        "all_five_variables_unset": true,
+        "no_result_tables_extracted": true
+      },
+      "passed": true
+    }
+  },
+  "passed": true
+}

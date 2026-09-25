@@ -39,6 +39,12 @@
 - [运行示例](examples/03_python_data_types.py)：类型速查对象、四个利润情景和独立循环验证。
 - [US Letter 英中双语 PDF](docs/print/03-main-python-data-types.zh-CN.pdf) · [双语打印 HTML](docs/print/03-main-python-data-types.zh-CN.html)。
 
+- **Example 1：MO-book 生产计划——从公式到 Python 对象**
+  - [英中对照技术学习报告](docs/03-example-01-mo-book-production.zh-CN.md) · [英文版](docs/03-example-01-mo-book-production.md)。
+  - [US Letter 双语 PDF](docs/print/03-example-01-mo-book-production.zh-CN.pdf) · [双语打印 HTML](docs/print/03-example-01-mo-book-production.zh-CN.html)。
+  - [可运行案例](examples/03_example_01_mo_book_production.py) · [验证脚本](examples/verify_03_example_01.py) · [运行记录](examples/results/03-example-01-mo-book-production-verification.json)。
+  - 教材 LP，不是工厂 MILP 或滚动计划实现；讲解符号变量、字典、Series/DataFrame，并独立核对数值结果。
+
 **04：GitHub 手动同步（Manual GitHub sync）**
 
 - [双语指南](docs/04-main-github-manual-push.zh-CN.md) · [英中双语 PDF](docs/print/04-main-github-manual-push.zh-CN.pdf) · [双语打印 HTML](docs/print/04-main-github-manual-push.zh-CN.html)。包含在 VS Code 中打开 PowerShell、确认项目目录的逐步操作和缩略截图，可通过图注链接查看原尺寸图片。 另含 `git pull --ff-only` 的原文解释、快进与分叉示意，以及 `origin main` 的含义。
@@ -69,6 +75,8 @@
 - 收录可复制提示词、Matplotlib 示例和本篇教程的原始编写请求。安装命令仅作为教程示例；新增本章不代表已安装 skill 或修改 Python 环境。
 - [US Letter 英中双语 PDF](docs/print/09-main-codex-skills.zh-CN.pdf) · [双语打印 HTML](docs/print/09-main-codex-skills.zh-CN.html)。
 
+可复用的手册写作技能：[research-coding-handbook](skills/research-coding-handbook/SKILL.md)。技能提炼的是报告规范，不是整本手册或内部文档集合。安装为个人技能后，用 `$research-coding-handbook` 指定代码、保存位置和输出格式即可调用；调用不代表授权上传或 Git 推送。
+
 ## 打印版本（Print editions）
 
 `docs/` 中 01–09 的 `.zh-CN.md` 文件是英中双语文档：英文一段、中文一段，列表逐条对照，表格在同一单元格内上下对照。英文 `.md` 继续单独保留；相同代码和图片只放一次。双语文件保留 `.zh-CN` 后缀，与英文版本及对应的 HTML/PDF 打印版一起纳入 Git 并发布到 GitHub。
@@ -78,6 +86,10 @@
 问题 1 已提供 [US Letter 英中双语 PDF](docs/print/01-main-spyder-function-inspection.zh-CN.pdf) 和[独立双语打印 HTML](docs/print/01-main-spyder-function-inspection.zh-CN.html)。版式采用黑色文字、灰度图片（grayscale figures）、页码（page numbers）、跨页重复表头（repeated table headers）及编号来源网址，方便纸面阅读。
 
 修改 Markdown 后，可在装有 Python-Markdown 且能使用 Chrome 或 Edge 的 Python 环境中运行 `python tools/export_print.py`，重新生成 01–09 英文版；双语版本可用 `--bilingual`，或在命令后显式传入对应 `.zh-CN.md` 路径。导出器已在 Windows、Python-Markdown 3.8、Chrome 152 下验证。样式表（stylesheet）为 `tools/print.css`，输出目录为 `docs/print/`。双语导出文件与源文件一起提交到 Git。
+
+默认批量导出现在也包含第 03 章的 Example 1。仅更新该案例时运行 `python tools/export_print.py docs/03-example-01-mo-book-production.md docs/03-example-01-mo-book-production.zh-CN.md`。其中的简单公式使用离线 HTML 下标和 Unicode 数学符号，不依赖远程公式服务。
+
+公开发布 PDF 前，需检查其嵌入链接：浏览器可能把相对文件链接转换为个人绝对路径。可选的 [PDF 链接脱敏工具](tools/sanitize_pdf_links.py) 使用 PyMuPDF，将仓库内的文件链接替换为明确指定的 HTTPS 仓库地址。运行 `python tools/sanitize_pdf_links.py --help` 查看参数；工具输出独立 PDF，保留输入文件，并完整重写链接对象。本次更新的四份第 03 章 PDF 已按此检查和处理。
 
 ## 基本原则
 
@@ -143,6 +155,8 @@ research-coding-handbook/
 │   ├── 02-main-markdown-images.zh-CN.md
 │   ├── 03-main-python-data-types.md
 │   ├── 03-main-python-data-types.zh-CN.md
+│   ├── 03-example-01-mo-book-production.md
+│   ├── 03-example-01-mo-book-production.zh-CN.md
 │   ├── 04-main-github-manual-push.md
 │   ├── 04-main-github-manual-push.zh-CN.md
 │   ├── 05-main-python-dunder.md
@@ -162,9 +176,12 @@ research-coding-handbook/
 │   ├── 01_spyder_function_inspection.py
 │   ├── 02_plot_generated_data.py
 │   ├── 03_python_data_types.py
+│   ├── 03_example_01_mo_book_production.py
+│   ├── verify_03_example_01.py
 │   ├── 05_dunder_methods.py
 │   └── 08_python_classes.py
 ├── tools/                              # 打印导出器与样式表
+├── skills/                             # 可复用的手册写作技能源码
 ├── templates/                          # 规划：项目、实验、报告模板
 └── references/                         # 规划：来源链接与阅读笔记
 ```

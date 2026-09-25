@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>03 — Example 1: MO-book production planning, from equations to Python objects / 示例 1：MO-book 生产计划，从公式到 Python 对象</title><style>@page {
+  size: letter;
+  margin: 17mm 16mm 18mm;
+  @top-left { content: "RESEARCH CODING HANDBOOK"; font: 7.5pt Arial, sans-serif; color: #555; }
+  @bottom-right { content: counter(page) " / " counter(pages); font: 8pt Arial, sans-serif; color: #444; }
+}
+* { box-sizing: border-box; }
+html { color: #111; background: white; }
+body {
+  font-family: Arial, "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  font-size: 10pt;
+  line-height: 1.48;
+  margin: 0;
+}
+h1 { font-size: 19pt; line-height: 1.3; margin: 0 0 12pt; font-weight: 700; }
+h2 { font-size: 13pt; line-height: 1.35; margin: 15pt 0 7pt; border-bottom: 0.5pt solid #999; padding-bottom: 4pt; }
+h3 { font-size: 11pt; margin: 12pt 0 5pt; }
+h1, h2, h3 { break-after: avoid; page-break-after: avoid; }
+p { margin: 0 0 8pt; orphans: 3; widows: 3; break-inside: avoid; }
+ul, ol { margin: 5pt 0 9pt; padding-left: 19pt; }
+li { margin-bottom: 4pt; orphans: 2; widows: 2; }
+blockquote { margin: 8pt 0 10pt; padding: 1pt 0 1pt 10pt; border-left: 2pt solid #777; }
+blockquote p { margin: 0; }
+a { color: #111; text-decoration: underline; text-decoration-color: #999; }
+code { font-family: Consolas, "Microsoft YaHei", monospace; font-size: 0.88em; overflow-wrap: anywhere; }
+pre {
+  font-family: Consolas, "Microsoft YaHei", monospace;
+  font-size: 8.2pt;
+  line-height: 1.32;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  tab-size: 4;
+  border: 0.5pt solid #aaa;
+  background: white;
+  padding: 7pt 8pt;
+  margin: 7pt 0 9pt;
+  break-inside: avoid;
+}
+pre code { font-size: inherit; }
+table { width: 100%; table-layout: fixed; border-collapse: collapse; margin: 8pt 0 11pt; font-size: 8.8pt; line-height: 1.38; break-inside: auto; }
+thead { display: table-header-group; }
+tr { break-inside: avoid; }
+th, td { border: 0.5pt solid #999; padding: 5pt 6pt; vertical-align: top; overflow-wrap: anywhere; }
+th { font-weight: bold; background: white; border-bottom: 1pt solid #444; }
+table code { font-size: 0.93em; }
+figure { margin: 9pt 0 12pt; break-inside: avoid; }
+figure p { margin: 0; }
+img { display: block; width: 100%; height: auto; filter: grayscale(1); }
+figcaption { font-size: 8.6pt; line-height: 1.4; margin-top: 5pt; color: #333; }
+sup.reference { font-size: 7pt; margin-left: 2pt; white-space: nowrap; }
+.references { font-size: 8pt; line-height: 1.4; padding-left: 18pt; }
+.references li { margin-bottom: 5pt; overflow-wrap: anywhere; break-inside: avoid; }
+.references a { text-decoration: none; }
+@media screen { body { max-width: 8.5in; padding: 17mm 16mm 18mm; margin: 15px auto; border: 1px solid #ddd; } }
+@media print { body { padding: 0; } }
+
+p:has(+ table) { break-after: avoid; }
+thead { break-after: avoid; }
+table:not(:has(tbody tr:nth-child(9))) { break-inside: avoid; }
+
+/* Bilingual table cells contain both languages and may span many pages. */
+table:has(br), table:has(br):not(:has(tbody tr:nth-child(9))) { break-inside: auto; }
+</style></head><body><h1>03 — Example 1: MO-book production planning, from equations to Python objects / 示例 1：MO-book 生产计划，从公式到 Python 对象</h1>
+<h2>03-E01.1 Purpose and files / 目的与文件</h2>
+<p>This learning report connects a small mathematical model to the Python objects discussed in Chapter 03. Follow one quantity from an input <code>float</code>, through a symbolic optimization expression, to a solved number and a labeled pandas table. The goal is to explain what the code means, not just obtain a solver answer.</p>
+<p>这份学习报告把一个小型数学模型与第 03 章介绍的 Python 对象联系起来。沿着一个数值的变化过程，依次认识输入 <code>float</code>、符号优化表达式、求解后的数值，以及带标签的 pandas 表格。目标是理解代码的含义，而不只是得到求解器的答案。</p>
+<p>The example adapts MO-book §1.2, with the problem introduced in §1.1. It is a one-week, single-solve linear program (LP), using textbook data. It is neither a mixed-integer linear program (MILP) nor rolling-horizon planning, and its profit is not company performance. The adaptation preserves the five-variable model while adding numbered Spyder cells, editable inputs, result tables, and checks.</p>
+<p>本例改编自 MO-book §1.2，题目背景见 §1.1。它使用教材数据，是单周、单次求解的线性规划（linear program，LP），既不是混合整数线性规划（MILP），也不是滚动时域计划（rolling-horizon planning）；其中的利润不代表公司经营业绩。改编保留原来的五变量模型，增加了编号的 Spyder 单元、可编辑输入、结果表格和检查。</p>
+<p>Use the standalone <a href="../../examples/03_example_01_mo_book_production.py">Python script</a>. Its upstream copyright and MIT license are retained in <a href="../../examples/LICENSE-MO-book.txt">LICENSE-MO-book.txt</a>. The script computes in memory and prints results; it does not read business inputs, write output files, or use a network connection.</p>
+<p>请使用独立的 <a href="../../examples/03_example_01_mo_book_production.py">Python 脚本</a>。上游版权声明和 MIT 许可保存在 <a href="../../examples/LICENSE-MO-book.txt">LICENSE-MO-book.txt</a>。脚本在内存中计算并打印结果，不读取业务输入、不写入输出文件，也不使用网络连接。</p>
+<h2>03-E01.2 Inputs, decisions, and units / 输入、决策与单位</h2>
+<p>Two products, U and V, consume material M and two kinds of labor, A and B. Choose production and the resources purchased or allocated for this week. The U sales ceiling is not a requirement to make 40 units. V has no separate sales ceiling, but labor still limits production. Money is expressed in generic monetary units. <a href="https://mobook.github.io/MO-book/notebooks/01/01-production-planning.html">Problem source: MO-book §1.1</a><sup class="reference">[1]</sup>.</p>
+<p>两种产品 U、V 消耗原料 M，以及 A、B 两类人工。需要决定本周的产量，以及购买或安排的资源数量。U 的销量上限并不要求必须生产 40 件。V 没有单独的销量上限，但人工能力仍会限制产量。金额使用通用货币单位。<a href="https://mobook.github.io/MO-book/notebooks/01/01-production-planning.html">题目来源：MO-book §1.1</a><sup class="reference">[1]</sup>。</p>
+<table>
+<thead>
+<tr>
+<th>Input per product unit<br>每件产品的输入</th>
+<th style="text-align: right;">U</th>
+<th style="text-align: right;">V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Selling price, monetary units/unit<br>售价，货币单位/件</td>
+<td style="text-align: right;">270</td>
+<td style="text-align: right;">210</td>
+</tr>
+<tr>
+<td>Material M, grams/unit<br>原料 M，克/件</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">9</td>
+</tr>
+<tr>
+<td>Labor A, hours/unit<br>A 类人工，小时/件</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr>
+<td>Labor B, hours/unit<br>B 类人工，小时/件</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr>
+<td>Sales ceiling, units/week<br>销量上限，件/周</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">Not specified<br>未设置</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Resource<br>资源</th>
+<th>Unit cost<br>单位成本</th>
+<th>Weekly availability<br>每周可用量</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Material M<br>原料 M</td>
+<td>10 monetary units/gram<br>10 货币单位/克</td>
+<td>No explicit ceiling<br>没有显式上限</td>
+</tr>
+<tr>
+<td>Labor A<br>A 类人工</td>
+<td>50 monetary units/hour<br>50 货币单位/小时</td>
+<td>80 hours<br>80 小时</td>
+</tr>
+<tr>
+<td>Labor B<br>B 类人工</td>
+<td>40 monetary units/hour<br>40 货币单位/小时</td>
+<td>100 hours<br>100 小时</td>
+</tr>
+</tbody>
+</table>
+<p>All five decisions are nonnegative and continuous. A numerical answer that happens to be an integer does not mean integer restrictions were imposed. There is no inventory carried between weeks.</p>
+<p>五个决策变量都是非负连续变量。数值结果恰好为整数，不代表模型施加了整数约束。本例没有跨周结转的库存。</p>
+<table>
+<thead>
+<tr>
+<th>Mathematical symbol<br>数学符号</th>
+<th>Code object<br>代码对象</th>
+<th>Meaning and unit<br>含义与单位</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>y<sub>U</sub></td>
+<td><code>model.y_U</code></td>
+<td>U output, units/week<br>U 产量，件/周</td>
+</tr>
+<tr>
+<td>y<sub>V</sub></td>
+<td><code>model.y_V</code></td>
+<td>V output, units/week<br>V 产量，件/周</td>
+</tr>
+<tr>
+<td>x<sub>M</sub></td>
+<td><code>model.x_M</code></td>
+<td>Material allocation, grams/week<br>原料安排量，克/周</td>
+</tr>
+<tr>
+<td>x<sub>A</sub></td>
+<td><code>model.x_A</code></td>
+<td>Labor A allocation, hours/week<br>A 类人工安排量，小时/周</td>
+</tr>
+<tr>
+<td>x<sub>B</sub></td>
+<td><code>model.x_B</code></td>
+<td>Labor B allocation, hours/week<br>B 类人工安排量，小时/周</td>
+</tr>
+</tbody>
+</table>
+<p>The letters A and B name labor categories, not additional products. Check dimensions before calculating: monetary units/gram multiplied by grams/week gives monetary units/week.</p>
+<p>字母 A、B 表示人工类别，而不是另外两种产品。计算前先核对量纲：货币单位/克乘以克/周，得到货币单位/周。</p>
+<h2>03-E01.3 The mathematical model and its implementation / 数学模型与代码实现</h2>
+<p>Maximize weekly revenue minus material and labor costs:</p>
+<p>最大化每周收入扣除原料和人工成本后的利润：</p>
+<p>(03-E01.1) maximize P = 270y<sub>U</sub> + 210y<sub>V</sub> − 10x<sub>M</sub> − 50x<sub>A</sub> − 40x<sub>B</sub>.</p>
+
+<p>Production cannot consume more resources than allocated:</p>
+<p>生产消耗的资源不能超过已安排的资源：</p>
+<p>(03-E01.2) 10y<sub>U</sub> + 9y<sub>V</sub> ≤ x<sub>M</sub>.</p>
+
+<p>(03-E01.3) y<sub>U</sub> + y<sub>V</sub> ≤ x<sub>A</sub>.</p>
+
+<p>(03-E01.4) 2y<sub>U</sub> + y<sub>V</sub> ≤ x<sub>B</sub>.</p>
+
+<p>The variable domains and upper bounds complete the model:</p>
+<p>再加上变量取值域与上界，模型就完整了：</p>
+<p>(03-E01.5) x<sub>M</sub> ≥ 0; 0 ≤ x<sub>A</sub> ≤ 80; 0 ≤ x<sub>B</sub> ≤ 100; 0 ≤ y<sub>U</sub> ≤ 40; y<sub>V</sub> ≥ 0.</p>
+
+<p>In S3, <code>pyo.NonNegativeReals</code> supplies nonnegativity and continuity; <code>bounds=(0, labor_b_limit)</code> supplies B's capacity. In S4, <code>model.revenue</code> and <code>model.cost</code> are expressions, not two extra decision variables. <code>model.profit</code> is the objective with <code>sense=pyo.maximize</code>. In S5, the following exact script fragment encodes equation (03-E01.4):</p>
+<p>在 S3 中，<code>pyo.NonNegativeReals</code> 指定非负性和连续性；<code>bounds=(0, labor_b_limit)</code> 指定 B 类人工能力上限。在 S4 中，<code>model.revenue</code> 和 <code>model.cost</code> 是表达式，不是额外增加的两个决策变量。<code>model.profit</code> 是目标，<code>sense=pyo.maximize</code> 表示最大化。下面这段与 S5 完全一致的代码实现公式 (03-E01.4)：</p>
+<pre><code class="language-python">model.labor_B = pyo.Constraint(
+    expr=labor_b_per_u * model.y_U + labor_b_per_v * model.y_V &lt;= model.x_B
+)
+</code></pre>
+<p>Here <code>&lt;=</code> creates a symbolic relation for Pyomo; it is not a solved yes/no result. The resource coefficients map directly to <code>material_per_u</code>, <code>material_per_v</code>, <code>labor_a_per_u</code>, <code>labor_a_per_v</code>, <code>labor_b_per_u</code>, and <code>labor_b_per_v</code>. Prices map to <code>price_u</code> and <code>price_v</code>; resource cost rates map to <code>material_cost</code>, <code>labor_a_cost</code>, and <code>labor_b_cost</code>.</p>
+<p>这里的 <code>&lt;=</code> 为 Pyomo 创建符号关系，并不是求解后得到的“是/否”结果。资源消耗系数直接对应 <code>material_per_u</code>、<code>material_per_v</code>、<code>labor_a_per_u</code>、<code>labor_a_per_v</code>、<code>labor_b_per_u</code> 和 <code>labor_b_per_v</code>。售价对应 <code>price_u</code>、<code>price_v</code>；资源单位成本对应 <code>material_cost</code>、<code>labor_a_cost</code> 和 <code>labor_b_cost</code>。</p>
+<p>Every resource has a positive cost. At an optimum, allocating more than production requires would waste money, so the three resource inequalities are tight. This observation permits the two-output hand calculation later; the runnable script still retains all five variables.</p>
+<p>每种资源的成本都是正数。最优解中，如果安排的资源超过生产需要，就会浪费资金，因此三个资源不等式都取等号。利用这一点，后面可以只用两个产量进行手算；可运行脚本仍然保留全部五个变量。</p>
+<h2>03-E01.4 Read the script by stable cell number / 按固定单元编号阅读脚本</h2>
+<p>The <code># %%</code> markers divide the file into Spyder cells. The cell identifiers stay meaningful even if line numbers change. Read the mathematical model alongside S2–S5, then trace the conversion into ordinary results in S6–S8.</p>
+<p><code># %%</code> 标记把文件划分成 Spyder 单元（cell）。即使代码行号改变，单元编号仍然有效。先把数学模型与 S2–S5 对照阅读，再跟踪 S6–S8 如何把模型转换为普通数值结果。</p>
+<table>
+<thead>
+<tr>
+<th>Cell<br>单元</th>
+<th>Role<br>作用</th>
+<th>What to inspect<br>重点查看</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>E01-S0</td>
+<td>Scope and source<br>范围与来源</td>
+<td>Textbook LP; adaptation notice<br>教材 LP；改编说明</td>
+</tr>
+<tr>
+<td>E01-S1</td>
+<td>Import libraries<br>导入库</td>
+<td><code>pyo</code> for modeling; <code>pd</code> for tables<br><code>pyo</code> 用于建模；<code>pd</code> 用于表格</td>
+</tr>
+<tr>
+<td>E01-S2</td>
+<td>Set numerical inputs<br>设置数值输入</td>
+<td>Prices, costs, coefficients, capacities<br>售价、成本、系数、能力</td>
+</tr>
+<tr>
+<td>E01-S3</td>
+<td>Create model and five variables<br>创建模型及五个变量</td>
+<td>Domains, bounds, unknown values<br>取值域、上下界、未知值</td>
+</tr>
+<tr>
+<td>E01-S4</td>
+<td>Define expressions and objective<br>定义表达式与目标</td>
+<td>Revenue, cost, maximize profit<br>收入、成本、利润最大化</td>
+</tr>
+<tr>
+<td>E01-S5</td>
+<td>Add resource constraints<br>添加资源约束</td>
+<td>Consumption versus allocation<br>消耗量与安排量的关系</td>
+</tr>
+<tr>
+<td>E01-S6</td>
+<td>Solve with HiGHS<br>使用 HiGHS 求解</td>
+<td>Availability and optimal termination<br>求解器可用性与最优终止状态</td>
+</tr>
+<tr>
+<td>E01-S7</td>
+<td>Extract numbers and build tables<br>提取数值并建立表格</td>
+<td><code>production</code>, <code>resources</code>, <code>financials</code></td>
+</tr>
+<tr>
+<td>E01-S8</td>
+<td>Recompute checks and print<br>复算检查并打印</td>
+<td><code>checks</code>, tolerance, displayed results<br><code>checks</code>、容差、显示结果</td>
+</tr>
+</tbody>
+</table>
+<p>S6 first solves with <code>load_solutions=False</code>, then requires <code>TerminationCondition.optimal</code> before loading values. This avoids presenting unaccepted solver output as a valid solution. A missing solver or nonoptimal termination raises an error instead of silently continuing.</p>
+<p>S6 先使用 <code>load_solutions=False</code> 求解，再要求终止状态为 <code>TerminationCondition.optimal</code>，之后才加载数值。这样可以避免把未被接受的求解器输出当作有效解。求解器不可用或未最优终止时，程序会报错，而不是无提示地继续执行。</p>
+<h2>03-E01.5 Python parameters are not optimization variables / Python 参数不等于优化变量</h2>
+<p>The word “variable” has two meanings here. Python names reference objects; an optimization decision variable represents an unknown quantity in the model. A known price may be stored under a Python name without becoming a decision for the solver.</p>
+<p>这里的“变量”有两层含义。Python 名称引用对象；优化决策变量表示模型中的未知数量。已知售价可以保存在某个 Python 名称下，但并不会因此变成求解器需要决定的量。</p>
+<table>
+<thead>
+<tr>
+<th>Example<br>示例</th>
+<th>Kind of object<br>对象类别</th>
+<th>Interpretation<br>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>price_u = 270.0</code></td>
+<td>Python <code>float</code></td>
+<td>Known numerical input<br>已知数值输入</td>
+</tr>
+<tr>
+<td><code>bounds=(0, labor_a_limit)</code></td>
+<td>Python <code>tuple</code></td>
+<td>Pair of lower and upper bounds<br>由下界和上界组成的二元组</td>
+</tr>
+<tr>
+<td><code>model.y_U</code></td>
+<td>Pyomo variable component<br>Pyomo 变量组件</td>
+<td>Symbolic unknown before solving<br>求解前的符号未知量</td>
+</tr>
+<tr>
+<td><code>model.revenue</code></td>
+<td>Pyomo expression component<br>Pyomo 表达式组件</td>
+<td>Formula referencing decisions<br>引用决策变量的公式</td>
+</tr>
+<tr>
+<td><code>u_units = pyo.value(model.y_U)</code></td>
+<td>Solved numeric value; <code>float</code> in the recorded run<br>求解后的数值；记录的运行中为 <code>float</code></td>
+<td>Snapshot of the loaded solution<br>已加载解的数值快照</td>
+</tr>
+<tr>
+<td><code>termination</code></td>
+<td>Python <code>str</code></td>
+<td>Human-readable solver termination<br>可阅读的求解器终止状态</td>
+</tr>
+<tr>
+<td><code>checks</code></td>
+<td>pandas <code>Series</code> of Boolean values<br>包含布尔值的 pandas <code>Series</code></td>
+<td>Named validation results<br>带名称的验证结果</td>
+</tr>
+</tbody>
+</table>
+<p>S2 uses ordinary Python floats, not <code>pyo.Param</code> components. When S3–S5 construct the model, those values enter its bounds and expressions. Reassigning <code>labor_b_limit = 120.0</code> later does not retroactively update the existing model. Rerun the whole file after input edits, including model creation and solving.</p>
+<p>S2 使用普通 Python 浮点数，而不是 <code>pyo.Param</code> 组件。S3–S5 构建模型时，这些数值进入模型的上下界和表达式。之后重新赋值 <code>labor_b_limit = 120.0</code>，不会追溯更新已有模型。修改输入后应完整重跑文件，包括重新建模和求解。</p>
+<p>Before solving, <code>model.y_U.value</code> is <code>None</code>: unknown, not zero. After successful solution loading, <code>pyo.value(model.y_U)</code> extracts its numerical value. The name <code>u_units</code> holds that extracted value, not a live connection that updates automatically after another solve.</p>
+<p>求解前，<code>model.y_U.value</code> 为 <code>None</code>，表示未知，而不是零。成功加载解后，<code>pyo.value(model.y_U)</code> 提取它的数值。<code>u_units</code> 保存的是提取出来的值，不是再次求解后会自动更新的实时连接。</p>
+<p>For inspection, run the following after the complete script. Type names for library components can be more specific than the broad categories above; that is normal.</p>
+<p>完整运行脚本后，可以执行以下语句进行查看。库组件的实际类型名称可能比上表中的类别更具体，这是正常现象。</p>
+<pre><code class="language-python">type(price_u)
+type(model.y_U)
+type(u_units)
+model.y_U.value
+model.labor_B.pprint()
+</code></pre>
+<h2>03-E01.6 From dictionary keys to pandas labels / 从字典键到 pandas 标签</h2>
+<p>In this exact S7 fragment, braces create a Python dictionary. Its string keys become the Series index labels; the numeric values become the Series contents. The <code>name</code> describes the whole Series, not another entry.</p>
+<p>下面这段与 S7 完全一致的代码中，花括号创建 Python 字典（dict）。字符串键（key）成为 Series 的索引标签，数值成为 Series 的内容。<code>name</code> 描述整个 Series，而不是新增一个条目。</p>
+<pre><code class="language-python">financials = pd.Series({
+    &quot;revenue&quot;: revenue_value, &quot;cost&quot;: cost_value, &quot;profit&quot;: profit_value,
+}, name=&quot;monetary_units_per_week&quot;)
+</code></pre>
+<p>A Series is one-dimensional labeled data. <code>financials.loc["profit"]</code> selects by label; <code>financials.iloc[2]</code> selects the third position, counting from zero. They coincide here because of the construction order, but position is not the meaning of the label. Prefer the label when asking for profit. See the <a href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html">Series API</a><sup class="reference">[2]</sup> and <a href="https://pandas.pydata.org/docs/user_guide/indexing.html">indexing guide</a><sup class="reference">[3]</sup>.</p>
+<p>Series 是带标签的一维数据。<code>financials.loc["profit"]</code> 按标签选择；<code>financials.iloc[2]</code> 按从零开始计数的位置选择第三项。本例中两者因构造顺序而得到相同结果，但位置并不是标签的含义。想读取利润时，优先使用利润标签。参见 <a href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html">Series API</a><sup class="reference">[2]</sup> 和<a href="https://pandas.pydata.org/docs/user_guide/indexing.html">索引指南</a><sup class="reference">[3]</sup>。</p>
+<p>The second exact S7 fragment uses a dictionary differently: its keys become DataFrame column labels and its equal-length lists supply the columns.</p>
+<p>第二段与 S7 完全一致的代码以另一种方式使用字典：键成为 DataFrame 的列标签，等长的列表提供各列的数据。</p>
+<pre><code class="language-python">production = pd.DataFrame({
+    &quot;product&quot;: [&quot;U&quot;, &quot;V&quot;],
+    &quot;quantity_units_per_week&quot;: [u_units, v_units],
+})
+</code></pre>
+<p>A DataFrame is two-dimensional. Here the default row index is <code>0, 1</code>; U and V are values in the <code>product</code> column, not row labels. Thus <code>production.loc[0, "quantity_units_per_week"]</code> selects row label 0 and the named column, whereas <code>production.iloc[0, 1]</code> selects the first row and second column by position. <code>production["product"]</code> returns a Series. See the <a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html">DataFrame API</a><sup class="reference">[4]</sup>.</p>
+<p>DataFrame 是二维数据。这里默认的行索引为 <code>0, 1</code>；U、V 是 <code>product</code> 列中的值，而不是行标签。因此，<code>production.loc[0, "quantity_units_per_week"]</code> 选择行标签 0 和指定名称的列，而 <code>production.iloc[0, 1]</code> 按位置选择第一行、第二列。<code>production["product"]</code> 返回一个 Series。参见 <a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html">DataFrame API</a><sup class="reference">[4]</sup>。</p>
+<p>Python dictionary keys are unique: assigning the same key again replaces its associated value. pandas labels are not universally required to be unique. A dictionary's key rule therefore must not be mistaken for a general Series or DataFrame restriction. The containers are related by construction, not identical types. <a href="https://docs.python.org/3/library/stdtypes.html#mapping-types-dict">Python dictionary reference</a><sup class="reference">[5]</sup>.</p>
+<p>Python 字典的键具有唯一性：再次对同一键赋值，会替换对应值。pandas 标签则并非一律要求唯一。因此，不能把字典的键规则误当作 Series 或 DataFrame 的普遍限制。这些容器在构造方式上有关联，但不是同一种类型。参见 <a href="https://docs.python.org/3/library/stdtypes.html#mapping-types-dict">Python 字典参考</a><sup class="reference">[5]</sup>。</p>
+<p>The <code>resources</code> DataFrame similarly uses the keys <code>resource</code>, <code>allocated</code>, <code>limit</code>, and <code>unit</code> as columns. Its <code>limit</code> list contains <code>[None, labor_a_limit, labor_b_limit]</code>; the material row displays <code>NaN</code> in this numeric column. Here that intentionally represents “no explicit material ceiling,” not zero capacity. This is a modeling convention, not a universal interpretation of missing data.</p>
+<p><code>resources</code> DataFrame 同样把 <code>resource</code>、<code>allocated</code>、<code>limit</code>、<code>unit</code> 这些键作为列名。其 <code>limit</code> 列表是 <code>[None, labor_a_limit, labor_b_limit]</code>；原料行在这一数值列中显示为 <code>NaN</code>。这里有意用它表示“没有显式原料上限”，而不是零能力。这是本例的建模约定，不是缺失数据的通用解释。</p>
+<h2>03-E01.7 Run and inspect in Spyder / 在 Spyder 中运行与查看</h2>
+<p>Use the existing <code>Jushi_scheduler</code> environment with <code>pyomo</code>, <code>highspy</code>, and <code>pandas</code>. In an Anaconda Prompt, start from the handbook root:</p>
+<p>使用已有的 <code>Jushi_scheduler</code> 环境，其中需要 <code>pyomo</code>、<code>highspy</code> 和 <code>pandas</code>。在 Anaconda Prompt 中，从手册根目录运行：</p>
+<pre><code class="language-bat">conda activate Jushi_scheduler
+python examples\03_example_01_mo_book_production.py
+</code></pre>
+<p>For Spyder, use this procedure:</p>
+<p>在 Spyder 中按以下步骤操作：</p>
+<ol>
+<li>Open the same script and use a console whose Python interpreter belongs to <code>Jushi_scheduler</code>. Check <code>import sys; print(sys.executable)</code> in that console if uncertain.<br>打开同一个脚本，使用 Python 解释器（interpreter）属于 <code>Jushi_scheduler</code> 的控制台。如果不确定，在该控制台执行 <code>import sys; print(sys.executable)</code> 检查。</li>
+<li>Run the entire file first. Read the termination message and confirm that the independent checks pass.<br>先完整运行文件。阅读终止状态消息，确认独立复算检查通过。</li>
+<li>In Variable Explorer, open <code>production</code>, <code>resources</code>, <code>financials</code>, and <code>checks</code>. These ordinary tables are easier to inspect than the nested <code>model</code> object.<br>在变量浏览器（Variable Explorer）中打开 <code>production</code>、<code>resources</code>、<code>financials</code>、<code>checks</code>。这些普通表格比层层嵌套的 <code>model</code> 对象更容易查看。</li>
+<li>To study construction, restart the console and run cells in order from E01-S1 through E01-S8. Before S6, inspect <code>model.y_U.value</code>; after S7, inspect <code>u_units</code>.<br>为了学习构建过程，重启控制台，按顺序运行 E01-S1 至 E01-S8。S6 之前查看 <code>model.y_U.value</code>；S7 之后查看 <code>u_units</code>。</li>
+<li>After changing S2 inputs, run the entire file again. Do not mix tables from an old solution with a newly edited parameter.<br>修改 S2 输入后，再次完整运行文件。不要把旧解的表格与刚修改的参数混在一起解释。</li>
+</ol>
+<p>The console can also run <code>model.pprint()</code> to display model structure. If HiGHS is unavailable or an import fails, check the active interpreter first; installing packages into a different environment will not repair this console. Spyder interface labels and shortcuts may vary, so use its run-file and run-cell commands. <a href="https://docs.spyder-ide.org/current/panes/editor.html">Spyder editor documentation</a><sup class="reference">[6]</sup>.</p>
+<p>也可以在控制台执行 <code>model.pprint()</code> 显示模型结构。如果 HiGHS 不可用或导入失败，先检查当前解释器；把包安装到另一个环境中，并不能修复这个控制台。Spyder 的界面名称和快捷键可能不同，请使用对应的“运行文件”和“运行单元”命令。参见 <a href="https://docs.spyder-ide.org/current/panes/editor.html">Spyder 编辑器文档</a><sup class="reference">[6]</sup>。</p>
+<h2>03-E01.8 Results, feasibility, and an optimality certificate / 结果、可行性与最优性证明</h2>
+<p>For the baseline inputs, reproduce the following result:</p>
+<p>使用基准输入，应复现以下结果：</p>
+<table>
+<thead>
+<tr>
+<th>Output<br>输出</th>
+<th style="text-align: right;">Value<br>数值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>U production, units/week<br>U 产量，件/周</td>
+<td style="text-align: right;">20</td>
+</tr>
+<tr>
+<td>V production, units/week<br>V 产量，件/周</td>
+<td style="text-align: right;">60</td>
+</tr>
+<tr>
+<td>Material, grams/week<br>原料，克/周</td>
+<td style="text-align: right;">740</td>
+</tr>
+<tr>
+<td>Labor A, hours/week<br>A 类人工，小时/周</td>
+<td style="text-align: right;">80</td>
+</tr>
+<tr>
+<td>Labor B, hours/week<br>B 类人工，小时/周</td>
+<td style="text-align: right;">100</td>
+</tr>
+<tr>
+<td>Revenue, monetary units/week<br>收入，货币单位/周</td>
+<td style="text-align: right;">18000</td>
+</tr>
+<tr>
+<td>Cost, monetary units/week<br>成本，货币单位/周</td>
+<td style="text-align: right;">15400</td>
+</tr>
+<tr>
+<td>Profit, monetary units/week<br>利润，货币单位/周</td>
+<td style="text-align: right;">2600</td>
+</tr>
+</tbody>
+</table>
+<p>Hand checks make the answer interpretable: material is <code>10*20 + 9*60 = 740</code>; labor A is <code>20 + 60 = 80</code>; labor B is <code>2*20 + 60 = 100</code>. Revenue is <code>270*20 + 210*60 = 18000</code>, and cost is <code>10*740 + 50*80 + 40*100 = 15400</code>. U has 20 units of unused sales allowance; both labor capacities are fully used.</p>
+<p>手算有助于解释结果：原料为 <code>10*20 + 9*60 = 740</code>；A 类人工为 <code>20 + 60 = 80</code>；B 类人工为 <code>2*20 + 60 = 100</code>。收入为 <code>270*20 + 210*60 = 18000</code>，成本为 <code>10*740 + 50*80 + 40*100 = 15400</code>。U 距离销量上限还剩 20 件；两类人工能力都已用满。</p>
+<p>The eight S8 checks test nonnegativity, three upper bounds, three resource balances, and the profit identity, with <code>tolerance = 1e-6</code> for floating-point noise. Passing these checks establishes the tested feasibility and consistency conditions; primal feasibility alone does not prove optimality. The solver termination check is separate.</p>
+<p>S8 的八项检查涵盖非负性、三个上界、三个资源平衡关系和利润恒等式，并用 <code>tolerance = 1e-6</code> 处理浮点误差。通过这些检查，说明所检查的可行性和一致性条件成立；仅有原始可行性（primal feasibility），不能证明最优性。求解器终止状态是另行检查的。</p>
+<p>There is also a short analytical certificate. Write U = y<sub>U</sub> and V = y<sub>V</sub>. With no resource waste, each U contributes <code>270 − 100 − 50 − 80 = 40</code>, and each V contributes <code>210 − 90 − 50 − 40 = 30</code>. Any excess allocation only lowers profit. Therefore every feasible plan satisfies:</p>
+<p>还可以给出一个简短的解析最优性证明。记 U = y<sub>U</sub>，V = y<sub>V</sub>。不浪费资源时，每件 U 的贡献为 <code>270 − 100 − 50 − 80 = 40</code>，每件 V 的贡献为 <code>210 − 90 − 50 − 40 = 30</code>。多安排资源只会降低利润。因此，每个可行方案都满足：</p>
+<p>(03-E01.6) P ≤ 40U + 30V = 20(U + V) + 10(2U + V) ≤ 20 × 80 + 10 × 100 = 2600.</p>
+
+<p>The reported plan is feasible and attains 2600, so no feasible plan can improve it. This is an optimality argument, not just substitution into constraints. It uses the baseline coefficients and must be reconsidered after changing inputs.</p>
+<p>报告中的方案可行，而且达到 2600，因此不存在利润更高的可行方案。这是在论证最优性，而不只是把数值代入约束。该证明使用基准系数；改变输入后，需要重新审视证明。</p>
+<h2>03-E01.9 Controlled experiments and next steps / 单因素实验与后续学习</h2>
+<p>Change one input at a time, rerun all cells, record the result, and restore the baseline before the next experiment.</p>
+<p>每次只改变一个输入，完整重跑所有单元，记录结果，并在下一个实验前恢复基准输入。</p>
+<ol>
+<li>Increase <code>labor_b_limit</code> from 100 to 120. Expect U = 40, V = 40, and profit = 2800. Explain why greater B capacity changes the product mix although A capacity stays at 80.<br>把 <code>labor_b_limit</code> 从 100 增加到 120。预期 U = 40、V = 40、利润 = 2800。解释为什么 A 类能力仍为 80，但增加 B 类能力会改变产品组合。</li>
+<li>Set <code>labor_a_limit</code> to zero with other inputs restored. Expect zero production, resource allocation, and profit: both products require A labor.<br>恢复其他输入后，把 <code>labor_a_limit</code> 设为零。预期产量、资源安排量和利润均为零，因为两种产品都需要 A 类人工。</li>
+<li>Retrieve profit using <code>.loc</code>, and retrieve V output from the DataFrame. Explain why <code>.loc["V"]</code> does not work on <code>production</code> as constructed.<br>使用 <code>.loc</code> 读取利润，再从 DataFrame 读取 V 的产量。解释为什么按照当前构造方式，不能对 <code>production</code> 直接使用 <code>.loc["V"]</code>。</li>
+<li>Explain why <code>type(model.y_U)</code> differs from <code>type(u_units)</code>, and why an integer-looking production result is still an LP solution.<br>解释为什么 <code>type(model.y_U)</code> 与 <code>type(u_units)</code> 不同，以及为什么看起来是整数的产量结果仍然是 LP 的解。</li>
+</ol>
+<p>The script does not implement integer batches, setup decisions, equipment assignment, due dates, inventory dynamics, or uncertainty. A next example could introduce explicit integer/binary decisions and inventory balances to build a MILP. A subsequent rolling-horizon example would repeatedly solve a model, implement only the current decisions, and transfer the resulting state to the next window. Those are proposed learning steps, not features already implemented here.</p>
+<p>脚本没有实现整数批次、开停或换产决策、设备分配、交期、库存动态或不确定性。下一个示例可以引入显式的整数/二元决策和库存平衡，建立 MILP。之后的滚动时域示例可以重复求解模型，只执行当前阶段的决策，并把执行后的状态传给下一窗口。这些是建议的后续学习步骤，不是本例已经实现的功能。</p>
+<h2>03-E01.10 Reproducibility and sources / 可复现性与来源</h2>
+<p>The accompanying <a href="../../examples/results/03-example-01-mo-book-production-verification.json">verification record</a> identifies the tested script by a SHA-256 content hash and records the actual checks. The recorded environment is Python 3.12.13, Pyomo 6.10.1, highspy 1.15.1, and pandas 3.0.5 in <code>Jushi_scheduler</code>, dated 2026-09-25. Consult that record when comparing results after edits; an old hash does not verify changed code.</p>
+<p>配套的<a href="../../examples/results/03-example-01-mo-book-production-verification.json">验证记录</a> 用 SHA-256 内容哈希标识被测试的脚本，并记录实际检查。记录的环境为 <code>Jushi_scheduler</code> 中的 Python 3.12.13、Pyomo 6.10.1、highspy 1.15.1 和 pandas 3.0.5，日期为 2026-09-25。修改代码后比较结果时，应查阅该记录；旧哈希不能验证已经修改的代码。</p>
+<p>The separate <a href="../../examples/verify_03_example_01.py">verification script</a> can be run from the handbook root in the same environment:</p>
+<p>独立的<a href="../../examples/verify_03_example_01.py">验证脚本</a> 可以在同一环境中，从手册根目录运行：</p>
+<pre><code class="language-bat">python examples\verify_03_example_01.py
+</code></pre>
+<p>Five cases passed on 2026-09-25: the baseline, B capacity 120, A capacity zero, all nine cells executed in order in a shared namespace, and deliberately infeasible A capacity −1. The last case raised an error before loading a solution: there were zero solution-load calls, and all five decision values remained unset. The negative-capacity case tests failure handling; it is not a sensible business scenario.</p>
+<p>2026-09-25 验证通过了五种情况：基准输入、B 类能力为 120、A 类能力为零、九个单元在共享命名空间中按序执行，以及故意设置不可行的 A 类能力 −1。最后一种情况在加载解之前报错：加载解的调用次数为零，五个决策变量的值都保持未设置状态。负能力案例用于测试失败处理，并不是合理的业务情景。</p>
+<p>Command-line execution and shared-namespace cell execution are distinct from operating Spyder's graphical interface. No Spyder GUI run or performance benchmark is claimed. The small tests check this teaching artifact, not a factory scheduling system or complete business-input validation.</p>
+<p>命令行执行和共享命名空间下的逐单元执行，不等于操作 Spyder 图形界面。本报告不声称进行了 Spyder GUI 运行或性能基准测试。这些小测试检查的是教学材料本身，而不是工厂排产系统，也不是完整的业务输入合法性验证。</p>
+<p>The problem and modeling starting point are <a href="https://mobook.github.io/MO-book/notebooks/01/01-production-planning.html">MO-book §1.1</a><sup class="reference">[1]</sup> and <a href="https://mobook.github.io/MO-book/notebooks/01/02-production-planning-basic.html">MO-book §1.2</a><sup class="reference">[7]</sup>. Code attribution is retained under the <a href="https://github.com/mobook/MO-book/blob/main/LICENSE">upstream MIT license</a><sup class="reference">[8]</sup>. For the library concepts, use the linked Python and pandas references above and <a href="https://pyomo.readthedocs.io/en/stable/explanation/modeling/math_programming/index.html">Pyomo's modeling components documentation</a><sup class="reference">[9]</sup>. The cell numbering, object tracing, result checks, and hand certificate in this report explain the local learning adaptation.</p>
+<p>题目和建模起点分别是 <a href="https://mobook.github.io/MO-book/notebooks/01/01-production-planning.html">MO-book §1.1</a><sup class="reference">[1]</sup> 和 <a href="https://mobook.github.io/MO-book/notebooks/01/02-production-planning-basic.html">MO-book §1.2</a><sup class="reference">[7]</sup>。代码按照<a href="https://github.com/mobook/MO-book/blob/main/LICENSE">上游 MIT 许可</a><sup class="reference">[8]</sup> 保留署名。关于库的概念，可查阅上文链接的 Python、pandas 参考资料，以及 <a href="https://pyomo.readthedocs.io/en/stable/explanation/modeling/math_programming/index.html">Pyomo 建模组件文档</a><sup class="reference">[9]</sup>。本报告中的单元编号、对象跟踪、结果检查与手算证明，用于解释本地学习改编版。</p><h2>参考资料（References）</h2><ol class="references"><li><a href="https://mobook.github.io/MO-book/notebooks/01/01-production-planning.html">https://mobook.github.io/MO-book/notebooks/01/01-production-planning.html</a></li><li><a href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html">https://pandas.pydata.org/docs/reference/api/pandas.Series.html</a></li><li><a href="https://pandas.pydata.org/docs/user_guide/indexing.html">https://pandas.pydata.org/docs/user_guide/indexing.html</a></li><li><a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html">https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html</a></li><li><a href="https://docs.python.org/3/library/stdtypes.html#mapping-types-dict">https://docs.python.org/3/library/stdtypes.html#mapping-types-dict</a></li><li><a href="https://docs.spyder-ide.org/current/panes/editor.html">https://docs.spyder-ide.org/current/panes/editor.html</a></li><li><a href="https://mobook.github.io/MO-book/notebooks/01/02-production-planning-basic.html">https://mobook.github.io/MO-book/notebooks/01/02-production-planning-basic.html</a></li><li><a href="https://github.com/mobook/MO-book/blob/main/LICENSE">https://github.com/mobook/MO-book/blob/main/LICENSE</a></li><li><a href="https://pyomo.readthedocs.io/en/stable/explanation/modeling/math_programming/index.html">https://pyomo.readthedocs.io/en/stable/explanation/modeling/math_programming/index.html</a></li></ol></body></html>

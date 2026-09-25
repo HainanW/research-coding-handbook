@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>03 — Example 1: MO-book production planning, from equations to Python objects</title><style>@page {
+  size: letter;
+  margin: 17mm 16mm 18mm;
+  @top-left { content: "RESEARCH CODING HANDBOOK"; font: 7.5pt Arial, sans-serif; color: #555; }
+  @bottom-right { content: counter(page) " / " counter(pages); font: 8pt Arial, sans-serif; color: #444; }
+}
+* { box-sizing: border-box; }
+html { color: #111; background: white; }
+body {
+  font-family: Arial, "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  font-size: 10pt;
+  line-height: 1.48;
+  margin: 0;
+}
+h1 { font-size: 19pt; line-height: 1.3; margin: 0 0 12pt; font-weight: 700; }
+h2 { font-size: 13pt; line-height: 1.35; margin: 15pt 0 7pt; border-bottom: 0.5pt solid #999; padding-bottom: 4pt; }
+h3 { font-size: 11pt; margin: 12pt 0 5pt; }
+h1, h2, h3 { break-after: avoid; page-break-after: avoid; }
+p { margin: 0 0 8pt; orphans: 3; widows: 3; break-inside: avoid; }
+ul, ol { margin: 5pt 0 9pt; padding-left: 19pt; }
+li { margin-bottom: 4pt; orphans: 2; widows: 2; }
+blockquote { margin: 8pt 0 10pt; padding: 1pt 0 1pt 10pt; border-left: 2pt solid #777; }
+blockquote p { margin: 0; }
+a { color: #111; text-decoration: underline; text-decoration-color: #999; }
+code { font-family: Consolas, "Microsoft YaHei", monospace; font-size: 0.88em; overflow-wrap: anywhere; }
+pre {
+  font-family: Consolas, "Microsoft YaHei", monospace;
+  font-size: 8.2pt;
+  line-height: 1.32;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  tab-size: 4;
+  border: 0.5pt solid #aaa;
+  background: white;
+  padding: 7pt 8pt;
+  margin: 7pt 0 9pt;
+  break-inside: avoid;
+}
+pre code { font-size: inherit; }
+table { width: 100%; table-layout: fixed; border-collapse: collapse; margin: 8pt 0 11pt; font-size: 8.8pt; line-height: 1.38; break-inside: auto; }
+thead { display: table-header-group; }
+tr { break-inside: avoid; }
+th, td { border: 0.5pt solid #999; padding: 5pt 6pt; vertical-align: top; overflow-wrap: anywhere; }
+th { font-weight: bold; background: white; border-bottom: 1pt solid #444; }
+table code { font-size: 0.93em; }
+figure { margin: 9pt 0 12pt; break-inside: avoid; }
+figure p { margin: 0; }
+img { display: block; width: 100%; height: auto; filter: grayscale(1); }
+figcaption { font-size: 8.6pt; line-height: 1.4; margin-top: 5pt; color: #333; }
+sup.reference { font-size: 7pt; margin-left: 2pt; white-space: nowrap; }
+.references { font-size: 8pt; line-height: 1.4; padding-left: 18pt; }
+.references li { margin-bottom: 5pt; overflow-wrap: anywhere; break-inside: avoid; }
+.references a { text-decoration: none; }
+@media screen { body { max-width: 8.5in; padding: 17mm 16mm 18mm; margin: 15px auto; border: 1px solid #ddd; } }
+@media print { body { padding: 0; } }
+
+p:has(+ table) { break-after: avoid; }
+thead { break-after: avoid; }
+table:not(:has(tbody tr:nth-child(9))) { break-inside: avoid; }
+
+/* Bilingual table cells contain both languages and may span many pages. */
+table:has(br), table:has(br):not(:has(tbody tr:nth-child(9))) { break-inside: auto; }
+</style></head><body><h1>03 — Example 1: MO-book production planning, from equations to Python objects</h1>
+<h2>03-E01.1 Purpose and files</h2>
+<p>This learning report connects a small mathematical model to the Python objects discussed in Chapter 03. Follow one quantity from an input <code>float</code>, through a symbolic optimization expression, to a solved number and a labeled pandas table. The goal is to explain what the code means, not just obtain a solver answer.</p>
+<p>The example adapts MO-book §1.2, with the problem introduced in §1.1. It is a one-week, single-solve linear program (LP), using textbook data. It is neither a mixed-integer linear program (MILP) nor rolling-horizon planning, and its profit is not company performance. The adaptation preserves the five-variable model while adding numbered Spyder cells, editable inputs, result tables, and checks.</p>
+<p>Use the standalone <a href="../../examples/03_example_01_mo_book_production.py">Python script</a>. Its upstream copyright and MIT license are retained in <a href="../../examples/LICENSE-MO-book.txt">LICENSE-MO-book.txt</a>. The script computes in memory and prints results; it does not read business inputs, write output files, or use a network connection.</p>
+<h2>03-E01.2 Inputs, decisions, and units</h2>
+<p>Two products, U and V, consume material M and two kinds of labor, A and B. Choose production and the resources purchased or allocated for this week. The U sales ceiling is not a requirement to make 40 units. V has no separate sales ceiling, but labor still limits production. Money is expressed in generic monetary units. <a href="https://mobook.github.io/MO-book/notebooks/01/01-production-planning.html">Problem source: MO-book §1.1</a><sup class="reference">[1]</sup>.</p>
+<table>
+<thead>
+<tr>
+<th>Input per product unit</th>
+<th style="text-align: right;">U</th>
+<th style="text-align: right;">V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Selling price, monetary units/unit</td>
+<td style="text-align: right;">270</td>
+<td style="text-align: right;">210</td>
+</tr>
+<tr>
+<td>Material M, grams/unit</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">9</td>
+</tr>
+<tr>
+<td>Labor A, hours/unit</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr>
+<td>Labor B, hours/unit</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr>
+<td>Sales ceiling, units/week</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">Not specified</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th>Unit cost</th>
+<th>Weekly availability</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Material M</td>
+<td>10 monetary units/gram</td>
+<td>No explicit ceiling</td>
+</tr>
+<tr>
+<td>Labor A</td>
+<td>50 monetary units/hour</td>
+<td>80 hours</td>
+</tr>
+<tr>
+<td>Labor B</td>
+<td>40 monetary units/hour</td>
+<td>100 hours</td>
+</tr>
+</tbody>
+</table>
+<p>All five decisions are nonnegative and continuous. A numerical answer that happens to be an integer does not mean integer restrictions were imposed. There is no inventory carried between weeks.</p>
+<table>
+<thead>
+<tr>
+<th>Mathematical symbol</th>
+<th>Code object</th>
+<th>Meaning and unit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>y<sub>U</sub></td>
+<td><code>model.y_U</code></td>
+<td>U output, units/week</td>
+</tr>
+<tr>
+<td>y<sub>V</sub></td>
+<td><code>model.y_V</code></td>
+<td>V output, units/week</td>
+</tr>
+<tr>
+<td>x<sub>M</sub></td>
+<td><code>model.x_M</code></td>
+<td>Material allocation, grams/week</td>
+</tr>
+<tr>
+<td>x<sub>A</sub></td>
+<td><code>model.x_A</code></td>
+<td>Labor A allocation, hours/week</td>
+</tr>
+<tr>
+<td>x<sub>B</sub></td>
+<td><code>model.x_B</code></td>
+<td>Labor B allocation, hours/week</td>
+</tr>
+</tbody>
+</table>
+<p>The letters A and B name labor categories, not additional products. Check dimensions before calculating: monetary units/gram multiplied by grams/week gives monetary units/week.</p>
+<h2>03-E01.3 The mathematical model and its implementation</h2>
+<p>Maximize weekly revenue minus material and labor costs:</p>
+<p>(03-E01.1) maximize P = 270y<sub>U</sub> + 210y<sub>V</sub> − 10x<sub>M</sub> − 50x<sub>A</sub> − 40x<sub>B</sub>.</p>
+
+<p>Production cannot consume more resources than allocated:</p>
+<p>(03-E01.2) 10y<sub>U</sub> + 9y<sub>V</sub> ≤ x<sub>M</sub>.</p>
+
+<p>(03-E01.3) y<sub>U</sub> + y<sub>V</sub> ≤ x<sub>A</sub>.</p>
+
+<p>(03-E01.4) 2y<sub>U</sub> + y<sub>V</sub> ≤ x<sub>B</sub>.</p>
+
+<p>The variable domains and upper bounds complete the model:</p>
+<p>(03-E01.5) x<sub>M</sub> ≥ 0; 0 ≤ x<sub>A</sub> ≤ 80; 0 ≤ x<sub>B</sub> ≤ 100; 0 ≤ y<sub>U</sub> ≤ 40; y<sub>V</sub> ≥ 0.</p>
+
+<p>In S3, <code>pyo.NonNegativeReals</code> supplies nonnegativity and continuity; <code>bounds=(0, labor_b_limit)</code> supplies B's capacity. In S4, <code>model.revenue</code> and <code>model.cost</code> are expressions, not two extra decision variables. <code>model.profit</code> is the objective with <code>sense=pyo.maximize</code>. In S5, the following exact script fragment encodes equation (03-E01.4):</p>
+<pre><code class="language-python">model.labor_B = pyo.Constraint(
+    expr=labor_b_per_u * model.y_U + labor_b_per_v * model.y_V &lt;= model.x_B
+)
+</code></pre>
+<p>Here <code>&lt;=</code> creates a symbolic relation for Pyomo; it is not a solved yes/no result. The resource coefficients map directly to <code>material_per_u</code>, <code>material_per_v</code>, <code>labor_a_per_u</code>, <code>labor_a_per_v</code>, <code>labor_b_per_u</code>, and <code>labor_b_per_v</code>. Prices map to <code>price_u</code> and <code>price_v</code>; resource cost rates map to <code>material_cost</code>, <code>labor_a_cost</code>, and <code>labor_b_cost</code>.</p>
+<p>Every resource has a positive cost. At an optimum, allocating more than production requires would waste money, so the three resource inequalities are tight. This observation permits the two-output hand calculation later; the runnable script still retains all five variables.</p>
+<h2>03-E01.4 Read the script by stable cell number</h2>
+<p>The <code># %%</code> markers divide the file into Spyder cells. The cell identifiers stay meaningful even if line numbers change. Read the mathematical model alongside S2–S5, then trace the conversion into ordinary results in S6–S8.</p>
+<table>
+<thead>
+<tr>
+<th>Cell</th>
+<th>Role</th>
+<th>What to inspect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>E01-S0</td>
+<td>Scope and source</td>
+<td>Textbook LP; adaptation notice</td>
+</tr>
+<tr>
+<td>E01-S1</td>
+<td>Import libraries</td>
+<td><code>pyo</code> for modeling; <code>pd</code> for tables</td>
+</tr>
+<tr>
+<td>E01-S2</td>
+<td>Set numerical inputs</td>
+<td>Prices, costs, coefficients, capacities</td>
+</tr>
+<tr>
+<td>E01-S3</td>
+<td>Create model and five variables</td>
+<td>Domains, bounds, unknown values</td>
+</tr>
+<tr>
+<td>E01-S4</td>
+<td>Define expressions and objective</td>
+<td>Revenue, cost, maximize profit</td>
+</tr>
+<tr>
+<td>E01-S5</td>
+<td>Add resource constraints</td>
+<td>Consumption versus allocation</td>
+</tr>
+<tr>
+<td>E01-S6</td>
+<td>Solve with HiGHS</td>
+<td>Availability and optimal termination</td>
+</tr>
+<tr>
+<td>E01-S7</td>
+<td>Extract numbers and build tables</td>
+<td><code>production</code>, <code>resources</code>, <code>financials</code></td>
+</tr>
+<tr>
+<td>E01-S8</td>
+<td>Recompute checks and print</td>
+<td><code>checks</code>, tolerance, displayed results</td>
+</tr>
+</tbody>
+</table>
+<p>S6 first solves with <code>load_solutions=False</code>, then requires <code>TerminationCondition.optimal</code> before loading values. This avoids presenting unaccepted solver output as a valid solution. A missing solver or nonoptimal termination raises an error instead of silently continuing.</p>
+<h2>03-E01.5 Python parameters are not optimization variables</h2>
+<p>The word “variable” has two meanings here. Python names reference objects; an optimization decision variable represents an unknown quantity in the model. A known price may be stored under a Python name without becoming a decision for the solver.</p>
+<table>
+<thead>
+<tr>
+<th>Example</th>
+<th>Kind of object</th>
+<th>Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>price_u = 270.0</code></td>
+<td>Python <code>float</code></td>
+<td>Known numerical input</td>
+</tr>
+<tr>
+<td><code>bounds=(0, labor_a_limit)</code></td>
+<td>Python <code>tuple</code></td>
+<td>Pair of lower and upper bounds</td>
+</tr>
+<tr>
+<td><code>model.y_U</code></td>
+<td>Pyomo variable component</td>
+<td>Symbolic unknown before solving</td>
+</tr>
+<tr>
+<td><code>model.revenue</code></td>
+<td>Pyomo expression component</td>
+<td>Formula referencing decisions</td>
+</tr>
+<tr>
+<td><code>u_units = pyo.value(model.y_U)</code></td>
+<td>Solved numeric value; <code>float</code> in the recorded run</td>
+<td>Snapshot of the loaded solution</td>
+</tr>
+<tr>
+<td><code>termination</code></td>
+<td>Python <code>str</code></td>
+<td>Human-readable solver termination</td>
+</tr>
+<tr>
+<td><code>checks</code></td>
+<td>pandas <code>Series</code> of Boolean values</td>
+<td>Named validation results</td>
+</tr>
+</tbody>
+</table>
+<p>S2 uses ordinary Python floats, not <code>pyo.Param</code> components. When S3–S5 construct the model, those values enter its bounds and expressions. Reassigning <code>labor_b_limit = 120.0</code> later does not retroactively update the existing model. Rerun the whole file after input edits, including model creation and solving.</p>
+<p>Before solving, <code>model.y_U.value</code> is <code>None</code>: unknown, not zero. After successful solution loading, <code>pyo.value(model.y_U)</code> extracts its numerical value. The name <code>u_units</code> holds that extracted value, not a live connection that updates automatically after another solve.</p>
+<p>For inspection, run the following after the complete script. Type names for library components can be more specific than the broad categories above; that is normal.</p>
+<pre><code class="language-python">type(price_u)
+type(model.y_U)
+type(u_units)
+model.y_U.value
+model.labor_B.pprint()
+</code></pre>
+<h2>03-E01.6 From dictionary keys to pandas labels</h2>
+<p>In this exact S7 fragment, braces create a Python dictionary. Its string keys become the Series index labels; the numeric values become the Series contents. The <code>name</code> describes the whole Series, not another entry.</p>
+<pre><code class="language-python">financials = pd.Series({
+    &quot;revenue&quot;: revenue_value, &quot;cost&quot;: cost_value, &quot;profit&quot;: profit_value,
+}, name=&quot;monetary_units_per_week&quot;)
+</code></pre>
+<p>A Series is one-dimensional labeled data. <code>financials.loc["profit"]</code> selects by label; <code>financials.iloc[2]</code> selects the third position, counting from zero. They coincide here because of the construction order, but position is not the meaning of the label. Prefer the label when asking for profit. See the <a href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html">Series API</a><sup class="reference">[2]</sup> and <a href="https://pandas.pydata.org/docs/user_guide/indexing.html">indexing guide</a><sup class="reference">[3]</sup>.</p>
+<p>The second exact S7 fragment uses a dictionary differently: its keys become DataFrame column labels and its equal-length lists supply the columns.</p>
+<pre><code class="language-python">production = pd.DataFrame({
+    &quot;product&quot;: [&quot;U&quot;, &quot;V&quot;],
+    &quot;quantity_units_per_week&quot;: [u_units, v_units],
+})
+</code></pre>
+<p>A DataFrame is two-dimensional. Here the default row index is <code>0, 1</code>; U and V are values in the <code>product</code> column, not row labels. Thus <code>production.loc[0, "quantity_units_per_week"]</code> selects row label 0 and the named column, whereas <code>production.iloc[0, 1]</code> selects the first row and second column by position. <code>production["product"]</code> returns a Series. See the <a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html">DataFrame API</a><sup class="reference">[4]</sup>.</p>
+<p>Python dictionary keys are unique: assigning the same key again replaces its associated value. pandas labels are not universally required to be unique. A dictionary's key rule therefore must not be mistaken for a general Series or DataFrame restriction. The containers are related by construction, not identical types. <a href="https://docs.python.org/3/library/stdtypes.html#mapping-types-dict">Python dictionary reference</a><sup class="reference">[5]</sup>.</p>
+<p>The <code>resources</code> DataFrame similarly uses the keys <code>resource</code>, <code>allocated</code>, <code>limit</code>, and <code>unit</code> as columns. Its <code>limit</code> list contains <code>[None, labor_a_limit, labor_b_limit]</code>; the material row displays <code>NaN</code> in this numeric column. Here that intentionally represents “no explicit material ceiling,” not zero capacity. This is a modeling convention, not a universal interpretation of missing data.</p>
+<h2>03-E01.7 Run and inspect in Spyder</h2>
+<p>Use the existing <code>Jushi_scheduler</code> environment with <code>pyomo</code>, <code>highspy</code>, and <code>pandas</code>. In an Anaconda Prompt, start from the handbook root:</p>
+<pre><code class="language-bat">conda activate Jushi_scheduler
+python examples\03_example_01_mo_book_production.py
+</code></pre>
+<p>For Spyder, use this procedure:</p>
+<ol>
+<li>Open the same script and use a console whose Python interpreter belongs to <code>Jushi_scheduler</code>. Check <code>import sys; print(sys.executable)</code> in that console if uncertain.</li>
+<li>Run the entire file first. Read the termination message and confirm that the independent checks pass.</li>
+<li>In Variable Explorer, open <code>production</code>, <code>resources</code>, <code>financials</code>, and <code>checks</code>. These ordinary tables are easier to inspect than the nested <code>model</code> object.</li>
+<li>To study construction, restart the console and run cells in order from E01-S1 through E01-S8. Before S6, inspect <code>model.y_U.value</code>; after S7, inspect <code>u_units</code>.</li>
+<li>After changing S2 inputs, run the entire file again. Do not mix tables from an old solution with a newly edited parameter.</li>
+</ol>
+<p>The console can also run <code>model.pprint()</code> to display model structure. If HiGHS is unavailable or an import fails, check the active interpreter first; installing packages into a different environment will not repair this console. Spyder interface labels and shortcuts may vary, so use its run-file and run-cell commands. <a href="https://docs.spyder-ide.org/current/panes/editor.html">Spyder editor documentation</a><sup class="reference">[6]</sup>.</p>
+<h2>03-E01.8 Results, feasibility, and an optimality certificate</h2>
+<p>For the baseline inputs, reproduce the following result:</p>
+<table>
+<thead>
+<tr>
+<th>Output</th>
+<th style="text-align: right;">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>U production, units/week</td>
+<td style="text-align: right;">20</td>
+</tr>
+<tr>
+<td>V production, units/week</td>
+<td style="text-align: right;">60</td>
+</tr>
+<tr>
+<td>Material, grams/week</td>
+<td style="text-align: right;">740</td>
+</tr>
+<tr>
+<td>Labor A, hours/week</td>
+<td style="text-align: right;">80</td>
+</tr>
+<tr>
+<td>Labor B, hours/week</td>
+<td style="text-align: right;">100</td>
+</tr>
+<tr>
+<td>Revenue, monetary units/week</td>
+<td style="text-align: right;">18000</td>
+</tr>
+<tr>
+<td>Cost, monetary units/week</td>
+<td style="text-align: right;">15400</td>
+</tr>
+<tr>
+<td>Profit, monetary units/week</td>
+<td style="text-align: right;">2600</td>
+</tr>
+</tbody>
+</table>
+<p>Hand checks make the answer interpretable: material is <code>10*20 + 9*60 = 740</code>; labor A is <code>20 + 60 = 80</code>; labor B is <code>2*20 + 60 = 100</code>. Revenue is <code>270*20 + 210*60 = 18000</code>, and cost is <code>10*740 + 50*80 + 40*100 = 15400</code>. U has 20 units of unused sales allowance; both labor capacities are fully used.</p>
+<p>The eight S8 checks test nonnegativity, three upper bounds, three resource balances, and the profit identity, with <code>tolerance = 1e-6</code> for floating-point noise. Passing these checks establishes the tested feasibility and consistency conditions; primal feasibility alone does not prove optimality. The solver termination check is separate.</p>
+<p>There is also a short analytical certificate. Write U = y<sub>U</sub> and V = y<sub>V</sub>. With no resource waste, each U contributes <code>270 − 100 − 50 − 80 = 40</code>, and each V contributes <code>210 − 90 − 50 − 40 = 30</code>. Any excess allocation only lowers profit. Therefore every feasible plan satisfies:</p>
+<p>(03-E01.6) P ≤ 40U + 30V = 20(U + V) + 10(2U + V) ≤ 20 × 80 + 10 × 100 = 2600.</p>
+
+<p>The reported plan is feasible and attains 2600, so no feasible plan can improve it. This is an optimality argument, not just substitution into constraints. It uses the baseline coefficients and must be reconsidered after changing inputs.</p>
+<h2>03-E01.9 Controlled experiments and next steps</h2>
+<p>Change one input at a time, rerun all cells, record the result, and restore the baseline before the next experiment.</p>
+<ol>
+<li>Increase <code>labor_b_limit</code> from 100 to 120. Expect U = 40, V = 40, and profit = 2800. Explain why greater B capacity changes the product mix although A capacity stays at 80.</li>
+<li>Set <code>labor_a_limit</code> to zero with other inputs restored. Expect zero production, resource allocation, and profit: both products require A labor.</li>
+<li>Retrieve profit using <code>.loc</code>, and retrieve V output from the DataFrame. Explain why <code>.loc["V"]</code> does not work on <code>production</code> as constructed.</li>
+<li>Explain why <code>type(model.y_U)</code> differs from <code>type(u_units)</code>, and why an integer-looking production result is still an LP solution.</li>
+</ol>
+<p>The script does not implement integer batches, setup decisions, equipment assignment, due dates, inventory dynamics, or uncertainty. A next example could introduce explicit integer/binary decisions and inventory balances to build a MILP. A subsequent rolling-horizon example would repeatedly solve a model, implement only the current decisions, and transfer the resulting state to the next window. Those are proposed learning steps, not features already implemented here.</p>
+<h2>03-E01.10 Reproducibility and sources</h2>
+<p>The accompanying <a href="../../examples/results/03-example-01-mo-book-production-verification.json">verification record</a> identifies the tested script by a SHA-256 content hash and records the actual checks. The recorded environment is Python 3.12.13, Pyomo 6.10.1, highspy 1.15.1, and pandas 3.0.5 in <code>Jushi_scheduler</code>, dated 2026-09-25. Consult that record when comparing results after edits; an old hash does not verify changed code.</p>
+<p>The separate <a href="../../examples/verify_03_example_01.py">verification script</a> can be run from the handbook root in the same environment:</p>
+<pre><code class="language-bat">python examples\verify_03_example_01.py
+</code></pre>
+<p>Five cases passed on 2026-09-25: the baseline, B capacity 120, A capacity zero, all nine cells executed in order in a shared namespace, and deliberately infeasible A capacity −1. The last case raised an error before loading a solution: there were zero solution-load calls, and all five decision values remained unset. The negative-capacity case tests failure handling; it is not a sensible business scenario.</p>
+<p>Command-line execution and shared-namespace cell execution are distinct from operating Spyder's graphical interface. No Spyder GUI run or performance benchmark is claimed. The small tests check this teaching artifact, not a factory scheduling system or complete business-input validation.</p>
+<p>The problem and modeling starting point are <a href="https://mobook.github.io/MO-book/notebooks/01/01-production-planning.html">MO-book §1.1</a><sup class="reference">[1]</sup> and <a href="https://mobook.github.io/MO-book/notebooks/01/02-production-planning-basic.html">MO-book §1.2</a><sup class="reference">[7]</sup>. Code attribution is retained under the <a href="https://github.com/mobook/MO-book/blob/main/LICENSE">upstream MIT license</a><sup class="reference">[8]</sup>. For the library concepts, use the linked Python and pandas references above and <a href="https://pyomo.readthedocs.io/en/stable/explanation/modeling/math_programming/index.html">Pyomo's modeling components documentation</a><sup class="reference">[9]</sup>. The cell numbering, object tracing, result checks, and hand certificate in this report explain the local learning adaptation.</p><h2>References</h2><ol class="references"><li><a href="https://mobook.github.io/MO-book/notebooks/01/01-production-planning.html">https://mobook.github.io/MO-book/notebooks/01/01-production-planning.html</a></li><li><a href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html">https://pandas.pydata.org/docs/reference/api/pandas.Series.html</a></li><li><a href="https://pandas.pydata.org/docs/user_guide/indexing.html">https://pandas.pydata.org/docs/user_guide/indexing.html</a></li><li><a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html">https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html</a></li><li><a href="https://docs.python.org/3/library/stdtypes.html#mapping-types-dict">https://docs.python.org/3/library/stdtypes.html#mapping-types-dict</a></li><li><a href="https://docs.spyder-ide.org/current/panes/editor.html">https://docs.spyder-ide.org/current/panes/editor.html</a></li><li><a href="https://mobook.github.io/MO-book/notebooks/01/02-production-planning-basic.html">https://mobook.github.io/MO-book/notebooks/01/02-production-planning-basic.html</a></li><li><a href="https://github.com/mobook/MO-book/blob/main/LICENSE">https://github.com/mobook/MO-book/blob/main/LICENSE</a></li><li><a href="https://pyomo.readthedocs.io/en/stable/explanation/modeling/math_programming/index.html">https://pyomo.readthedocs.io/en/stable/explanation/modeling/math_programming/index.html</a></li></ol></body></html>

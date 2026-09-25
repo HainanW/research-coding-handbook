@@ -1,0 +1,4 @@
+interface:
+  display_name: "Research Coding Handbook"
+  short_description: "Bilingual research-code reports and worked examples"
+  default_prompt: "Use $research-coding-handbook to explain the selected research code as a reproducible report in the requested language and formats."
