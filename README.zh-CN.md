@@ -6,7 +6,7 @@
 
 本仓库用于积累科研中反复用到的编程经验、工作流程和模板，重点关注 Python / MATLAB、数值计算、优化与机器学习。目标是让研究过程有据可查，让代码可以维护，让结果能够复现。
 
-> 当前状态：已有九篇指南（guides），涵盖 Spyder 调试、Markdown 插图、Python 数据类型、GitHub 同步、dunder、组织创建、conda 环境、Python 类与 Codex skills，附可运行示例（runnable examples）及生成的图片。
+> 当前状态：已有十篇指南（guides），涵盖 Spyder 调试、Markdown 插图、Python 数据类型、GitHub 同步、dunder、组织创建、conda 环境、Python 类、Codex skills，以及 Python 导入、类型标注与解析，附可运行示例（runnable examples）及生成的图片。
 
 ## 工作环境（Workspace context）
 
@@ -75,17 +75,23 @@
 - 收录可复制提示词、Matplotlib 示例和本篇教程的原始编写请求。安装命令仅作为教程示例；新增本章不代表已安装 skill 或修改 Python 环境。
 - [US Letter 英中双语 PDF](docs/print/09-main-codex-skills.zh-CN.pdf) · [双语打印 HTML](docs/print/09-main-codex-skills.zh-CN.html)。
 
+**10：Python 导入、类型标注与解析**
+
+- [英中双语指南](docs/10-main-python-imports-annotations-parsing.zh-CN.md)：WO Table 4 的导入、类型标注、Python 3.9 中的 `from __future__ import annotations`、dunder 名称及命令行解析。
+- [运行小例子](examples/10_python_annotations_and_parsing.py)：只用标准库，打印检查结果，不创建文件或运行优化。
+- 本次只准备 Markdown 源文件，暂不生成 HTML/PDF 打印版。
+
 可复用的手册写作技能：[research-coding-handbook](skills/research-coding-handbook/SKILL.md)。技能提炼的是报告规范，不是整本手册或内部文档集合。安装为个人技能后，用 `$research-coding-handbook` 指定代码、保存位置和输出格式即可调用；调用不代表授权上传或 Git 推送。
 
 ## 打印版本（Print editions）
 
-`docs/` 中 01–09 的 `.zh-CN.md` 文件是英中双语文档：英文一段、中文一段，列表逐条对照，表格在同一单元格内上下对照。英文 `.md` 继续单独保留；相同代码和图片只放一次。双语文件保留 `.zh-CN` 后缀，与英文版本及对应的 HTML/PDF 打印版一起纳入 Git 并发布到 GitHub。
+`docs/` 中 01–10 的 `.zh-CN.md` 文件是英中双语文档：英文一段、中文一段，列表逐条对照，表格在同一单元格内上下对照。英文 `.md` 继续单独保留；相同代码和图片只放一次。双语文件保留 `.zh-CN` 后缀，与英文版本及对应的 HTML/PDF 打印版一起纳入 Git 并发布到 GitHub。
 
-运行 `python tools/export_print.py --bilingual` 可直接从这些双语 Markdown 生成全部 01–09 的 PDF 和 HTML。也可以在命令后显式传入某个 `.zh-CN.md` 路径。导出器不再自动拼接两个语言文件。
+运行 `python tools/export_print.py --bilingual` 可直接从这些双语 Markdown 生成全部 01–10 的 PDF 和 HTML。也可以在命令后显式传入某个 `.zh-CN.md` 路径。导出器不再自动拼接两个语言文件。第 10 篇目前只有源文件，尚未生成 HTML/PDF。
 
 问题 1 已提供 [US Letter 英中双语 PDF](docs/print/01-main-spyder-function-inspection.zh-CN.pdf) 和[独立双语打印 HTML](docs/print/01-main-spyder-function-inspection.zh-CN.html)。版式采用黑色文字、灰度图片（grayscale figures）、页码（page numbers）、跨页重复表头（repeated table headers）及编号来源网址，方便纸面阅读。
 
-修改 Markdown 后，可在装有 Python-Markdown 且能使用 Chrome 或 Edge 的 Python 环境中运行 `python tools/export_print.py`，重新生成 01–09 英文版；双语版本可用 `--bilingual`，或在命令后显式传入对应 `.zh-CN.md` 路径。导出器已在 Windows、Python-Markdown 3.8、Chrome 152 下验证。样式表（stylesheet）为 `tools/print.css`，输出目录为 `docs/print/`。双语导出文件与源文件一起提交到 Git。
+修改 Markdown 后，可在装有 Python-Markdown 且能使用 Chrome 或 Edge 的 Python 环境中运行 `python tools/export_print.py`，重新生成 01–10 英文版；双语版本可用 `--bilingual`，或在命令后显式传入对应 `.zh-CN.md` 路径。导出器已在 Windows、Python-Markdown 3.8、Chrome 152 下验证。样式表（stylesheet）为 `tools/print.css`，输出目录为 `docs/print/`。双语导出文件与源文件一起提交到 Git。
 
 默认批量导出现在也包含第 03 章的 Example 1。仅更新该案例时运行 `python tools/export_print.py docs/03-example-01-mo-book-production.md docs/03-example-01-mo-book-production.zh-CN.md`。其中的简单公式使用离线 HTML 下标和 Unicode 数学符号，不依赖远程公式服务。
 
@@ -140,7 +146,7 @@
 
 ## 仓库结构（Repository structure）
 
-`docs/` 已包含九篇指南，可运行脚本位于 `examples/`，共用图片放在 `docs/images/`；`templates/` 和 `references/` 为规划目录，尚未创建。英文与双语 Markdown、打印版和共享图片均纳入版本控制。原始内部推送指南继续仅保留在本地，仓库发布其脱敏版。
+`docs/` 已包含十篇指南，可运行脚本位于 `examples/`，共用图片放在 `docs/images/`；`templates/` 和 `references/` 为规划目录，尚未创建。英文与双语 Markdown、打印版和共享图片均纳入版本控制。原始内部推送指南继续仅保留在本地，仓库发布其脱敏版。
 
 主教程使用 `NN-main-topic.md`，英中双语版使用 `NN-main-topic.zh-CN.md`。同主题的补充示例文档可沿用章节编号，例如 `01-example-topic.md`；该名称用于说明后续命名方式，目前尚未创建。`docs/print/` 内 HTML 和 PDF 与源文件同名，仅扩展名不同。可运行 Python 脚本继续放在 `examples/`。
 
@@ -169,6 +175,8 @@ research-coding-handbook/
 │   ├── 08-main-python-classes.zh-CN.md
 │   ├── 09-main-codex-skills.md
 │   ├── 09-main-codex-skills.zh-CN.md
+│   ├── 10-main-python-imports-annotations-parsing.md
+│   ├── 10-main-python-imports-annotations-parsing.zh-CN.md
 │   ├── print/                          # US Letter PDF 与打印 HTML
 │   └── images/
 │       └── 01-generated-data.png       # 双语共用（shared image）
@@ -179,7 +187,8 @@ research-coding-handbook/
 │   ├── 03_example_01_mo_book_production.py
 │   ├── verify_03_example_01.py
 │   ├── 05_dunder_methods.py
-│   └── 08_python_classes.py
+│   ├── 08_python_classes.py
+│   └── 10_python_annotations_and_parsing.py
 ├── tools/                              # 打印导出器与样式表
 ├── skills/                             # 可复用的手册写作技能源码
 ├── templates/                          # 规划：项目、实验、报告模板

@@ -6,7 +6,7 @@ A practical handbook for turning research questions and mathematical models into
 
 This repository collects recurring programming practices, workflows, and templates for research, with a focus on Python / MATLAB, numerical computing, optimization, and machine learning. Its goal is to make research traceable, code maintainable, and results reproducible.
 
-> Status: Nine guides cover Spyder inspection, Markdown images, Python data types, GitHub synchronization, dunder names, GitHub organizations, conda environments, Python classes, and Codex skills. Runnable examples and a generated figure are included.
+> Status: Ten guides cover Spyder inspection, Markdown images, Python data types, GitHub synchronization, dunder names, GitHub organizations, conda environments, Python classes, Codex skills, and Python imports/type annotations/parsing. Runnable examples and a generated figure are included.
 
 ## Workspace Context
 
@@ -72,6 +72,12 @@ This repository collects recurring programming practices, workflows, and templat
 - Includes copyable prompts, a Matplotlib example, and the original tutorial request. The installation commands are documented examples; adding this chapter does not install a skill or change Python environments.
 - [US Letter PDF](docs/print/09-main-codex-skills.pdf) · [Print HTML](docs/print/09-main-codex-skills.html).
 
+**10. Python imports, type annotations, and parsing**
+
+- [Read the guide](docs/10-main-python-imports-annotations-parsing.md): the WO Table 4 imports, type hints, `from __future__ import annotations` in Python 3.9, dunder names, and command-line parsing.
+- [Run the small example](examples/10_python_annotations_and_parsing.py): standard library only; prints values without creating files or running optimization.
+- Markdown sources only for now; HTML/PDF export is deferred.
+
 Reusable handbook-writing skill: [research-coding-handbook](skills/research-coding-handbook/SKILL.md). Its source captures reporting conventions, not the handbook's entire document collection. Once installed as a personal skill, invoke `$research-coding-handbook` with the target code, destination, and requested formats; this does not authorize uploads or Git pushes.
 
 ## GitHub Sync and Koopman Learning Materials
@@ -89,7 +95,7 @@ The original internal push guides are kept locally and excluded from Git. Only t
 
 Q1 is available as a [US Letter PDF](docs/print/01-main-spyder-function-inspection.pdf) and a [self-contained print HTML](docs/print/01-main-spyder-function-inspection.html). 01–09 use US Letter paper (8.5 × 11 inches). The layout uses black text, grayscale figures, page numbers, repeated table headers, and numbered source URLs for reading on paper.
 
-To regenerate after editing the Markdown sources, run `python tools/export_print.py` in a Python environment with Python-Markdown installed and Chrome or Edge available. The exporter was verified with Python-Markdown 3.8 and Chrome 152 on Windows. Its stylesheet is `tools/print.css`; outputs go to `docs/print/`. The command updates 01–09. The `.zh-CN.md` guides contain alternating English and Chinese paragraphs, paired list items, and bilingual table cells. They retain the `.zh-CN` suffix; both language versions and their HTML/PDF print editions are tracked in Git and published together. Run `python tools/export_print.py --bilingual` to export all nine directly to HTML and PDF, or pass an individual `.zh-CN.md` path. The exporter renders this bilingual source as written; it does not merge language editions.
+To regenerate after editing the Markdown sources, run `python tools/export_print.py` in a Python environment with Python-Markdown installed and Chrome or Edge available. The exporter was verified with Python-Markdown 3.8 and Chrome 152 on Windows. Its stylesheet is `tools/print.css`; outputs go to `docs/print/`. The command covers 01–10; chapter 10 has not been exported yet. The `.zh-CN.md` guides contain alternating English and Chinese paragraphs, paired list items, and bilingual table cells. They retain the `.zh-CN` suffix; both language versions and their HTML/PDF print editions are tracked in Git and published together. Run `python tools/export_print.py --bilingual` to export all ten directly to HTML and PDF, or pass an individual `.zh-CN.md` path. The exporter renders this bilingual source as written; it does not merge language editions.
 
 To regenerate Q2's HTML and PDF, run `python tools/export_print.py docs/02-main-markdown-images.md`. The HTML embeds the example image so it can be viewed offline as a single file.
 
@@ -146,7 +152,7 @@ Random seeds are only one part of reproducibility. The environment, data, and pa
 
 ## Repository Structure
 
-`docs/` contains nine guides, with runnable scripts in `examples/`; shared figures live in `docs/images/`. `templates/` and `references/` are planned and have not been created yet.
+`docs/` contains ten guides, with runnable scripts in `examples/`; shared figures live in `docs/images/`. `templates/` and `references/` are planned and have not been created yet.
 
 Main guides use `NN-main-topic.md`, with bilingual editions named `NN-main-topic.zh-CN.md`. Both editions are included in the repository. Supplementary example documents can share the chapter number, for example `01-example-topic.md`; this filename is reserved for future additions. HTML and PDF editions in `docs/print/` use the same stem as their source. Runnable Python scripts remain in `examples/`.
 
@@ -175,6 +181,8 @@ research-coding-handbook/
 │   ├── 08-main-python-classes.zh-CN.md
 │   ├── 09-main-codex-skills.md
 │   ├── 09-main-codex-skills.zh-CN.md
+│   ├── 10-main-python-imports-annotations-parsing.md
+│   ├── 10-main-python-imports-annotations-parsing.zh-CN.md
 │   ├── print/     # PDF and self-contained HTML editions
 │   └── images/
 │       └── 01-generated-data.png
@@ -185,7 +193,8 @@ research-coding-handbook/
 │   ├── 03_example_01_mo_book_production.py
 │   ├── verify_03_example_01.py
 │   ├── 05_dunder_methods.py
-│   └── 08_python_classes.py
+│   ├── 08_python_classes.py
+│   └── 10_python_annotations_and_parsing.py
 ├── tools/         # Print exporter and stylesheet
 ├── skills/        # Reusable handbook-writing skill source
 ├── templates/     # Planned: project, experiment, and report templates

@@ -1,4 +1,4 @@
-"""Export the 01-09 guides and chapter 03 Example 1 to US Letter HTML and PDF.
+"""Export the 01-10 guides and chapter 03 Example 1 to US Letter HTML and PDF.
 
 Requires Python-Markdown and an installed Chrome or Edge browser.
 Run from the repository root: python tools/export_print.py
@@ -31,6 +31,7 @@ DEFAULT_DOCS = (
     "docs/07-main-conda-environment.md",
     "docs/08-main-python-classes.md",
     "docs/09-main-codex-skills.md",
+    "docs/10-main-python-imports-annotations-parsing.md",
 )
 
 
