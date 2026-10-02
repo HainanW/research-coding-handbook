@@ -264,7 +264,100 @@ output path: results/demo
 </code></pre>
 <p>The dictionary is unchanged, its type annotation is stored as text, and the command-line path has been read. The real WO script then passes that path to <code>run_sweep()</code> to begin its calculations.</p>
 <p>字典保持原样，类型标注保存为文字，命令行路径也已读出。实际 WO 脚本随后把路径传给 <code>run_sweep()</code>，才进入计算流程。</p>
-<h2>5. Complete runnable example / 完整可运行代码</h2>
+<h2>5. Read the special names in the example / 理解示例中的特殊名称</h2>
+<h3>5.1 What does <code>identity.__annotations__["p"]</code> retrieve? / 这句取出的是什么？</h3>
+<p>Read this expression from left to right. <code>identity</code> is the function object; the dot accesses its <code>__annotations__</code> attribute, a dictionary of type annotations; <code>["p"]</code> selects the entry whose key is the parameter name <code>p</code>. It does not call <code>identity</code> or retrieve a supplied argument value. Python documents these attributes in its <a href="https://docs.python.org/3.9/reference/datamodel.html#user-defined-functions">data model</a><sup class="reference">[6]</sup>.</p>
+<p>从左向右读：<code>identity</code> 是函数对象；点号访问它的 <code>__annotations__</code> 属性，也就是保存类型标注的字典；<code>["p"]</code> 按参数名 <code>p</code> 查找其中的条目。这句不会调用 <code>identity</code>，也不会读取实际传入的参数值。Python 的<a href="https://docs.python.org/3.9/reference/datamodel.html#user-defined-functions">数据模型文档</a><sup class="reference">[6]</sup>说明了这些属性。</p>
+<p>With the <code>identity</code> definition above and the future import, Python 3.9 produces:</p>
+<p>使用前面的 <code>identity</code> 定义，并保留 future import，在 Python 3.9 中得到：</p>
+<pre><code class="language-python">print(identity.__annotations__)
+# {'p': 'dict[str, float] | None'}
+
+annotation = identity.__annotations__[&quot;p&quot;]
+print(annotation)        # dict[str, float] | None
+print(type(annotation))  # &lt;class 'str'&gt;
+
+value = identity({&quot;rho&quot;: 50.0})
+print(value)             # {'rho': 50.0}
+print(type(value))       # &lt;class 'dict'&gt;
+</code></pre>
+<p><code>annotation</code> holds the saved description; <code>value</code> holds the actual dictionary. The string key <code>"p"</code> selects the description even when no function call has occurred. The final <code>= None</code> belongs to the parameter default, so it is absent from the annotation string.</p>
+<p><code>annotation</code> 保存的是类型说明文字，<code>value</code> 保存的才是真实字典。字符串键 <code>"p"</code> 用来查找说明，即使还没调用函数，也能读取。最后的 <code>= None</code> 属于参数默认值，因此不包含在标注字符串中。</p>
+<h3>5.2 What does <code>__name__</code> mean here? / 这里的 <code>__name__</code> 是什么？</h3>
+<p>Look at the object before the dot. <code>identity.__name__</code> is the function's name. <code>type(annotation)</code> returns the type object <code>str</code>; accessing that object's <code>__name__</code> returns its short name, the string <code>"str"</code>.</p>
+<p>先看点号前面是谁：<code>identity.__name__</code> 是这个函数的名字。<code>type(annotation)</code> 得到类型对象 <code>str</code>，再读取它的 <code>__name__</code>，得到简短的类型名称，也就是字符串 <code>"str"</code>。</p>
+<pre><code class="language-python">print(identity.__name__)           # identity
+print(type(annotation))           # &lt;class 'str'&gt;
+print(type(annotation).__name__)  # str
+</code></pre>
+<p>In the script's entry-point condition, bare <code>__name__</code> instead refers to the current module's name. A function's name, a type's name, and a module's name describe different objects.</p>
+<p>在脚本的入口判断中，单独写的 <code>__name__</code> 则表示当前模块的名称。函数名、类型名和模块名描述的是不同对象，不能混为一谈。</p>
+<h3>5.3 Why two underscores at both ends? / 为什么前后各有两个下划线？</h3>
+<p><code>__name__</code> and <code>__annotations__</code> use two underscores on each side, with no spaces. This is the <em>dunder</em> naming pattern. Python reserves this pattern for documented special names; the <a href="https://docs.python.org/3.9/reference/lexical_analysis.html#reserved-classes-of-identifiers">identifier rules</a><sup class="reference">[7]</sup> explain the convention.</p>
+<p><code>__name__</code> 和 <code>__annotations__</code> 前后各有两个下划线，中间没有空格，称为 dunder 命名形式。Python 为文档中规定的特殊名称保留这种形式；参见<a href="https://docs.python.org/3.9/reference/lexical_analysis.html#reserved-classes-of-identifiers">标识符规则</a><sup class="reference">[7]</sup>。</p>
+<table>
+<thead>
+<tr>
+<th>Name<br>名称</th>
+<th>Established purpose<br>规定的用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>__name__</code></td>
+<td>Name of the relevant module, function, or class<br>对应模块、函数或类的名称</td>
+</tr>
+<tr>
+<td><code>__annotations__</code></td>
+<td>Stored type annotations<br>保存的类型标注</td>
+</tr>
+<tr>
+<td><code>__init__</code></td>
+<td>Method used to initialize a newly created instance<br>用于初始化新实例的方法</td>
+</tr>
+</tbody>
+</table>
+<p>The underscores are part of the exact name, not an operation that adds a capability. <code>identity.name</code> does not automatically mean <code>identity.__name__</code>, and inventing <code>__my_setting__</code> gives it no automatic behavior. Use ordinary names such as <code>parameters</code> or <code>main</code> for your own variables and functions. A method beginning with two underscores but not ending with two, such as <code>__helper</code>, follows a different class naming rule.</p>
+<p>下划线是完整名称的一部分，不是“加上就能获得功能”的运算。<code>identity.name</code> 不会自动等同于 <code>identity.__name__</code>；自己写一个 <code>__my_setting__</code> 也不会产生自动行为。普通变量和函数使用 <code>parameters</code>、<code>main</code> 这样的名称即可。另外，类中只有前面两个下划线、后面没有两个下划线的方法名，例如 <code>__helper</code>，遵循另一种类命名规则。</p>
+<h3>5.4 Why write <code>if __name__ == "__main__":</code>? / 为什么要写这个入口判断？</h3>
+<p>The following independent teaching file, <code>demo.py</code>, makes the distinction visible. See Python's <a href="https://docs.python.org/3.9/library/__main__.html">top-level script environment</a><sup class="reference">[8]</sup>.</p>
+<p>下面这个独立教学文件 <code>demo.py</code> 可以直接展示区别。参见 Python 的<a href="https://docs.python.org/3.9/library/__main__.html">顶层脚本环境</a><sup class="reference">[8]</sup>。</p>
+<pre><code class="language-python"># Save this separate teaching example as demo.py.
+print(&quot;module name:&quot;, __name__)
+
+def main():
+    print(&quot;Starting demo&quot;)
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre>
+<p>Run these commands separately from the directory containing <code>demo.py</code>:</p>
+<p>在 <code>demo.py</code> 所在目录分别执行以下命令：</p>
+<table>
+<thead>
+<tr>
+<th>Command<br>命令</th>
+<th>Printed output<br>打印结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>python demo.py</code></td>
+<td><code>module name: __main__</code><br><code>Starting demo</code></td>
+</tr>
+<tr>
+<td><code>python -c "import demo"</code></td>
+<td><code>module name: demo</code></td>
+</tr>
+</tbody>
+</table>
+<p>Direct execution gives the module the name <code>"__main__"</code>, so the condition is true and calls <code>main()</code>. Importing it as <code>demo</code> makes the condition false. Import still executes the unguarded top-level <code>print</code> and defines the function; it skips only the guarded call. The chapter's standalone script has no such unguarded print, so importing it produces no output.</p>
+<p>直接运行时，模块名为 <code>"__main__"</code>，条件成立，就调用 <code>main()</code>。以 <code>demo</code> 导入时，条件不成立。导入仍然会执行没有放在判断内的顶层 <code>print</code>，并定义函数；这里只跳过判断内的调用。本章的独立脚本没有这种顶层打印，所以导入它不会产生输出。</p>
+<p><code>main</code> is an ordinary function name chosen by the author; Python does not call it just because of that name. <code>def main():</code> defines it, while <code>main()</code> calls it. <code>"__main__"</code> is a separate string identifying the entry module, and <code>==</code> compares values. You could rename the function to <code>run_demo</code> if you also change its call.</p>
+<p><code>main</code> 是作者给普通函数取的名字，Python 不会仅仅因为这个名字就自动调用它。<code>def main():</code> 定义函数，<code>main()</code> 调用函数。<code>"__main__"</code> 则是标识入口模块的字符串；<code>==</code> 用来比较值。也可以把函数改名为 <code>run_demo</code>，同时修改调用处即可。</p>
+<p>These annotation, name, and direct-run/import examples were checked with Python 3.9.25. The complete chapter script follows.</p>
+<p>上述类型标注、名称读取和直接运行／导入示例已用 Python 3.9.25 核对。下一节附本章完整脚本。</p>
+<h2>6. Complete runnable example / 完整可运行代码</h2>
 <p>Below is the complete source of <code>examples/10_python_annotations_and_parsing.py</code>. Save it as that file and run the Section 4 command with Python 3.9+. It uses only the standard library and prints values without creating files or running optimization.</p>
 <p>下面是 <code>examples/10_python_annotations_and_parsing.py</code> 的完整源代码。保存为该文件后，用 Python 3.9+ 运行第 4 节的命令。仅使用标准库，打印检查结果，不创建文件或运行优化。</p>
 <pre><code class="language-python">&quot;&quot;&quot;Chapter 10 teaching example. Python 3.9+; standard library only.
@@ -297,4 +390,4 @@ def identity(p: dict[str, float] | None = None):
 </code></pre>
 <pre><code class="language-python">if __name__ == &quot;__main__&quot;:
     main()
-</code></pre><h2>参考资料（References）</h2><ol class="references"><li><a href="https://docs.python.org/3.9/library/typing.html">https://docs.python.org/3.9/library/typing.html</a></li><li><a href="https://docs.python.org/3.10/whatsnew/3.10.html#pep-604-new-type-union-operator">https://docs.python.org/3.10/whatsnew/3.10.html#pep-604-new-type-union-operator</a></li><li><a href="https://peps.python.org/pep-0563/">https://peps.python.org/pep-0563/</a></li><li><a href="https://docs.python.org/3.9/reference/simple_stmts.html#future-statements">https://docs.python.org/3.9/reference/simple_stmts.html#future-statements</a></li><li><a href="https://docs.python.org/3.9/library/argparse.html">https://docs.python.org/3.9/library/argparse.html</a></li></ol></body></html>
+</code></pre><h2>参考资料（References）</h2><ol class="references"><li><a href="https://docs.python.org/3.9/library/typing.html">https://docs.python.org/3.9/library/typing.html</a></li><li><a href="https://docs.python.org/3.10/whatsnew/3.10.html#pep-604-new-type-union-operator">https://docs.python.org/3.10/whatsnew/3.10.html#pep-604-new-type-union-operator</a></li><li><a href="https://peps.python.org/pep-0563/">https://peps.python.org/pep-0563/</a></li><li><a href="https://docs.python.org/3.9/reference/simple_stmts.html#future-statements">https://docs.python.org/3.9/reference/simple_stmts.html#future-statements</a></li><li><a href="https://docs.python.org/3.9/library/argparse.html">https://docs.python.org/3.9/library/argparse.html</a></li><li><a href="https://docs.python.org/3.9/reference/datamodel.html#user-defined-functions">https://docs.python.org/3.9/reference/datamodel.html#user-defined-functions</a></li><li><a href="https://docs.python.org/3.9/reference/lexical_analysis.html#reserved-classes-of-identifiers">https://docs.python.org/3.9/reference/lexical_analysis.html#reserved-classes-of-identifiers</a></li><li><a href="https://docs.python.org/3.9/library/__main__.html">https://docs.python.org/3.9/library/__main__.html</a></li></ol></body></html>

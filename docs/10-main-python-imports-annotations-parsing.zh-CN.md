@@ -234,7 +234,106 @@ The dictionary is unchanged, its type annotation is stored as text, and the comm
 
 字典保持原样，类型标注保存为文字，命令行路径也已读出。实际 WO 脚本随后把路径传给 `run_sweep()`，才进入计算流程。
 
-## 5. Complete runnable example / 完整可运行代码
+## 5. Read the special names in the example / 理解示例中的特殊名称
+
+### 5.1 What does `identity.__annotations__["p"]` retrieve? / 这句取出的是什么？
+
+Read this expression from left to right. `identity` is the function object; the dot accesses its `__annotations__` attribute, a dictionary of type annotations; `["p"]` selects the entry whose key is the parameter name `p`. It does not call `identity` or retrieve a supplied argument value. Python documents these attributes in its [data model](https://docs.python.org/3.9/reference/datamodel.html#user-defined-functions).
+
+从左向右读：`identity` 是函数对象；点号访问它的 `__annotations__` 属性，也就是保存类型标注的字典；`["p"]` 按参数名 `p` 查找其中的条目。这句不会调用 `identity`，也不会读取实际传入的参数值。Python 的[数据模型文档](https://docs.python.org/3.9/reference/datamodel.html#user-defined-functions)说明了这些属性。
+
+With the `identity` definition above and the future import, Python 3.9 produces:
+
+使用前面的 `identity` 定义，并保留 future import，在 Python 3.9 中得到：
+
+```python
+print(identity.__annotations__)
+# {'p': 'dict[str, float] | None'}
+
+annotation = identity.__annotations__["p"]
+print(annotation)        # dict[str, float] | None
+print(type(annotation))  # <class 'str'>
+
+value = identity({"rho": 50.0})
+print(value)             # {'rho': 50.0}
+print(type(value))       # <class 'dict'>
+```
+
+`annotation` holds the saved description; `value` holds the actual dictionary. The string key `"p"` selects the description even when no function call has occurred. The final `= None` belongs to the parameter default, so it is absent from the annotation string.
+
+`annotation` 保存的是类型说明文字，`value` 保存的才是真实字典。字符串键 `"p"` 用来查找说明，即使还没调用函数，也能读取。最后的 `= None` 属于参数默认值，因此不包含在标注字符串中。
+
+### 5.2 What does `__name__` mean here? / 这里的 `__name__` 是什么？
+
+Look at the object before the dot. `identity.__name__` is the function's name. `type(annotation)` returns the type object `str`; accessing that object's `__name__` returns its short name, the string `"str"`.
+
+先看点号前面是谁：`identity.__name__` 是这个函数的名字。`type(annotation)` 得到类型对象 `str`，再读取它的 `__name__`，得到简短的类型名称，也就是字符串 `"str"`。
+
+```python
+print(identity.__name__)           # identity
+print(type(annotation))           # <class 'str'>
+print(type(annotation).__name__)  # str
+```
+
+In the script's entry-point condition, bare `__name__` instead refers to the current module's name. A function's name, a type's name, and a module's name describe different objects.
+
+在脚本的入口判断中，单独写的 `__name__` 则表示当前模块的名称。函数名、类型名和模块名描述的是不同对象，不能混为一谈。
+
+### 5.3 Why two underscores at both ends? / 为什么前后各有两个下划线？
+
+`__name__` and `__annotations__` use two underscores on each side, with no spaces. This is the *dunder* naming pattern. Python reserves this pattern for documented special names; the [identifier rules](https://docs.python.org/3.9/reference/lexical_analysis.html#reserved-classes-of-identifiers) explain the convention.
+
+`__name__` 和 `__annotations__` 前后各有两个下划线，中间没有空格，称为 dunder 命名形式。Python 为文档中规定的特殊名称保留这种形式；参见[标识符规则](https://docs.python.org/3.9/reference/lexical_analysis.html#reserved-classes-of-identifiers)。
+
+| Name<br>名称 | Established purpose<br>规定的用途 |
+| --- | --- |
+| `__name__` | Name of the relevant module, function, or class<br>对应模块、函数或类的名称 |
+| `__annotations__` | Stored type annotations<br>保存的类型标注 |
+| `__init__` | Method used to initialize a newly created instance<br>用于初始化新实例的方法 |
+
+The underscores are part of the exact name, not an operation that adds a capability. `identity.name` does not automatically mean `identity.__name__`, and inventing `__my_setting__` gives it no automatic behavior. Use ordinary names such as `parameters` or `main` for your own variables and functions. A method beginning with two underscores but not ending with two, such as `__helper`, follows a different class naming rule.
+
+下划线是完整名称的一部分，不是“加上就能获得功能”的运算。`identity.name` 不会自动等同于 `identity.__name__`；自己写一个 `__my_setting__` 也不会产生自动行为。普通变量和函数使用 `parameters`、`main` 这样的名称即可。另外，类中只有前面两个下划线、后面没有两个下划线的方法名，例如 `__helper`，遵循另一种类命名规则。
+
+### 5.4 Why write `if __name__ == "__main__":`? / 为什么要写这个入口判断？
+
+The following independent teaching file, `demo.py`, makes the distinction visible. See Python's [top-level script environment](https://docs.python.org/3.9/library/__main__.html).
+
+下面这个独立教学文件 `demo.py` 可以直接展示区别。参见 Python 的[顶层脚本环境](https://docs.python.org/3.9/library/__main__.html)。
+
+```python
+# Save this separate teaching example as demo.py.
+print("module name:", __name__)
+
+def main():
+    print("Starting demo")
+
+if __name__ == "__main__":
+    main()
+```
+
+Run these commands separately from the directory containing `demo.py`:
+
+在 `demo.py` 所在目录分别执行以下命令：
+
+| Command<br>命令 | Printed output<br>打印结果 |
+| --- | --- |
+| `python demo.py` | `module name: __main__`<br>`Starting demo` |
+| `python -c "import demo"` | `module name: demo` |
+
+Direct execution gives the module the name `"__main__"`, so the condition is true and calls `main()`. Importing it as `demo` makes the condition false. Import still executes the unguarded top-level `print` and defines the function; it skips only the guarded call. The chapter's standalone script has no such unguarded print, so importing it produces no output.
+
+直接运行时，模块名为 `"__main__"`，条件成立，就调用 `main()`。以 `demo` 导入时，条件不成立。导入仍然会执行没有放在判断内的顶层 `print`，并定义函数；这里只跳过判断内的调用。本章的独立脚本没有这种顶层打印，所以导入它不会产生输出。
+
+`main` is an ordinary function name chosen by the author; Python does not call it just because of that name. `def main():` defines it, while `main()` calls it. `"__main__"` is a separate string identifying the entry module, and `==` compares values. You could rename the function to `run_demo` if you also change its call.
+
+`main` 是作者给普通函数取的名字，Python 不会仅仅因为这个名字就自动调用它。`def main():` 定义函数，`main()` 调用函数。`"__main__"` 则是标识入口模块的字符串；`==` 用来比较值。也可以把函数改名为 `run_demo`，同时修改调用处即可。
+
+These annotation, name, and direct-run/import examples were checked with Python 3.9.25. The complete chapter script follows.
+
+上述类型标注、名称读取和直接运行／导入示例已用 Python 3.9.25 核对。下一节附本章完整脚本。
+
+## 6. Complete runnable example / 完整可运行代码
 
 Below is the complete source of `examples/10_python_annotations_and_parsing.py`. Save it as that file and run the Section 4 command with Python 3.9+. It uses only the standard library and prints values without creating files or running optimization.
 

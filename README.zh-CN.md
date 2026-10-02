@@ -79,7 +79,7 @@
 
 - [英中双语指南](docs/10-main-python-imports-annotations-parsing.zh-CN.md)：WO Table 4 的导入、类型标注、Python 3.9 中的 `from __future__ import annotations`、dunder 名称及命令行解析。
 - [运行小例子](examples/10_python_annotations_and_parsing.py)：只用标准库，打印检查结果，不创建文件或运行优化。
-- 第 5 节附有完整可运行代码，英文版、英中双语版及对应打印版均可直接阅读和复制。
+- 第 5 节解释 `__annotations__`、对象与模块的 `__name__`、dunder 命名及入口判断，并对比直接运行与导入。第 6 节附完整可运行代码，英文版、英中双语版及对应打印版均可直接阅读和复制。
 - [US Letter 英中双语 PDF](docs/print/10-main-python-imports-annotations-parsing.zh-CN.pdf) · [双语打印 HTML](docs/print/10-main-python-imports-annotations-parsing.zh-CN.html)。
 - [英文 PDF](docs/print/10-main-python-imports-annotations-parsing.pdf) · [英文打印 HTML](docs/print/10-main-python-imports-annotations-parsing.html)。
 

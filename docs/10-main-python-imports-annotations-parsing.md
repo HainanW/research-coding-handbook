@@ -174,7 +174,82 @@ output path: results/demo
 
 The dictionary is unchanged, its type annotation is stored as text, and the command-line path has been read. The real WO script then passes that path to `run_sweep()` to begin its calculations.
 
-## 5. Complete runnable example
+## 5. Read the special names in the example
+
+### 5.1 What does `identity.__annotations__["p"]` retrieve?
+
+Read this expression from left to right. `identity` is the function object; the dot accesses its `__annotations__` attribute, a dictionary of type annotations; `["p"]` selects the entry whose key is the parameter name `p`. It does not call `identity` or retrieve a supplied argument value. Python documents these attributes in its [data model](https://docs.python.org/3.9/reference/datamodel.html#user-defined-functions).
+
+With the `identity` definition above and the future import, Python 3.9 produces:
+
+```python
+print(identity.__annotations__)
+# {'p': 'dict[str, float] | None'}
+
+annotation = identity.__annotations__["p"]
+print(annotation)        # dict[str, float] | None
+print(type(annotation))  # <class 'str'>
+
+value = identity({"rho": 50.0})
+print(value)             # {'rho': 50.0}
+print(type(value))       # <class 'dict'>
+```
+
+`annotation` holds the saved description; `value` holds the actual dictionary. The string key `"p"` selects the description even when no function call has occurred. The final `= None` belongs to the parameter default, so it is absent from the annotation string.
+
+### 5.2 What does `__name__` mean here?
+
+Look at the object before the dot. `identity.__name__` is the function's name. `type(annotation)` returns the type object `str`; accessing that object's `__name__` returns its short name, the string `"str"`.
+
+```python
+print(identity.__name__)           # identity
+print(type(annotation))           # <class 'str'>
+print(type(annotation).__name__)  # str
+```
+
+In the script's entry-point condition, bare `__name__` instead refers to the current module's name. A function's name, a type's name, and a module's name describe different objects.
+
+### 5.3 Why two underscores at both ends?
+
+`__name__` and `__annotations__` use two underscores on each side, with no spaces. This is the *dunder* naming pattern. Python reserves this pattern for documented special names; the [identifier rules](https://docs.python.org/3.9/reference/lexical_analysis.html#reserved-classes-of-identifiers) explain the convention.
+
+| Name | Established purpose |
+| --- | --- |
+| `__name__` | Name of the relevant module, function, or class |
+| `__annotations__` | Stored type annotations |
+| `__init__` | Method used to initialize a newly created instance |
+
+The underscores are part of the exact name, not an operation that adds a capability. `identity.name` does not automatically mean `identity.__name__`, and inventing `__my_setting__` gives it no automatic behavior. Use ordinary names such as `parameters` or `main` for your own variables and functions. A method beginning with two underscores but not ending with two, such as `__helper`, follows a different class naming rule.
+
+### 5.4 Why write `if __name__ == "__main__":`?
+
+The following independent teaching file, `demo.py`, makes the distinction visible. See Python's [top-level script environment](https://docs.python.org/3.9/library/__main__.html).
+
+```python
+# Save this separate teaching example as demo.py.
+print("module name:", __name__)
+
+def main():
+    print("Starting demo")
+
+if __name__ == "__main__":
+    main()
+```
+
+Run these commands separately from the directory containing `demo.py`:
+
+| Command | Printed output |
+| --- | --- |
+| `python demo.py` | `module name: __main__`<br>`Starting demo` |
+| `python -c "import demo"` | `module name: demo` |
+
+Direct execution gives the module the name `"__main__"`, so the condition is true and calls `main()`. Importing it as `demo` makes the condition false. Import still executes the unguarded top-level `print` and defines the function; it skips only the guarded call. The chapter's standalone script has no such unguarded print, so importing it produces no output.
+
+`main` is an ordinary function name chosen by the author; Python does not call it just because of that name. `def main():` defines it, while `main()` calls it. `"__main__"` is a separate string identifying the entry module, and `==` compares values. You could rename the function to `run_demo` if you also change its call.
+
+These annotation, name, and direct-run/import examples were checked with Python 3.9.25. The complete chapter script follows.
+
+## 6. Complete runnable example
 
 Below is the complete source of `examples/10_python_annotations_and_parsing.py`. Save it as that file and run the Section 4 command with Python 3.9+. It uses only the standard library and prints values without creating files or running optimization.
 

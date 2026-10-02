@@ -233,7 +233,88 @@ annotation type: str
 output path: results/demo
 </code></pre>
 <p>The dictionary is unchanged, its type annotation is stored as text, and the command-line path has been read. The real WO script then passes that path to <code>run_sweep()</code> to begin its calculations.</p>
-<h2>5. Complete runnable example</h2>
+<h2>5. Read the special names in the example</h2>
+<h3>5.1 What does <code>identity.__annotations__["p"]</code> retrieve?</h3>
+<p>Read this expression from left to right. <code>identity</code> is the function object; the dot accesses its <code>__annotations__</code> attribute, a dictionary of type annotations; <code>["p"]</code> selects the entry whose key is the parameter name <code>p</code>. It does not call <code>identity</code> or retrieve a supplied argument value. Python documents these attributes in its <a href="https://docs.python.org/3.9/reference/datamodel.html#user-defined-functions">data model</a><sup class="reference">[6]</sup>.</p>
+<p>With the <code>identity</code> definition above and the future import, Python 3.9 produces:</p>
+<pre><code class="language-python">print(identity.__annotations__)
+# {'p': 'dict[str, float] | None'}
+
+annotation = identity.__annotations__[&quot;p&quot;]
+print(annotation)        # dict[str, float] | None
+print(type(annotation))  # &lt;class 'str'&gt;
+
+value = identity({&quot;rho&quot;: 50.0})
+print(value)             # {'rho': 50.0}
+print(type(value))       # &lt;class 'dict'&gt;
+</code></pre>
+<p><code>annotation</code> holds the saved description; <code>value</code> holds the actual dictionary. The string key <code>"p"</code> selects the description even when no function call has occurred. The final <code>= None</code> belongs to the parameter default, so it is absent from the annotation string.</p>
+<h3>5.2 What does <code>__name__</code> mean here?</h3>
+<p>Look at the object before the dot. <code>identity.__name__</code> is the function's name. <code>type(annotation)</code> returns the type object <code>str</code>; accessing that object's <code>__name__</code> returns its short name, the string <code>"str"</code>.</p>
+<pre><code class="language-python">print(identity.__name__)           # identity
+print(type(annotation))           # &lt;class 'str'&gt;
+print(type(annotation).__name__)  # str
+</code></pre>
+<p>In the script's entry-point condition, bare <code>__name__</code> instead refers to the current module's name. A function's name, a type's name, and a module's name describe different objects.</p>
+<h3>5.3 Why two underscores at both ends?</h3>
+<p><code>__name__</code> and <code>__annotations__</code> use two underscores on each side, with no spaces. This is the <em>dunder</em> naming pattern. Python reserves this pattern for documented special names; the <a href="https://docs.python.org/3.9/reference/lexical_analysis.html#reserved-classes-of-identifiers">identifier rules</a><sup class="reference">[7]</sup> explain the convention.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Established purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>__name__</code></td>
+<td>Name of the relevant module, function, or class</td>
+</tr>
+<tr>
+<td><code>__annotations__</code></td>
+<td>Stored type annotations</td>
+</tr>
+<tr>
+<td><code>__init__</code></td>
+<td>Method used to initialize a newly created instance</td>
+</tr>
+</tbody>
+</table>
+<p>The underscores are part of the exact name, not an operation that adds a capability. <code>identity.name</code> does not automatically mean <code>identity.__name__</code>, and inventing <code>__my_setting__</code> gives it no automatic behavior. Use ordinary names such as <code>parameters</code> or <code>main</code> for your own variables and functions. A method beginning with two underscores but not ending with two, such as <code>__helper</code>, follows a different class naming rule.</p>
+<h3>5.4 Why write <code>if __name__ == "__main__":</code>?</h3>
+<p>The following independent teaching file, <code>demo.py</code>, makes the distinction visible. See Python's <a href="https://docs.python.org/3.9/library/__main__.html">top-level script environment</a><sup class="reference">[8]</sup>.</p>
+<pre><code class="language-python"># Save this separate teaching example as demo.py.
+print(&quot;module name:&quot;, __name__)
+
+def main():
+    print(&quot;Starting demo&quot;)
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre>
+<p>Run these commands separately from the directory containing <code>demo.py</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Printed output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>python demo.py</code></td>
+<td><code>module name: __main__</code><br><code>Starting demo</code></td>
+</tr>
+<tr>
+<td><code>python -c "import demo"</code></td>
+<td><code>module name: demo</code></td>
+</tr>
+</tbody>
+</table>
+<p>Direct execution gives the module the name <code>"__main__"</code>, so the condition is true and calls <code>main()</code>. Importing it as <code>demo</code> makes the condition false. Import still executes the unguarded top-level <code>print</code> and defines the function; it skips only the guarded call. The chapter's standalone script has no such unguarded print, so importing it produces no output.</p>
+<p><code>main</code> is an ordinary function name chosen by the author; Python does not call it just because of that name. <code>def main():</code> defines it, while <code>main()</code> calls it. <code>"__main__"</code> is a separate string identifying the entry module, and <code>==</code> compares values. You could rename the function to <code>run_demo</code> if you also change its call.</p>
+<p>These annotation, name, and direct-run/import examples were checked with Python 3.9.25. The complete chapter script follows.</p>
+<h2>6. Complete runnable example</h2>
 <p>Below is the complete source of <code>examples/10_python_annotations_and_parsing.py</code>. Save it as that file and run the Section 4 command with Python 3.9+. It uses only the standard library and prints values without creating files or running optimization.</p>
 <pre><code class="language-python">&quot;&quot;&quot;Chapter 10 teaching example. Python 3.9+; standard library only.
 
@@ -265,4 +346,4 @@ def identity(p: dict[str, float] | None = None):
 </code></pre>
 <pre><code class="language-python">if __name__ == &quot;__main__&quot;:
     main()
-</code></pre><h2>References</h2><ol class="references"><li><a href="https://docs.python.org/3.9/library/typing.html">https://docs.python.org/3.9/library/typing.html</a></li><li><a href="https://docs.python.org/3.10/whatsnew/3.10.html#pep-604-new-type-union-operator">https://docs.python.org/3.10/whatsnew/3.10.html#pep-604-new-type-union-operator</a></li><li><a href="https://peps.python.org/pep-0563/">https://peps.python.org/pep-0563/</a></li><li><a href="https://docs.python.org/3.9/reference/simple_stmts.html#future-statements">https://docs.python.org/3.9/reference/simple_stmts.html#future-statements</a></li><li><a href="https://docs.python.org/3.9/library/argparse.html">https://docs.python.org/3.9/library/argparse.html</a></li></ol></body></html>
+</code></pre><h2>References</h2><ol class="references"><li><a href="https://docs.python.org/3.9/library/typing.html">https://docs.python.org/3.9/library/typing.html</a></li><li><a href="https://docs.python.org/3.10/whatsnew/3.10.html#pep-604-new-type-union-operator">https://docs.python.org/3.10/whatsnew/3.10.html#pep-604-new-type-union-operator</a></li><li><a href="https://peps.python.org/pep-0563/">https://peps.python.org/pep-0563/</a></li><li><a href="https://docs.python.org/3.9/reference/simple_stmts.html#future-statements">https://docs.python.org/3.9/reference/simple_stmts.html#future-statements</a></li><li><a href="https://docs.python.org/3.9/library/argparse.html">https://docs.python.org/3.9/library/argparse.html</a></li><li><a href="https://docs.python.org/3.9/reference/datamodel.html#user-defined-functions">https://docs.python.org/3.9/reference/datamodel.html#user-defined-functions</a></li><li><a href="https://docs.python.org/3.9/reference/lexical_analysis.html#reserved-classes-of-identifiers">https://docs.python.org/3.9/reference/lexical_analysis.html#reserved-classes-of-identifiers</a></li><li><a href="https://docs.python.org/3.9/library/__main__.html">https://docs.python.org/3.9/library/__main__.html</a></li></ol></body></html>
