@@ -6,13 +6,13 @@
 
 打印目录的“章节／主题”栏占 32% 宽度，补充案例在所属章节下缩进显示。每页顶部保留 30 mm 空白，方便打孔装订。
 
-总目录列出十篇主教程、第 03 章补充案例和 Koopman 学习资料，章节标题链接到对应源文件。默认批量打印导出已包含本目录。
+总目录列出十篇主教程、第 01 章 Spyder 补充资料、第 03 章补充案例和 Koopman 学习资料，章节标题链接到对应源文件。默认批量打印导出已包含本目录。
 
 科研编程手册：记录从研究问题、数学模型到可靠代码、可复现实验和论文结果的实践方法。
 
 本仓库用于积累科研中反复用到的编程经验、工作流程和模板，重点关注 Python / MATLAB、数值计算、优化与机器学习。目标是让研究过程有据可查，让代码可以维护，让结果能够复现。
 
-> 当前状态：已有十篇指南（guides），涵盖 Spyder 调试、Markdown 插图、Python 数据类型、GitHub 同步、dunder、组织创建、conda 环境、Python 类、Codex skills，以及 Python 导入、类型标注与解析，附可运行示例（runnable examples）及生成的图片。
+> 当前状态：已有十篇指南（guides），涵盖 VS Code 运行与调试（另附 Spyder 补充资料）、Markdown 插图、Python 数据类型、GitHub 同步、dunder、组织创建、conda 环境、Python 类、Codex skills，以及 Python 导入、类型标注与解析，附可运行示例（runnable examples）及生成的图片。
 
 ## 工作环境（Workspace context）
 
@@ -23,12 +23,13 @@
 
 ## 问题与示例（Questions and worked examples）
 
-**问题 1：在 Spyder 中逐个理解随机数据生成函数的变量**
+**01：在 VS Code 中运行与调试 Python 脚本**
 
-> 作为 Python 新手，如果有一个函数（function），想查看其中每个变量（variable）的种类和大小（size），应该如何在 Spyder 中拆解这个函数（break down a function），逐步执行并理解各个变量？
-
-- [阅读双语指南](docs/01-main-spyder-function-inspection.zh-CN.md)：断点（breakpoint）、局部变量（local variables）、单步执行（stepping），以及 `type`、`dtype`、`shape`、`size` 和 `len` 的区别。
-- [运行示例](examples/01_spyder_function_inspection.py)：局部／全局随机数函数，显式保留信号与噪声数组，标出断点（breakpoints），并在指南中讲解形状检查（shape checks）。
+- [主教程](docs/01-main-running-and-debugging.zh-CN.md)：选择解释器、右上角运行按钮、终端参数、断点、单步执行，以及 Terminal / REPL / Debug Console 的区别。
+- [双语 PDF](docs/print/01-main-running-and-debugging.zh-CN.pdf) · [练习脚本](examples/10_python_annotations_and_parsing.py)。
+- **01-SI：Spyder 补充资料**
+  - [双语指南](docs/01-SI-spyder.zh-CN.md) · [双语 PDF](docs/print/01-SI-spyder.zh-CN.pdf)。
+  - [原运行示例](examples/01_spyder_function_inspection.py)：保留随机数据生成、局部变量、数组类型与形状的完整练习。
 
 **问题 2：Markdown 中插入和管理图片**
 
@@ -95,7 +96,7 @@
 
 今后默认只生成 **US Letter（8.5 × 11 英寸）英中双语 PDF**，版式适合黑白打印。英文与双语 Markdown 仍同步维护。已发布的英文 PDF 和 HTML 保留，但不随日常更新自动重新生成。
 
-运行 `python tools/export_print.py` 导出双语总目录、01–10 主教程和第 03 章 Example 1。只更新某一篇时，例如运行 `python tools/export_print.py docs/00-Table-of-Content.zh-CN.md`。导出器读取已有双语源文件，不负责翻译；HTML 仅作临时渲染文件，完成后删除。
+运行 `python tools/export_print.py` 导出双语总目录、01–10 主教程、01-SI Spyder 补充资料和第 03 章 Example 1。只更新某一篇时，例如运行 `python tools/export_print.py docs/00-Table-of-Content.zh-CN.md`。导出器读取已有双语源文件，不负责翻译；HTML 仅作临时渲染文件，完成后删除。
 
 使用已有且装有 Python-Markdown 的 Python 环境，以及 Chrome 或 Edge。样式表为 `tools/print.css`，PDF 输出到 `docs/print/`。`--bilingual` 仍兼容；仅在明确需要额外格式时，使用 `--english` 导出英文 PDF，或使用 `--html` 保留打印 HTML。
 
@@ -159,8 +160,10 @@ research-coding-handbook/
 ├── README.md
 ├── README.zh-CN.md                     # 中文目录（Chinese contents）
 ├── docs/
-│   ├── 01-main-spyder-function-inspection.md
-│   ├── 01-main-spyder-function-inspection.zh-CN.md
+│   ├── 01-main-running-and-debugging.md
+│   ├── 01-main-running-and-debugging.zh-CN.md
+│   ├── 01-SI-spyder.md
+│   ├── 01-SI-spyder.zh-CN.md
 │   ├── 02-main-markdown-images.md
 │   ├── 02-main-markdown-images.zh-CN.md
 │   ├── 03-main-python-data-types.md

@@ -1,11 +1,11 @@
-# 01 — How can I inspect a Python function, variable by variable, in Spyder? / 01 — 如何在 Spyder 中逐个理解 Python 函数里的变量？
+# 01-SI — How can I inspect a Python function, variable by variable, in Spyder? / 01-SI — 如何在 Spyder 中逐个理解 Python 函数里的变量？
 
 <!-- bilingual: en-zh -->
 
 <!-- print:omit -->
-[返回手册 / Handbook](../README.zh-CN.md) · [English](01-main-spyder-function-inspection.md)
+[Bilingual PDF / 双语 PDF](print/01-SI-spyder.zh-CN.pdf) · [01 — Run and debug / 运行与调试](01-main-running-and-debugging.zh-CN.md)
+[返回手册 / Handbook](../README.zh-CN.md) · [English](01-SI-spyder.md)
 
-[英中双语 PDF / Bilingual PDF](print/01-main-spyder-function-inspection.zh-CN.pdf) · [打印 HTML / Print HTML](print/01-main-spyder-function-inspection.zh-CN.html)
 <!-- /print:omit -->
 
 ## Question / 问题（Question）

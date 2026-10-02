@@ -10,9 +10,9 @@
 [English handbook](../README.md) · [中文手册](../README.zh-CN.md) · [双语 PDF](print/00-Table-of-Content.zh-CN.pdf)
 <!-- /print:omit -->
 
-Research Coding Handbook: guides 01–10, chapter 03's worked example, and supplementary Koopman learning materials.
+Research Coding Handbook: guides 01–10, the Spyder supplement, chapter 03's worked example, and supplementary Koopman learning materials.
 
-科研编程手册总目录：01–10 主教程、第 03 章补充案例，以及 Koopman 学习资料。
+科研编程手册总目录：01–10 主教程、Spyder 补充资料、第 03 章补充案例，以及 Koopman 学习资料。
 
 Select an English title to open the English source, or a Chinese title to open the paired English–Chinese edition. Each chapter PDF has its own page numbers.
 
@@ -22,7 +22,8 @@ Select an English title to open the English source, or a Chinese title to open t
 
 | Chapter / topic<br>章节／主题 | Contents<br>主要内容 |
 | --- | --- |
-| [**01** Inspect functions in Spyder](01-main-spyder-function-inspection.md)<br>[在 Spyder 中检查函数](01-main-spyder-function-inspection.zh-CN.md) | Breakpoints, stepping, variable types and shapes, local/global randomness.<br>断点、单步执行、变量类型与形状、局部及全局随机数。 |
+| [**01** Run and debug Python scripts](01-main-running-and-debugging.md)<br>[运行与调试 Python 脚本](01-main-running-and-debugging.zh-CN.md) | VS Code interpreter, Run button, terminal arguments, breakpoints and stepping.<br>VS Code 解释器、运行按钮、终端参数、断点与单步执行。 |
+| <span class="toc-subentry">[**01-SI** Spyder](01-SI-spyder.md)<br>[Spyder 补充资料](01-SI-spyder.zh-CN.md)</span> | Function inspection, array types and shapes, local/global randomness.<br>函数内部检查、数组类型与形状、局部及全局随机数。 |
 | [**02** Insert and manage Markdown images](02-main-markdown-images.md)<br>[Markdown 插图与图片管理](02-main-markdown-images.zh-CN.md) | Relative paths, embedded figures, VS Code screenshots, display width.<br>相对路径、嵌入图片、VS Code 截图、显示宽度。 |
 | [**03** Python data types and a profit equation](03-main-python-data-types.md)<br>[Python 数据类型与利润方程](03-main-python-data-types.zh-CN.md) | Built-in types, mutation, NumPy arrays, Case 1 calculations.<br>内置类型、可变性、NumPy 数组、Case 1 计算。 |
 | <span class="toc-subentry">[**03 · Example 1** MO-book production planning](03-example-01-mo-book-production.md)<br>[MO-book 生产计划](03-example-01-mo-book-production.zh-CN.md)</span> | Equations to Python objects, LP variables, pandas, solver results and verification.<br>公式到 Python 对象、LP 变量、pandas、求解结果与验证。 |

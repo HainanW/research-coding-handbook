@@ -28,7 +28,7 @@ The repository already contains this example:
 research-coding-handbook/
 ├── README.md
 └── docs/
-    ├── 01-main-spyder-function-inspection.md
+    ├── 01-SI-spyder.md
     ├── 02-main-markdown-images.md
     └── images/
         └── 01-generated-data.png

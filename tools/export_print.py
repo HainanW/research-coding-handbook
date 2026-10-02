@@ -22,7 +22,8 @@ import markdown
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DOCS = (
     "docs/00-Table-of-Content.md",
-    "docs/01-main-spyder-function-inspection.md",
+    "docs/01-main-running-and-debugging.md",
+    "docs/01-SI-spyder.md",
     "docs/02-main-markdown-images.md",
     "docs/03-main-python-data-types.md",
     "docs/03-example-01-mo-book-production.md",

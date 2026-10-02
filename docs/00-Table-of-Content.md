@@ -8,7 +8,7 @@
 [English handbook](../README.md) · [中文手册](../README.zh-CN.md) · [双语 PDF](print/00-Table-of-Content.zh-CN.pdf)
 <!-- /print:omit -->
 
-Research Coding Handbook: guides 01–10, chapter 03's worked example, and supplementary Koopman learning materials.
+Research Coding Handbook: guides 01–10, the Spyder supplement, chapter 03's worked example, and supplementary Koopman learning materials.
 
 Select a chapter title to open its source. Each chapter PDF has its own page numbers.
 
@@ -16,7 +16,8 @@ Select a chapter title to open its source. Each chapter PDF has its own page num
 
 | Chapter / topic | Contents |
 | --- | --- |
-| [**01** Inspect functions in Spyder](01-main-spyder-function-inspection.md) | Breakpoints, stepping, variable types and shapes, local/global randomness. |
+| [**01** Run and debug Python scripts](01-main-running-and-debugging.md) | VS Code interpreter, Run button, terminal arguments, breakpoints and stepping. |
+| <span class="toc-subentry">[**01-SI** Spyder](01-SI-spyder.md)</span> | Function inspection, array types and shapes, local/global randomness. |
 | [**02** Insert and manage Markdown images](02-main-markdown-images.md) | Relative paths, embedded figures, VS Code screenshots, display width. |
 | [**03** Python data types and a profit equation](03-main-python-data-types.md) | Built-in types, mutation, NumPy arrays, Case 1 calculations. |
 | <span class="toc-subentry">[**03 · Example 1** MO-book production planning](03-example-01-mo-book-production.md)</span> | Equations to Python objects, LP variables, pandas, solver results and verification. |

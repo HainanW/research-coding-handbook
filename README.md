@@ -6,13 +6,13 @@
 
 The printed contents uses a narrower chapter/topic column (32%) and indents worked examples beneath their parent chapter. Each page leaves a clear 30 mm top margin for hole punching.
 
-The contents list all ten guides, the chapter 03 worked example, and Koopman reading materials. Chapter titles link to their sources. The default print export includes this table of contents.
+The contents list all ten guides, the chapter 01 Spyder supplement, the chapter 03 worked example, and Koopman reading materials. Chapter titles link to their sources. The default print export includes this table of contents.
 
 A practical handbook for turning research questions and mathematical models into reliable code, reproducible experiments, and publication results.
 
 This repository collects recurring programming practices, workflows, and templates for research, with a focus on Python / MATLAB, numerical computing, optimization, and machine learning. Its goal is to make research traceable, code maintainable, and results reproducible.
 
-> Status: Ten guides cover Spyder inspection, Markdown images, Python data types, GitHub synchronization, dunder names, GitHub organizations, conda environments, Python classes, Codex skills, and Python imports/type annotations/parsing. Runnable examples and a generated figure are included.
+> Status: Ten guides cover VS Code running/debugging (with a Spyder supplement), Markdown images, Python data types, GitHub synchronization, dunder names, GitHub organizations, conda environments, Python classes, Codex skills, and Python imports/type annotations/parsing. Runnable examples and a generated figure are included.
 
 ## Workspace Context
 
@@ -23,12 +23,13 @@ This repository collects recurring programming practices, workflows, and templat
 
 ## Questions and Worked Examples
 
-**Q1. Inspecting random data generation in Spyder**
+**01. Run and debug Python scripts in VS Code**
 
-> I am new to Python. Given a function, how can I break it down in Spyder, inspect each variable's type and size, and understand what happens step by step?
-
-- [Read the guide](docs/01-main-spyder-function-inspection.md): breakpoints, local variables, stepping, and the differences between `type`, `dtype`, `shape`, `size`, and `len`.
-- [Run the example](examples/01_spyder_function_inspection.py): the local/global random-number functions, with named signal and noise arrays, breakpoint locations, and shape checks explained in the guide.
+- [Main guide](docs/01-main-running-and-debugging.md): interpreter selection, the Run button, terminal arguments, breakpoints, stepping, and Terminal / REPL / Debug Console.
+- [Bilingual PDF](docs/print/01-main-running-and-debugging.zh-CN.pdf) · [Practice script](examples/10_python_annotations_and_parsing.py).
+- **01-SI: Spyder supplementary information**
+  - [Guide](docs/01-SI-spyder.md) · [Bilingual PDF](docs/print/01-SI-spyder.zh-CN.pdf).
+  - [Original example](examples/01_spyder_function_inspection.py): the full exercise on random data, local variables, array types and shapes.
 
 **Q2. Inserting images into Markdown**
 
@@ -103,7 +104,7 @@ The original internal push guides are kept locally and excluded from Git. Only t
 
 The default print output is now **English–Chinese PDF only**, on US Letter paper (8.5 × 11 inches), with black-and-white-friendly styling. English and bilingual Markdown sources are still maintained together. Previously published English PDFs and HTML files remain available, but are not automatically regenerated.
 
-Run `python tools/export_print.py` to export the bilingual contents, guides 01–10, and chapter 03's Example 1. For one document, run `python tools/export_print.py docs/00-Table-of-Content.zh-CN.md`. The exporter reads the existing bilingual source; it does not translate. HTML is created temporarily for rendering and removed afterward.
+Run `python tools/export_print.py` to export the bilingual contents, guides 01–10, the 01-SI Spyder supplement, and chapter 03's Example 1. For one document, run `python tools/export_print.py docs/00-Table-of-Content.zh-CN.md`. The exporter reads the existing bilingual source; it does not translate. HTML is created temporarily for rendering and removed afterward.
 
 Use an existing Python environment with Python-Markdown and Chrome or Edge. The stylesheet is `tools/print.css`; PDFs go to `docs/print/`. `--bilingual` remains supported. Only when an additional format is explicitly wanted, use `--english` for an English PDF or `--html` to retain print HTML.
 
@@ -167,8 +168,10 @@ research-coding-handbook/
 ├── README.md
 ├── README.zh-CN.md
 ├── docs/
-│   ├── 01-main-spyder-function-inspection.md
-│   ├── 01-main-spyder-function-inspection.zh-CN.md
+│   ├── 01-main-running-and-debugging.md
+│   ├── 01-main-running-and-debugging.zh-CN.md
+│   ├── 01-SI-spyder.md
+│   ├── 01-SI-spyder.zh-CN.md
 │   ├── 02-main-markdown-images.md
 │   ├── 02-main-markdown-images.zh-CN.md
 │   ├── 03-main-python-data-types.md

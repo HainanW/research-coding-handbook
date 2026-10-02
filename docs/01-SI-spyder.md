@@ -1,9 +1,9 @@
-# 01 — How can I inspect a Python function, variable by variable, in Spyder?
+# 01-SI — How can I inspect a Python function, variable by variable, in Spyder?
 
 [Back to the handbook](../README.md)
 
 <!-- print:omit -->
-[Download the US Letter print PDF](print/01-main-spyder-function-inspection.pdf) · [Open the print layout](print/01-main-spyder-function-inspection.html)
+[Bilingual PDF / 双语 PDF](print/01-SI-spyder.zh-CN.pdf) · [01 — Run and debug / 运行与调试](01-main-running-and-debugging.md)
 <!-- /print:omit -->
 
 ## Question
