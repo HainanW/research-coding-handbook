@@ -76,6 +76,7 @@ This repository collects recurring programming practices, workflows, and templat
 
 - [Read the guide](docs/10-main-python-imports-annotations-parsing.md): the WO Table 4 imports, type hints, `from __future__ import annotations` in Python 3.9, dunder names, and command-line parsing.
 - [Run the small example](examples/10_python_annotations_and_parsing.py): standard library only; prints values without creating files or running optimization.
+- Section 5 includes the complete runnable source in both language editions and their print versions.
 - [US Letter PDF](docs/print/10-main-python-imports-annotations-parsing.pdf) · [Print HTML](docs/print/10-main-python-imports-annotations-parsing.html).
 - [English–Chinese PDF](docs/print/10-main-python-imports-annotations-parsing.zh-CN.pdf) · [Bilingual print HTML](docs/print/10-main-python-imports-annotations-parsing.zh-CN.html).
 

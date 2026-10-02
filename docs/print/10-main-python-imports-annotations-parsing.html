@@ -232,4 +232,37 @@ annotation: dict[str, float] | None
 annotation type: str
 output path: results/demo
 </code></pre>
-<p>The dictionary is unchanged, its type annotation is stored as text, and the command-line path has been read. The real WO script then passes that path to <code>run_sweep()</code> to begin its calculations.</p><h2>References</h2><ol class="references"><li><a href="https://docs.python.org/3.9/library/typing.html">https://docs.python.org/3.9/library/typing.html</a></li><li><a href="https://docs.python.org/3.10/whatsnew/3.10.html#pep-604-new-type-union-operator">https://docs.python.org/3.10/whatsnew/3.10.html#pep-604-new-type-union-operator</a></li><li><a href="https://peps.python.org/pep-0563/">https://peps.python.org/pep-0563/</a></li><li><a href="https://docs.python.org/3.9/reference/simple_stmts.html#future-statements">https://docs.python.org/3.9/reference/simple_stmts.html#future-statements</a></li><li><a href="https://docs.python.org/3.9/library/argparse.html">https://docs.python.org/3.9/library/argparse.html</a></li></ol></body></html>
+<p>The dictionary is unchanged, its type annotation is stored as text, and the command-line path has been read. The real WO script then passes that path to <code>run_sweep()</code> to begin its calculations.</p>
+<h2>5. Complete runnable example</h2>
+<p>Below is the complete source of <code>examples/10_python_annotations_and_parsing.py</code>. Save it as that file and run the Section 4 command with Python 3.9+. It uses only the standard library and prints values without creating files or running optimization.</p>
+<pre><code class="language-python">&quot;&quot;&quot;Chapter 10 teaching example. Python 3.9+; standard library only.
+
+Run: python examples/10_python_annotations_and_parsing.py --output-dir results/demo
+Reads an option and prints values; does not create files or run optimization.
+&quot;&quot;&quot;
+from __future__ import annotations
+
+import argparse
+from pathlib import Path
+
+
+def identity(p: dict[str, float] | None = None):
+    return p
+</code></pre>
+<pre><code class="language-python">def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(&quot;--output-dir&quot;, type=Path)
+    args = parser.parse_args()
+
+    p = {&quot;rho&quot;: 50.0}
+    value = identity(p)
+    annotation = identity.__annotations__[&quot;p&quot;]
+    print(&quot;p value:&quot;, value)
+    print(&quot;p type:&quot;, type(value).__name__)
+    print(&quot;annotation:&quot;, annotation)
+    print(&quot;annotation type:&quot;, type(annotation).__name__)
+    print(&quot;output path:&quot;, args.output_dir.as_posix() if args.output_dir is not None else None)
+</code></pre>
+<pre><code class="language-python">if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre><h2>References</h2><ol class="references"><li><a href="https://docs.python.org/3.9/library/typing.html">https://docs.python.org/3.9/library/typing.html</a></li><li><a href="https://docs.python.org/3.10/whatsnew/3.10.html#pep-604-new-type-union-operator">https://docs.python.org/3.10/whatsnew/3.10.html#pep-604-new-type-union-operator</a></li><li><a href="https://peps.python.org/pep-0563/">https://peps.python.org/pep-0563/</a></li><li><a href="https://docs.python.org/3.9/reference/simple_stmts.html#future-statements">https://docs.python.org/3.9/reference/simple_stmts.html#future-statements</a></li><li><a href="https://docs.python.org/3.9/library/argparse.html">https://docs.python.org/3.9/library/argparse.html</a></li></ol></body></html>
