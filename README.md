@@ -4,7 +4,7 @@
 
 [00 — Table of Content](docs/00-Table-of-Content.md) · [Bilingual landscape PDF](docs/print/00-Table-of-Content.zh-CN.pdf) · [English–Chinese contents](docs/00-Table-of-Content.zh-CN.md).
 
-The printed contents uses a narrower chapter/topic column (32%) and indents worked examples beneath their parent chapter.
+The printed contents uses a narrower chapter/topic column (32%) and indents worked examples beneath their parent chapter. Each page leaves a clear 30 mm top margin for hole punching.
 
 The contents list all ten guides, the chapter 03 worked example, and Koopman reading materials. Chapter titles link to their sources. The default print export includes this table of contents.
 

@@ -73,6 +73,10 @@ def render_html(source, destination, css):
     text = source.read_text(encoding="utf-8")
     if "<!-- print:landscape -->" in text:
         css += "\n@page { size: letter landscape; }\n@media screen { body { max-width: 11in; } }\n"
+    if "<!-- print:top-binding -->" in text:
+        # Leave the whole top strip clear for hole punching, including the header.
+        css += "\n@page { margin-top: 30mm; @top-left { content: none; } }\n"
+        css += "@media screen { body { padding-top: 30mm; } }\n"
     # Navigation and PDF-download links are useful on screen, not in the printout.
     text = re.sub(r"<!-- print:omit -->.*?<!-- /print:omit -->", "", text, flags=re.S)
     text = re.sub(r"^\[(?:Back to the handbook|返回手册)\].*$", "", text, flags=re.M)

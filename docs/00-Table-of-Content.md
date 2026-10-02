@@ -1,6 +1,7 @@
 # 00 — Table of Content
 
 <!-- print:landscape -->
+<!-- print:top-binding -->
 <!-- print:toc -->
 
 <!-- print:omit -->
