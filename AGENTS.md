@@ -34,6 +34,7 @@
 
 - 按用户 2026-10-02 的新约定：修改教程后，默认只更新对应英中双语 PDF，输出到 `docs/print/`，不生成或保留新的打印 HTML，也不默认生成英文 PDF。
 - 使用现有 `tools/export_print.py` 和 `tools/print.css`，纸张为 US Letter，版式适合黑白打印。
+- 总目录 `00-Table-of-Content` 使用 US Letter 横向打印（11 × 8.5 英寸），由源文件中的 `<!-- print:landscape -->` 标记控制；其他章节默认纵向。
 - 默认输出沿用双语源文件名 `NN-main-topic.zh-CN.pdf`；补充示例文档保留其 `example` 文件名。已有英文 PDF 和 HTML 保留，但不随日常修改自动重导出；用户明确要求时才生成。
 - 导出器需要 Python-Markdown，以及 Chrome 或 Edge。使用已有且满足依赖的 Python 环境。
 - 只修改个别章节时，显式传入这些章节路径，避免无关文件全部重新生成。

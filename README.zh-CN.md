@@ -2,7 +2,7 @@
 
 [English handbook](README.md)
 
-[00 — 总目录](docs/00-Table-of-Content.zh-CN.md) · [双语 PDF](docs/print/00-Table-of-Content.zh-CN.pdf) · [英文目录](docs/00-Table-of-Content.md)。
+[00 — 总目录](docs/00-Table-of-Content.zh-CN.md) · [双语横向 PDF](docs/print/00-Table-of-Content.zh-CN.pdf) · [英文目录](docs/00-Table-of-Content.md)。
 
 总目录列出十篇主教程、第 03 章补充案例和 Koopman 学习资料，章节标题链接到对应源文件。默认批量打印导出已包含本目录。
 

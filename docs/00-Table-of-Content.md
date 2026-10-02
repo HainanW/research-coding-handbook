@@ -1,5 +1,7 @@
 # 00 — Table of Content
 
+<!-- print:landscape -->
+
 <!-- print:omit -->
 [English handbook](../README.md) · [中文手册](../README.zh-CN.md) · [双语 PDF](print/00-Table-of-Content.zh-CN.pdf)
 <!-- /print:omit -->

@@ -2,7 +2,7 @@
 
 [中文目录与英中双语教程](README.zh-CN.md)
 
-[00 — Table of Content](docs/00-Table-of-Content.md) · [Bilingual PDF](docs/print/00-Table-of-Content.zh-CN.pdf) · [English–Chinese contents](docs/00-Table-of-Content.zh-CN.md).
+[00 — Table of Content](docs/00-Table-of-Content.md) · [Bilingual landscape PDF](docs/print/00-Table-of-Content.zh-CN.pdf) · [English–Chinese contents](docs/00-Table-of-Content.zh-CN.md).
 
 The contents list all ten guides, the chapter 03 worked example, and Koopman reading materials. Chapter titles link to their sources. The default print export includes this table of contents.
 

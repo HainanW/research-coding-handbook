@@ -1,5 +1,7 @@
 # 00 — Table of Content / 总目录
 
+<!-- print:landscape -->
+
 <!-- bilingual: en-zh -->
 
 <!-- print:omit -->

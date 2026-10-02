@@ -71,6 +71,8 @@ def split_listing(match):
 
 def render_html(source, destination, css):
     text = source.read_text(encoding="utf-8")
+    if "<!-- print:landscape -->" in text:
+        css += "\n@page { size: letter landscape; }\n@media screen { body { max-width: 11in; } }\n"
     # Navigation and PDF-download links are useful on screen, not in the printout.
     text = re.sub(r"<!-- print:omit -->.*?<!-- /print:omit -->", "", text, flags=re.S)
     text = re.sub(r"^\[(?:Back to the handbook|返回手册)\].*$", "", text, flags=re.M)
