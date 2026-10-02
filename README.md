@@ -2,6 +2,10 @@
 
 [中文目录与英中双语教程](README.zh-CN.md)
 
+[00 — Table of Content](docs/00-Table-of-Content.md) · [Bilingual PDF](docs/print/00-Table-of-Content.zh-CN.pdf) · [English–Chinese contents](docs/00-Table-of-Content.zh-CN.md).
+
+The contents list all ten guides, the chapter 03 worked example, and Koopman reading materials. Chapter titles link to their sources. The default print export includes this table of contents.
+
 A practical handbook for turning research questions and mathematical models into reliable code, reproducible experiments, and publication results.
 
 This repository collects recurring programming practices, workflows, and templates for research, with a focus on Python / MATLAB, numerical computing, optimization, and machine learning. Its goal is to make research traceable, code maintainable, and results reproducible.
@@ -95,15 +99,13 @@ The original internal push guides are kept locally and excluded from Git. Only t
 
 ## Print Editions
 
-Q1 is available as a [US Letter PDF](docs/print/01-main-spyder-function-inspection.pdf) and a [self-contained print HTML](docs/print/01-main-spyder-function-inspection.html). 01–10 use US Letter paper (8.5 × 11 inches). The layout uses black text, grayscale figures, page numbers, repeated table headers, and numbered source URLs for reading on paper.
+The default print output is now **English–Chinese PDF only**, on US Letter paper (8.5 × 11 inches), with black-and-white-friendly styling. English and bilingual Markdown sources are still maintained together. Previously published English PDFs and HTML files remain available, but are not automatically regenerated.
 
-To regenerate after editing the Markdown sources, run `python tools/export_print.py` in a Python environment with Python-Markdown installed and Chrome or Edge available. The exporter was verified with Python-Markdown 3.8 and Chrome 152 on Windows. Its stylesheet is `tools/print.css`; outputs go to `docs/print/`. The command covers 01–10, including both print formats for chapter 10. The `.zh-CN.md` guides contain alternating English and Chinese paragraphs, paired list items, and bilingual table cells. They retain the `.zh-CN` suffix; both language versions and their HTML/PDF print editions are tracked in Git and published together. Run `python tools/export_print.py --bilingual` to export all ten directly to HTML and PDF, or pass an individual `.zh-CN.md` path. The exporter renders this bilingual source as written; it does not merge language editions.
+Run `python tools/export_print.py` to export the bilingual contents, guides 01–10, and chapter 03's Example 1. For one document, run `python tools/export_print.py docs/00-Table-of-Content.zh-CN.md`. The exporter reads the existing bilingual source; it does not translate. HTML is created temporarily for rendering and removed afterward.
 
-To regenerate Q2's HTML and PDF, run `python tools/export_print.py docs/02-main-markdown-images.md`. The HTML embeds the example image so it can be viewed offline as a single file.
+Use an existing Python environment with Python-Markdown and Chrome or Edge. The stylesheet is `tools/print.css`; PDFs go to `docs/print/`. `--bilingual` remains supported. Only when an additional format is explicitly wanted, use `--english` for an English PDF or `--html` to retain print HTML.
 
-The default export now also includes chapter 03's Example 1. Export only its two editions with `python tools/export_print.py docs/03-example-01-mo-book-production.md docs/03-example-01-mo-book-production.zh-CN.md`. Its simple equations use offline HTML subscripts and Unicode symbols, without a remote math service.
-
-Before publishing PDFs, inspect their embedded links: browsers may turn relative file links into private absolute paths. The optional [PDF link sanitizer](tools/sanitize_pdf_links.py) uses PyMuPDF to replace in-repository file links with URLs under an explicitly supplied HTTPS repository base. Run `python tools/sanitize_pdf_links.py --help` for arguments; it writes separate output PDFs, preserves input files, and fully rewrites annotations. The four updated chapter-03 PDFs have been checked and prepared this way.
+Before publishing PDFs, inspect embedded links for local paths. The [PDF link sanitizer](tools/sanitize_pdf_links.py) uses PyMuPDF to replace in-repository file links with URLs under an explicitly supplied HTTPS repository base. Run `python tools/sanitize_pdf_links.py --help` for arguments; it writes a separate PDF and preserves the input.
 
 ## Core Principles
 

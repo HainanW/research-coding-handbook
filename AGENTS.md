@@ -32,18 +32,18 @@
 
 ## 打印与导出
 
-- 修改教程后，更新对应 HTML 和 PDF，输出到 `docs/print/`。
+- 按用户 2026-10-02 的新约定：修改教程后，默认只更新对应英中双语 PDF，输出到 `docs/print/`，不生成或保留新的打印 HTML，也不默认生成英文 PDF。
 - 使用现有 `tools/export_print.py` 和 `tools/print.css`，纸张为 US Letter，版式适合黑白打印。
-- 英文输出沿用源文件名 `NN-main-topic.html/.pdf`；双语输出沿用 `NN-main-topic.zh-CN.html/.pdf`；补充示例文档保留其 `example` 文件名。
+- 默认输出沿用双语源文件名 `NN-main-topic.zh-CN.pdf`；补充示例文档保留其 `example` 文件名。已有英文 PDF 和 HTML 保留，但不随日常修改自动重导出；用户明确要求时才生成。
 - 导出器需要 Python-Markdown，以及 Chrome 或 Edge。使用已有且满足依赖的 Python 环境。
 - 只修改个别章节时，显式传入这些章节路径，避免无关文件全部重新生成。
 
 ```text
-python tools/export_print.py docs/NN-main-topic.md docs/NN-main-topic.zh-CN.md
+python tools/export_print.py docs/NN-main-topic.zh-CN.md
 ```
 
-- 全部英文版：`python tools/export_print.py`。
-- 全部双语版：`python tools/export_print.py --bilingual`。
+- 全部双语 PDF：`python tools/export_print.py`（`--bilingual` 仍兼容）。
+- 仅在用户明确要求时，用 `--english` 导出英文 PDF，或用 `--html` 额外保留打印 HTML。
 - 新增章节时同步更新导出器的 `DEFAULT_DOCS`。
 - 导出后检查标题、中文显示、链接和明显越界；如有 PDF 被占用或导出失败，应明确报告。
 - 不需要把本文件等仓库管理文件当作教程导出 PDF。
@@ -52,6 +52,6 @@ python tools/export_print.py docs/NN-main-topic.md docs/NN-main-topic.zh-CN.md
 
 - 开始编辑前检查 `git status` 和相关文件，保留用户已有改动，不重置或覆盖无关内容。
 - `README.zh-CN.md`、`docs/*.zh-CN.md` 和 `docs/print/*.zh-CN.*` 与英文版本一起纳入 Git，不再忽略。
-- 提交与推送时同步包含双语源文件和双语打印文件；原始内部指南继续按现有规则忽略。
+- 提交与推送时同步包含英文及双语源文件和最新双语 PDF；无需重新生成英文 PDF 或 HTML。原始内部指南继续按现有规则忽略。
 - 提交或推送时检查实际文件清单，避免把调试日志、缓存和临时文件一起纳入。
 - 教程完成不代表已经提交或推送；最终回复明确说明完成的文件和 Git 操作状态。

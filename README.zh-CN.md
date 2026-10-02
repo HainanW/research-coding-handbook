@@ -2,6 +2,10 @@
 
 [English handbook](README.md)
 
+[00 — 总目录](docs/00-Table-of-Content.zh-CN.md) · [双语 PDF](docs/print/00-Table-of-Content.zh-CN.pdf) · [英文目录](docs/00-Table-of-Content.md)。
+
+总目录列出十篇主教程、第 03 章补充案例和 Koopman 学习资料，章节标题链接到对应源文件。默认批量打印导出已包含本目录。
+
 科研编程手册：记录从研究问题、数学模型到可靠代码、可复现实验和论文结果的实践方法。
 
 本仓库用于积累科研中反复用到的编程经验、工作流程和模板，重点关注 Python / MATLAB、数值计算、优化与机器学习。目标是让研究过程有据可查，让代码可以维护，让结果能够复现。
@@ -87,17 +91,13 @@
 
 ## 打印版本（Print editions）
 
-`docs/` 中 01–10 的 `.zh-CN.md` 文件是英中双语文档：英文一段、中文一段，列表逐条对照，表格在同一单元格内上下对照。英文 `.md` 继续单独保留；相同代码和图片只放一次。双语文件保留 `.zh-CN` 后缀，与英文版本及对应的 HTML/PDF 打印版一起纳入 Git 并发布到 GitHub。
+今后默认只生成 **US Letter（8.5 × 11 英寸）英中双语 PDF**，版式适合黑白打印。英文与双语 Markdown 仍同步维护。已发布的英文 PDF 和 HTML 保留，但不随日常更新自动重新生成。
 
-运行 `python tools/export_print.py --bilingual` 可直接从这些双语 Markdown 生成全部 01–10 的 PDF 和 HTML。也可以在命令后显式传入某个 `.zh-CN.md` 路径。导出器不再自动拼接两个语言文件。第 10 篇的英文及英中双语 HTML/PDF 均已生成。
+运行 `python tools/export_print.py` 导出双语总目录、01–10 主教程和第 03 章 Example 1。只更新某一篇时，例如运行 `python tools/export_print.py docs/00-Table-of-Content.zh-CN.md`。导出器读取已有双语源文件，不负责翻译；HTML 仅作临时渲染文件，完成后删除。
 
-问题 1 已提供 [US Letter 英中双语 PDF](docs/print/01-main-spyder-function-inspection.zh-CN.pdf) 和[独立双语打印 HTML](docs/print/01-main-spyder-function-inspection.zh-CN.html)。版式采用黑色文字、灰度图片（grayscale figures）、页码（page numbers）、跨页重复表头（repeated table headers）及编号来源网址，方便纸面阅读。
+使用已有且装有 Python-Markdown 的 Python 环境，以及 Chrome 或 Edge。样式表为 `tools/print.css`，PDF 输出到 `docs/print/`。`--bilingual` 仍兼容；仅在明确需要额外格式时，使用 `--english` 导出英文 PDF，或使用 `--html` 保留打印 HTML。
 
-修改 Markdown 后，可在装有 Python-Markdown 且能使用 Chrome 或 Edge 的 Python 环境中运行 `python tools/export_print.py`，重新生成 01–10 英文版；双语版本可用 `--bilingual`，或在命令后显式传入对应 `.zh-CN.md` 路径。导出器已在 Windows、Python-Markdown 3.8、Chrome 152 下验证。样式表（stylesheet）为 `tools/print.css`，输出目录为 `docs/print/`。双语导出文件与源文件一起提交到 Git。
-
-默认批量导出现在也包含第 03 章的 Example 1。仅更新该案例时运行 `python tools/export_print.py docs/03-example-01-mo-book-production.md docs/03-example-01-mo-book-production.zh-CN.md`。其中的简单公式使用离线 HTML 下标和 Unicode 数学符号，不依赖远程公式服务。
-
-公开发布 PDF 前，需检查其嵌入链接：浏览器可能把相对文件链接转换为个人绝对路径。可选的 [PDF 链接脱敏工具](tools/sanitize_pdf_links.py) 使用 PyMuPDF，将仓库内的文件链接替换为明确指定的 HTTPS 仓库地址。运行 `python tools/sanitize_pdf_links.py --help` 查看参数；工具输出独立 PDF，保留输入文件，并完整重写链接对象。本次更新的四份第 03 章 PDF 已按此检查和处理。
+公开发布 PDF 前，检查嵌入链接是否包含本机路径。[PDF 链接脱敏工具](tools/sanitize_pdf_links.py) 使用 PyMuPDF，将仓库内文件链接替换为明确指定的 HTTPS 仓库地址。运行 `python tools/sanitize_pdf_links.py --help` 查看参数；工具输出独立 PDF，保留输入文件。
 
 ## 基本原则
 

@@ -1,4 +1,4 @@
-"""Export the 01-10 guides and chapter 03 Example 1 to US Letter HTML and PDF.
+"""Export the contents and handbook guides to bilingual US Letter PDFs by default.
 
 Requires Python-Markdown and an installed Chrome or Edge browser.
 Run from the repository root: python tools/export_print.py
@@ -21,6 +21,7 @@ import markdown
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DOCS = (
+    "docs/00-Table-of-Content.md",
     "docs/01-main-spyder-function-inspection.md",
     "docs/02-main-markdown-images.md",
     "docs/03-main-python-data-types.md",
@@ -155,21 +156,45 @@ def main():
     parser.add_argument("documents", nargs="*", help="Markdown files, relative to the repository root")
     parser.add_argument("--output-dir", type=Path, default=ROOT / "docs/print")
     parser.add_argument("--browser", help="Full path to Chrome or Edge")
-    parser.add_argument("--bilingual", action="store_true",
-                        help="Export bilingual .zh-CN.md sources to HTML and PDF")
+    editions = parser.add_mutually_exclusive_group()
+    editions.add_argument("--bilingual", dest="edition", action="store_const", const="bilingual",
+                          help="Export bilingual .zh-CN.md sources (default)")
+    editions.add_argument("--english", dest="edition", action="store_const", const="english",
+                          help="Export English sources only when requested")
+    parser.set_defaults(edition="bilingual")
+    parser.add_argument("--html", action="store_true",
+                        help="Also retain print HTML files; otherwise HTML is temporary")
     args = parser.parse_args()
     browser = find_browser(args.browser)
     output = args.output_dir.resolve()
     output.mkdir(parents=True, exist_ok=True)
     css = (ROOT / "tools/print.css").read_text(encoding="utf-8")
+    exported = set()
     for document in args.documents or DEFAULT_DOCS:
         source = (ROOT / document).resolve()
-        if args.bilingual and ".zh-CN" not in source.stem:
+        if args.edition == "bilingual" and not source.stem.endswith(".zh-CN"):
             source = source.with_name(source.stem + ".zh-CN.md")
-        html_path = output / (source.stem + ".html")
+        elif args.edition == "english" and source.stem.endswith(".zh-CN"):
+            source = source.with_name(source.stem.removesuffix(".zh-CN") + ".md")
+        if source in exported:
+            continue
+        if not source.is_file():
+            raise FileNotFoundError(source)
+        if args.html:
+            html_path = output / (source.stem + ".html")
+        else:
+            # Keep relative links rooted in the output directory; delete only this file.
+            handle, temporary_html = tempfile.mkstemp(prefix=".handbook-print-", suffix=".html", dir=output)
+            os.close(handle)
+            html_path = Path(temporary_html)
         pdf_path = output / (source.stem + ".pdf")
-        render_html(source, html_path, css)
-        print_pdf(browser, html_path, pdf_path)
+        try:
+            render_html(source, html_path, css)
+            print_pdf(browser, html_path, pdf_path)
+        finally:
+            if not args.html:
+                html_path.unlink(missing_ok=True)
+        exported.add(source)
         print(pdf_path, flush=True)
 
 
