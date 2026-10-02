@@ -79,7 +79,8 @@
 
 - [英中双语指南](docs/10-main-python-imports-annotations-parsing.zh-CN.md)：WO Table 4 的导入、类型标注、Python 3.9 中的 `from __future__ import annotations`、dunder 名称及命令行解析。
 - [运行小例子](examples/10_python_annotations_and_parsing.py)：只用标准库，打印检查结果，不创建文件或运行优化。
-- 本次只准备 Markdown 源文件，暂不生成 HTML/PDF 打印版。
+- [US Letter 英中双语 PDF](docs/print/10-main-python-imports-annotations-parsing.zh-CN.pdf) · [双语打印 HTML](docs/print/10-main-python-imports-annotations-parsing.zh-CN.html)。
+- [英文 PDF](docs/print/10-main-python-imports-annotations-parsing.pdf) · [英文打印 HTML](docs/print/10-main-python-imports-annotations-parsing.html)。
 
 可复用的手册写作技能：[research-coding-handbook](skills/research-coding-handbook/SKILL.md)。技能提炼的是报告规范，不是整本手册或内部文档集合。安装为个人技能后，用 `$research-coding-handbook` 指定代码、保存位置和输出格式即可调用；调用不代表授权上传或 Git 推送。
 
@@ -87,7 +88,7 @@
 
 `docs/` 中 01–10 的 `.zh-CN.md` 文件是英中双语文档：英文一段、中文一段，列表逐条对照，表格在同一单元格内上下对照。英文 `.md` 继续单独保留；相同代码和图片只放一次。双语文件保留 `.zh-CN` 后缀，与英文版本及对应的 HTML/PDF 打印版一起纳入 Git 并发布到 GitHub。
 
-运行 `python tools/export_print.py --bilingual` 可直接从这些双语 Markdown 生成全部 01–10 的 PDF 和 HTML。也可以在命令后显式传入某个 `.zh-CN.md` 路径。导出器不再自动拼接两个语言文件。第 10 篇目前只有源文件，尚未生成 HTML/PDF。
+运行 `python tools/export_print.py --bilingual` 可直接从这些双语 Markdown 生成全部 01–10 的 PDF 和 HTML。也可以在命令后显式传入某个 `.zh-CN.md` 路径。导出器不再自动拼接两个语言文件。第 10 篇的英文及英中双语 HTML/PDF 均已生成。
 
 问题 1 已提供 [US Letter 英中双语 PDF](docs/print/01-main-spyder-function-inspection.zh-CN.pdf) 和[独立双语打印 HTML](docs/print/01-main-spyder-function-inspection.zh-CN.html)。版式采用黑色文字、灰度图片（grayscale figures）、页码（page numbers）、跨页重复表头（repeated table headers）及编号来源网址，方便纸面阅读。
 

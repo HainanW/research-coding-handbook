@@ -76,7 +76,8 @@ This repository collects recurring programming practices, workflows, and templat
 
 - [Read the guide](docs/10-main-python-imports-annotations-parsing.md): the WO Table 4 imports, type hints, `from __future__ import annotations` in Python 3.9, dunder names, and command-line parsing.
 - [Run the small example](examples/10_python_annotations_and_parsing.py): standard library only; prints values without creating files or running optimization.
-- Markdown sources only for now; HTML/PDF export is deferred.
+- [US Letter PDF](docs/print/10-main-python-imports-annotations-parsing.pdf) · [Print HTML](docs/print/10-main-python-imports-annotations-parsing.html).
+- [English–Chinese PDF](docs/print/10-main-python-imports-annotations-parsing.zh-CN.pdf) · [Bilingual print HTML](docs/print/10-main-python-imports-annotations-parsing.zh-CN.html).
 
 Reusable handbook-writing skill: [research-coding-handbook](skills/research-coding-handbook/SKILL.md). Its source captures reporting conventions, not the handbook's entire document collection. Once installed as a personal skill, invoke `$research-coding-handbook` with the target code, destination, and requested formats; this does not authorize uploads or Git pushes.
 
@@ -93,9 +94,9 @@ The original internal push guides are kept locally and excluded from Git. Only t
 
 ## Print Editions
 
-Q1 is available as a [US Letter PDF](docs/print/01-main-spyder-function-inspection.pdf) and a [self-contained print HTML](docs/print/01-main-spyder-function-inspection.html). 01–09 use US Letter paper (8.5 × 11 inches). The layout uses black text, grayscale figures, page numbers, repeated table headers, and numbered source URLs for reading on paper.
+Q1 is available as a [US Letter PDF](docs/print/01-main-spyder-function-inspection.pdf) and a [self-contained print HTML](docs/print/01-main-spyder-function-inspection.html). 01–10 use US Letter paper (8.5 × 11 inches). The layout uses black text, grayscale figures, page numbers, repeated table headers, and numbered source URLs for reading on paper.
 
-To regenerate after editing the Markdown sources, run `python tools/export_print.py` in a Python environment with Python-Markdown installed and Chrome or Edge available. The exporter was verified with Python-Markdown 3.8 and Chrome 152 on Windows. Its stylesheet is `tools/print.css`; outputs go to `docs/print/`. The command covers 01–10; chapter 10 has not been exported yet. The `.zh-CN.md` guides contain alternating English and Chinese paragraphs, paired list items, and bilingual table cells. They retain the `.zh-CN` suffix; both language versions and their HTML/PDF print editions are tracked in Git and published together. Run `python tools/export_print.py --bilingual` to export all ten directly to HTML and PDF, or pass an individual `.zh-CN.md` path. The exporter renders this bilingual source as written; it does not merge language editions.
+To regenerate after editing the Markdown sources, run `python tools/export_print.py` in a Python environment with Python-Markdown installed and Chrome or Edge available. The exporter was verified with Python-Markdown 3.8 and Chrome 152 on Windows. Its stylesheet is `tools/print.css`; outputs go to `docs/print/`. The command covers 01–10, including both print formats for chapter 10. The `.zh-CN.md` guides contain alternating English and Chinese paragraphs, paired list items, and bilingual table cells. They retain the `.zh-CN` suffix; both language versions and their HTML/PDF print editions are tracked in Git and published together. Run `python tools/export_print.py --bilingual` to export all ten directly to HTML and PDF, or pass an individual `.zh-CN.md` path. The exporter renders this bilingual source as written; it does not merge language editions.
 
 To regenerate Q2's HTML and PDF, run `python tools/export_print.py docs/02-main-markdown-images.md`. The HTML embeds the example image so it can be viewed offline as a single file.
 

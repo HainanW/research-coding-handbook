@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>10 — Python imports, type annotations, and parsing / Python 导入、类型标注与解析</title><style>@page {
+  size: letter;
+  margin: 17mm 16mm 18mm;
+  @top-left { content: "RESEARCH CODING HANDBOOK"; font: 7.5pt Arial, sans-serif; color: #555; }
+  @bottom-right { content: counter(page) " / " counter(pages); font: 8pt Arial, sans-serif; color: #444; }
+}
+* { box-sizing: border-box; }
+html { color: #111; background: white; }
+body {
+  font-family: Arial, "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  font-size: 10pt;
+  line-height: 1.48;
+  margin: 0;
+}
+h1 { font-size: 19pt; line-height: 1.3; margin: 0 0 12pt; font-weight: 700; }
+h2 { font-size: 13pt; line-height: 1.35; margin: 15pt 0 7pt; border-bottom: 0.5pt solid #999; padding-bottom: 4pt; }
+h3 { font-size: 11pt; margin: 12pt 0 5pt; }
+h1, h2, h3 { break-after: avoid; page-break-after: avoid; }
+p { margin: 0 0 8pt; orphans: 3; widows: 3; break-inside: avoid; }
+ul, ol { margin: 5pt 0 9pt; padding-left: 19pt; }
+li { margin-bottom: 4pt; orphans: 2; widows: 2; }
+blockquote { margin: 8pt 0 10pt; padding: 1pt 0 1pt 10pt; border-left: 2pt solid #777; }
+blockquote p { margin: 0; }
+a { color: #111; text-decoration: underline; text-decoration-color: #999; }
+code { font-family: Consolas, "Microsoft YaHei", monospace; font-size: 0.88em; overflow-wrap: anywhere; }
+pre {
+  font-family: Consolas, "Microsoft YaHei", monospace;
+  font-size: 8.2pt;
+  line-height: 1.32;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  tab-size: 4;
+  border: 0.5pt solid #aaa;
+  background: white;
+  padding: 7pt 8pt;
+  margin: 7pt 0 9pt;
+  break-inside: avoid;
+}
+pre code { font-size: inherit; }
+table { width: 100%; table-layout: fixed; border-collapse: collapse; margin: 8pt 0 11pt; font-size: 8.8pt; line-height: 1.38; break-inside: auto; }
+thead { display: table-header-group; }
+tr { break-inside: avoid; }
+th, td { border: 0.5pt solid #999; padding: 5pt 6pt; vertical-align: top; overflow-wrap: anywhere; }
+th { font-weight: bold; background: white; border-bottom: 1pt solid #444; }
+table code { font-size: 0.93em; }
+figure { margin: 9pt 0 12pt; break-inside: avoid; }
+figure p { margin: 0; }
+img { display: block; width: 100%; height: auto; filter: grayscale(1); }
+figcaption { font-size: 8.6pt; line-height: 1.4; margin-top: 5pt; color: #333; }
+sup.reference { font-size: 7pt; margin-left: 2pt; white-space: nowrap; }
+.references { font-size: 8pt; line-height: 1.4; padding-left: 18pt; }
+.references li { margin-bottom: 5pt; overflow-wrap: anywhere; break-inside: avoid; }
+.references a { text-decoration: none; }
+@media screen { body { max-width: 8.5in; padding: 17mm 16mm 18mm; margin: 15px auto; border: 1px solid #ddd; } }
+@media print { body { padding: 0; } }
+
+p:has(+ table) { break-after: avoid; }
+thead { break-after: avoid; }
+table:not(:has(tbody tr:nth-child(9))) { break-inside: avoid; }
+
+/* Bilingual table cells contain both languages and may span many pages. */
+table:has(br), table:has(br):not(:has(tbody tr:nth-child(9))) { break-inside: auto; }
+</style></head><body><h1>10 — Python imports, type annotations, and parsing / Python 导入、类型标注与解析</h1>
+<!-- bilingual: en-zh -->
+
+<h2>The question / 问题</h2>
+<p>What do S1 imports, <code>from __future__ import annotations</code>, and <code>parse</code> mean in the WO Table 4 script?</p>
+<p>WO Table 4 脚本中的 S1 导入、<code>from __future__ import annotations</code> 和 <code>parse</code> 分别是什么意思？</p>
+<p>This guide uses <code>Code_Python_rogp39/Case2-WO-Table4-Reproduction/wo_eq36_fullscan_IK_casadi.py</code>. The small examples explain Python behavior; they do not run the process model. The version-specific behavior below was checked with Python 3.9.25.</p>
+<p>本文对应 <code>Code_Python_rogp39/Case2-WO-Table4-Reproduction/wo_eq36_fullscan_IK_casadi.py</code>。小例子只演示 Python 行为，不运行工艺模型。下面涉及版本的行为已用 Python 3.9.25 核对。</p>
+<h2>1. Type annotations describe expected data / 类型标注说明预期的数据类型</h2>
+<pre><code class="language-python">def square(x: float) -&gt; float:
+    return x * x
+</code></pre>
+<p><code>x: float</code> describes the expected input type. <code>-&gt; float</code> describes the expected return type. The calculation is still <code>x * x</code>. Python does not automatically enforce these hints or convert the data: <code>square(3)</code> returns the integer <code>9</code>. See <a href="https://docs.python.org/3.9/library/typing.html">Python type hints</a><sup class="reference">[1]</sup>.</p>
+<p><code>x: float</code> 说明预期输入是浮点数；<code>-&gt; float</code> 说明预期返回浮点数。实际计算仍是 <code>x * x</code>。Python 不会自动按标注检查或转换数据：<code>square(3)</code> 仍返回整数 <code>9</code>。参见 <a href="https://docs.python.org/3.9/library/typing.html">Python 类型提示</a><sup class="reference">[1]</sup>。</p>
+<p>In the WO script, read this parameter one piece at a time:</p>
+<p>把 WO 脚本中的这个参数拆开看：</p>
+<pre><code class="language-python">p: dict[str, float] | None = None
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Part<br>部分</th>
+<th>Meaning<br>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>p</code></td>
+<td>Parameter name<br>参数名</td>
+</tr>
+<tr>
+<td><code>dict[str, float]</code></td>
+<td>Dictionary with string keys and float values, such as <code>{"rho": 50.0}</code><br>键是字符串、值是浮点数的字典，如 <code>{"rho": 50.0}</code></td>
+</tr>
+<tr>
+<td><code>&#124; None</code></td>
+<td>The type hint also allows <code>None</code><br>类型说明也允许 <code>None</code></td>
+</tr>
+<tr>
+<td><code>= None</code></td>
+<td>If the caller omits <code>p</code>, its default value is <code>None</code><br>调用时不提供 <code>p</code>，默认值就是 <code>None</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>A dictionary can contain zero, one, or many key–value pairs.</strong> In <code>dict[str, float]</code>, <code>str</code> describes the keys and <code>float</code> describes the values; the two type names do not mean there is only one pair. For example:</p>
+<p><strong>字典（dictionary）可以包含零个、一个或多个键值对（key–value pairs）。</strong> <code>dict[str, float]</code> 中的 <code>str</code> 说明键的类型，<code>float</code> 说明值的类型；这两个类型名称并不是说“只能放一对”。例如：</p>
+<pre><code class="language-python">p = {&quot;rho&quot;: 50.0, &quot;k&quot;: 0.2, &quot;volume&quot;: 60.0}
+print(len(p))       # 3
+print(p[&quot;rho&quot;])     # 50.0
+print(p[&quot;k&quot;])       # 0.2
+</code></pre>
+<p>These are illustrative entries, not a complete validated WO parameter set. Each key is a string and each value here is a float. The annotation does not prescribe particular key names, their count, or physical units; the function body may impose additional requirements. <code>{}</code> is an empty dictionary, while <code>None</code> means no dictionary was supplied. They are different values.</p>
+<p>这些条目只是教学示例，并不是完整、已验证的 WO 参数集。每个键都是字符串，每个值在这里都是浮点数。这个标注没有规定必须有哪些键、键值对数量或物理单位；函数内部代码可能另有要求。<code>{}</code> 是空字典，而 <code>None</code> 表示没有提供字典，两者不是同一个值。</p>
+<p>Likewise, <code>sc: list[dict[str, Any]]</code> describes a list of scenario dictionaries. <code>Any</code> leaves value types unrestricted; a record can contain float flows and integer indices. <code>-&gt; np.ndarray</code> describes an array return value.</p>
+<p>同理，<code>sc: list[dict[str, Any]]</code> 表示由情景字典组成的列表。<code>Any</code> 不限定值的类型，因此一条记录可以同时包含浮点流量和整数编号。<code>-&gt; np.ndarray</code> 说明预期返回数组。</p>
+<h2>2. Why the future import is needed here / 这里为什么要用 future import</h2>
+<h3>2.1 A number and a piece of text are different / 2.1 数字和文字不是一回事</h3>
+<p>Start with these two lines. The only difference is the quotation marks:</p>
+<p>先看下面两行，区别只是有没有引号：</p>
+<pre><code class="language-python">number = 1 + 2
+text = &quot;1 + 2&quot;
+
+print(number)        # 3
+print(type(number))  # &lt;class 'int'&gt;
+print(text)          # 1 + 2
+print(type(text))    # &lt;class 'str'&gt;
+</code></pre>
+<p>For <code>number</code>, Python performs the addition and stores the result <code>3</code>. For <code>text</code>, Python stores the characters <code>1 + 2</code> as a string. <strong>Saving those characters does not perform the addition, now or automatically later.</strong></p>
+<p><code>number</code> 那一行让 Python 做加法，保存结果 <code>3</code>。<code>text</code> 那一行只保存 <code>1 + 2</code> 这几个字符，类型是字符串（string）。<strong>保存这些字符，不会做加法，也不会过一会儿就自动做加法。</strong></p>
+<p>A separate instruction can ask Python to execute the saved text as an expression. Here <code>eval()</code> does that for our fixed arithmetic example:</p>
+<p>如果另外下达指令，Python 才会把保存的文字当作表达式执行。下面的 <code>eval()</code> 就是对这个固定的加法例子提出这样的要求：</p>
+<pre><code class="language-python">text = &quot;1 + 2&quot;
+result = eval(text)
+print(result)  # 3
+print(text)    # 1 + 2
+</code></pre>
+<p><code>result</code> receives <code>3</code>; <code>text</code> itself remains the string <code>"1 + 2"</code>. This example explains the difference between storing text and asking Python to execute it. You do not need to add <code>eval()</code> to the WO script.</p>
+<p><code>result</code> 得到 <code>3</code>，而 <code>text</code> 本身仍然是字符串 <code>"1 + 2"</code>。这个例子只是帮助区分“保存文字”和“要求 Python 执行文字中的表达式”。你的 WO 脚本不需要因此添加 <code>eval()</code>。</p>
+<h3>2.2 Apply that distinction to the parameter annotation / 2.2 再看参数旁边的类型说明</h3>
+<p>In <code>p: dict[str, float] | None = None</code>, the part after the colon and before <code>= None</code> describes the expected type of <code>p</code>: <strong>a dictionary with string keys and float values, or <code>None</code></strong>. The <code>|</code> means “or” here. The final <code>= None</code> separately specifies the default value if no argument is supplied.</p>
+<p>在 <code>p: dict[str, float] | None = None</code> 中，冒号后面、<code>= None</code> 前面的部分，是对 <code>p</code> 的类型说明：<strong>字符串键、浮点数值的字典，或者 <code>None</code></strong>。这里的 <code>|</code> 表示“或者”；最后的 <code>= None</code> 则单独规定“不传参数时默认用什么值”。</p>
+<p>Without the future import, Python 3.9 tries to turn this annotation into a type description it can work with when defining the function. That requires support for <code>|</code> between these types. Python 3.9 does not have that support, so the definition raises <code>TypeError</code>. This use of <code>|</code> was introduced in <a href="https://docs.python.org/3.10/whatsnew/3.10.html#pep-604-new-type-union-operator">Python 3.10</a><sup class="reference">[2]</sup>.</p>
+<p>不加 future import 时，Python 3.9 在定义函数时，就会尝试把这段标注变成它能使用的类型信息。这需要支持“用 <code>|</code> 把类型组合起来”的功能。Python 3.9 没有这个功能，所以函数定义会报 <code>TypeError</code>。这种 <code>|</code> 用法是在 <a href="https://docs.python.org/3.10/whatsnew/3.10.html#pep-604-new-type-union-operator">Python 3.10</a><sup class="reference">[2]</sup> 中加入的。</p>
+<p>With <code>from __future__ import annotations</code>, Python 3.9 instead keeps this annotation as the string <code>"dict[str, float] | None"</code>. Just as saving <code>"1 + 2"</code> does not require addition, saving this text does not require performing the unsupported <code>|</code> operation. The function can therefore be defined and called. See <a href="https://peps.python.org/pep-0563/">PEP 563</a><sup class="reference">[3]</sup>.</p>
+<p>加上 <code>from __future__ import annotations</code> 后，Python 3.9 改为把这段标注保存成字符串 <code>"dict[str, float] | None"</code>。就像保存 <code>"1 + 2"</code> 不需要做加法，保存这份文字也不需要执行它不支持的 <code>|</code> 运算。因此函数可以正常定义和调用。参见 <a href="https://peps.python.org/pep-0563/">PEP 563</a><sup class="reference">[3]</sup>。</p>
+<p>Run the following as a complete, separate Python 3.9 script:</p>
+<p>将下面内容作为一个完整、独立的 Python 3.9 脚本运行：</p>
+<pre><code class="language-python">from __future__ import annotations
+
+def identity(p: dict[str, float] | None = None):
+    return p
+
+parameters = {&quot;rho&quot;: 50.0, &quot;k&quot;: 0.2}
+result = identity(parameters)
+print(result)                    # {'rho': 50.0, 'k': 0.2}
+print(type(result).__name__)      # dict
+
+annotation = identity.__annotations__[&quot;p&quot;]
+print(annotation)                # dict[str, float] | None
+print(type(annotation).__name__)  # str
+</code></pre>
+<p>There are two separate things to inspect: <code>result</code> is the real dictionary returned by the function; <code>annotation</code> is the saved text describing the parameter. <code>identity.__annotations__["p"]</code> simply retrieves that description. <strong>The dictionary has not become a string.</strong></p>
+<p>这里分开看两样东西：<code>result</code> 是函数返回的真实字典；<code>annotation</code> 是保存下来的参数类型说明。<code>identity.__annotations__["p"]</code> 只是取出这份说明的写法。<strong>字典没有变成字符串。</strong></p>
+<h3>2.3 Is it equivalent to a comment? / 2.3 这是不是相当于注释掉了？</h3>
+<p>It resembles a comment in that it does not immediately perform the <code>|</code> operation, but it is not discarded. A normal <code>#</code> comment is not stored as the function's annotation; this description is stored in <code>__annotations__</code> and can be retrieved by tools. The future import also does not add automatic checking of the argument values.</p>
+<p>可以把它理解为“暂时不执行里面的 <code>|</code>”，但它并没有被丢弃。普通 <code>#</code> 注释不会作为函数的类型标注保存；这份说明则保存在 <code>__annotations__</code> 中，工具仍能取出来查看。future import 也不会自动检查你传入的数据类型。</p>
+<h3>2.4 When can an error still occur? (Optional) / 2.4 那什么时候还会报错？（可先跳过）</h3>
+<p>An ordinary <code>identity(parameters)</code> call uses the dictionary and runs <code>return p</code>; it does not ask Python to convert the saved annotation text into type information. But <code>typing.get_type_hints(identity)</code> makes that additional request. On Python 3.9, it then encounters the unsupported <code>|</code> operation and raises <code>TypeError</code>. This is a separate action, like explicitly calling <code>eval(text)</code> in the arithmetic example. <strong>A stored string does not execute itself, and the future import does not upgrade Python.</strong></p>
+<p>普通的 <code>identity(parameters)</code> 调用拿到字典，然后执行 <code>return p</code>，不会要求 Python 把保存的类型文字转换为类型信息。但 <code>typing.get_type_hints(identity)</code> 会额外提出这个要求。在 Python 3.9 中，这时又遇到不支持的 <code>|</code> 运算，才会报 <code>TypeError</code>。这是额外的一步，就像前面的例子里特意调用了 <code>eval(text)</code>。<strong>字符串不会自己执行，future import 也没有升级 Python。</strong></p>
+<p>If a Python 3.9 program needs that extra tool, the compatible spelling below expresses the same intended type. This is an optional alternative; the original WO script is not being changed.</p>
+<p>如果 Python 3.9 程序确实需要那个额外工具，可以使用下面兼容的写法，表达相同的类型要求。这只是可选的替代方式，没有修改原 WO 脚本。</p>
+<pre><code class="language-python">from typing import Optional
+
+def identity(p: Optional[dict[str, float]] = None):
+    return p
+</code></pre>
+<p><code>Optional[dict[str, float]]</code> also means “this dictionary type or <code>None</code>.” Neither spelling restricts the dictionary to a single key–value pair.</p>
+<p><code>Optional[dict[str, float]]</code> 同样表示“这种字典或者 <code>None</code>”。两种写法都不限制字典只能有一个键值对。</p>
+<p><code>__future__</code> is a special standard-library module. Python recognizes <code>from __future__ import annotations</code> as an instruction to enable this annotation behavior in the file. <em>Dunder</em> means <em>double underscore</em>: <code>__future__</code> has two underscores at each end. Put the statement before ordinary imports; a module docstring and comments may precede it. See <a href="https://docs.python.org/3.9/reference/simple_stmts.html#future-statements">future statements</a><sup class="reference">[4]</sup>.</p>
+<p><code>__future__</code> 是特殊的标准库模块。整句 <code>from __future__ import annotations</code> 相当于“在本文件开启上述标注处理方式”。dunder 是 double underscore（双下划线）的简称，<code>__future__</code> 前后各有两个下划线。这句放在普通导入之前；前面可以有文件说明字符串和注释。参见 <a href="https://docs.python.org/3.9/reference/simple_stmts.html#future-statements">future 语句</a><sup class="reference">[4]</sup>。</p>
+<h2>3. Read the S1 imports by their job / 按用途理解 S1 导入</h2>
+<p>S1 makes tools available. These import lines do not start the WO optimization.</p>
+<p>S1 准备后面要用的工具。这些导入语句还没有开始 WO 优化计算。</p>
+<table>
+<thead>
+<tr>
+<th>Import<br>导入语句</th>
+<th>Use in this script<br>本脚本中的用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>import argparse</code></td>
+<td>Read options such as <code>--output-dir</code><br>读取 <code>--output-dir</code> 等运行选项</td>
+</tr>
+<tr>
+<td><code>import csv</code></td>
+<td>Read historical MATLAB results and write result/comparison tables<br>读取 MATLAB 历史结果，写出结果表和比较表</td>
+</tr>
+<tr>
+<td><code>from datetime import datetime, timezone</code></td>
+<td>Record UTC dates and create timestamped run names<br>记录 UTC 日期时间，生成带时间戳的运行名称</td>
+</tr>
+<tr>
+<td><code>import hashlib</code></td>
+<td>Record SHA-256 file fingerprints for source tracking<br>记录文件的 SHA-256“指纹”，用于追溯来源</td>
+</tr>
+<tr>
+<td><code>import json</code></td>
+<td>Save configuration, versions, and run records<br>保存配置、版本和运行记录</td>
+</tr>
+<tr>
+<td><code>from pathlib import Path</code></td>
+<td>Locate files, build paths, and create output directories<br>定位文件、拼接路径、创建输出目录</td>
+</tr>
+<tr>
+<td><code>import platform</code></td>
+<td>Record the Python version<br>记录 Python 版本</td>
+</tr>
+<tr>
+<td><code>import time</code></td>
+<td>Measure solver elapsed time with <code>perf_counter()</code><br>用 <code>perf_counter()</code> 计算求解耗时</td>
+</tr>
+<tr>
+<td><code>from typing import Any</code></td>
+<td>Supply <code>Any</code> for type annotations<br>提供类型标注中的 <code>Any</code></td>
+</tr>
+<tr>
+<td><code>import casadi as ca</code></td>
+<td>Build symbolic variables, objectives, and constraints; call IPOPT<br>建立符号变量、目标和约束，调用 IPOPT</td>
+</tr>
+<tr>
+<td><code>import numpy as np</code></td>
+<td>Work with numerical arrays, initial guesses, and results<br>处理数值数组、初值和结果</td>
+</tr>
+</tbody>
+</table>
+<p><code>import csv</code> gives names such as <code>csv.DictWriter</code>. <code>from pathlib import Path</code> allows <code>Path(...)</code> directly. <code>as np</code> gives NumPy a short name. These are three common import forms.</p>
+<p><code>import csv</code> 后用 <code>csv.DictWriter</code>；<code>from pathlib import Path</code> 后直接用 <code>Path(...)</code>；<code>as np</code> 给 NumPy 起简称。这是三种常见的导入形式。</p>
+<pre><code class="language-python">V = ca.MX.sym(&quot;V&quot;)  # Symbolic decision variable
+V0 = np.array([60.0])  # Numerical initial value
+</code></pre>
+<p>These two lines require the CasADi and NumPy imports above. CasADi represents the optimization model; NumPy handles numerical data. Later, <code>ca.nlpsol(..., "ipopt", ...)</code> selects IPOPT as the solver.</p>
+<p>这两行需要先导入上表中的 CasADi 和 NumPy。<code>V</code> 是符号决策变量，<code>V0</code> 是含有具体数值的初值数组。CasADi 表达优化模型，NumPy 处理数值数据；后面的 <code>ca.nlpsol(..., "ipopt", ...)</code> 指定 IPOPT 求解器。</p>
+<h2>4. Parse means read according to rules / Parse 就是按规则解析</h2>
+<p>When parsing Python text such as <code>a = 1 + 2</code>, a parser identifies an assignment and an addition. Executing it calculates <code>3</code> and assigns it to <code>a</code>.</p>
+<p>解析 Python 文本 <code>a = 1 + 2</code> 时，解析器识别出“赋值”和“加法”的结构。执行时才算出 <code>3</code>，并把它赋给 <code>a</code>。</p>
+<p>In this script, <code>parser.parse_args()</code> instead reads command-line options and stores their values in <code>args</code>. The options <code>--output-dir</code> and <code>--historical-csv</code> become <code>args.output_dir</code> and <code>args.historical_csv</code>; omitted options are <code>None</code>. Here <code>type=Path</code> actually converts a supplied value to a path object; it is not a type annotation. See <a href="https://docs.python.org/3.9/library/argparse.html">argparse</a><sup class="reference">[5]</sup>.</p>
+<p>在本脚本里，<code>parser.parse_args()</code> 读取命令行选项，并把值放进 <code>args</code>。<code>--output-dir</code> 和 <code>--historical-csv</code> 分别对应 <code>args.output_dir</code> 和 <code>args.historical_csv</code>；未提供时为 <code>None</code>。这里的 <code>type=Path</code> 会实际把传入的值转换成路径对象，它不是类型标注。参见 <a href="https://docs.python.org/3.9/library/argparse.html">argparse</a><sup class="reference">[5]</sup>。</p>
+<p>Run the <a href="../../examples/10_python_annotations_and_parsing.py">small standalone example</a> from the handbook root. It requires Python 3.9+ and no external packages; it creates no output directory or simulation results.</p>
+<p>在手册根目录运行这个<a href="../../examples/10_python_annotations_and_parsing.py">独立小例子</a>。需要 Python 3.9+，无需额外安装库；它不会创建输出目录或生成模拟结果。</p>
+<pre><code class="language-text">python examples/10_python_annotations_and_parsing.py --output-dir results/demo
+</code></pre>
+<p>Expected output:</p>
+<p>预期输出：</p>
+<pre><code class="language-text">p value: {'rho': 50.0}
+p type: dict
+annotation: dict[str, float] | None
+annotation type: str
+output path: results/demo
+</code></pre>
+<p>The dictionary is unchanged, its type annotation is stored as text, and the command-line path has been read. The real WO script then passes that path to <code>run_sweep()</code> to begin its calculations.</p>
+<p>字典保持原样，类型标注保存为文字，命令行路径也已读出。实际 WO 脚本随后把路径传给 <code>run_sweep()</code>，才进入计算流程。</p><h2>参考资料（References）</h2><ol class="references"><li><a href="https://docs.python.org/3.9/library/typing.html">https://docs.python.org/3.9/library/typing.html</a></li><li><a href="https://docs.python.org/3.10/whatsnew/3.10.html#pep-604-new-type-union-operator">https://docs.python.org/3.10/whatsnew/3.10.html#pep-604-new-type-union-operator</a></li><li><a href="https://peps.python.org/pep-0563/">https://peps.python.org/pep-0563/</a></li><li><a href="https://docs.python.org/3.9/reference/simple_stmts.html#future-statements">https://docs.python.org/3.9/reference/simple_stmts.html#future-statements</a></li><li><a href="https://docs.python.org/3.9/library/argparse.html">https://docs.python.org/3.9/library/argparse.html</a></li></ol></body></html>

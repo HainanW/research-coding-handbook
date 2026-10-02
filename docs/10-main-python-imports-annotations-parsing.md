@@ -29,7 +29,7 @@ p: dict[str, float] | None = None
 | --- | --- |
 | `p` | Parameter name |
 | `dict[str, float]` | Dictionary with string keys and float values, such as `{"rho": 50.0}` |
-| `\| None` | The type hint also allows `None` |
+| <code>&#124; None</code> | The type hint also allows `None` |
 | `= None` | If the caller omits `p`, its default value is `None` |
 
 **A dictionary can contain zero, one, or many key–value pairs.** In `dict[str, float]`, `str` describes the keys and `float` describes the values; the two type names do not mean there is only one pair. For example:
