@@ -25,8 +25,9 @@ This repository collects recurring programming practices, workflows, and templat
 
 **01. Run and debug Python scripts in VS Code**
 
-- [Main guide](docs/01-main-running-and-debugging.md): interpreter selection, the Run button, terminal arguments, breakpoints, stepping, and Terminal / REPL / Debug Console.
+- [Main guide](docs/01-main-running-and-debugging.md): interpreter selection, running a script, breakpoints, stepping, and preparing inputs.
 - [Bilingual PDF](docs/print/01-main-running-and-debugging.zh-CN.pdf) · [Practice script](examples/10_python_annotations_and_parsing.py).
+- Sections 2 and 3 explain parameters versus arguments, whether input is required, fixed test inputs, `launch.json` arguments, and interactive `input()` debugging.
 - **01-SI: Spyder supplementary information**
   - [Guide](docs/01-SI-spyder.md) · [Bilingual PDF](docs/print/01-SI-spyder.zh-CN.pdf).
   - [Original example](examples/01_spyder_function_inspection.py): the full exercise on random data, local variables, array types and shapes.

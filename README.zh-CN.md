@@ -25,8 +25,9 @@
 
 **01：在 VS Code 中运行与调试 Python 脚本**
 
-- [主教程](docs/01-main-running-and-debugging.zh-CN.md)：选择解释器、右上角运行按钮、终端参数、断点、单步执行，以及 Terminal / REPL / Debug Console 的区别。
+- [主教程](docs/01-main-running-and-debugging.zh-CN.md)：选择解释器、运行脚本、断点、单步执行，以及调试输入的准备。
 - [双语 PDF](docs/print/01-main-running-and-debugging.zh-CN.pdf) · [练习脚本](examples/10_python_annotations_and_parsing.py)。
+- 第 2、3 节补充形参与实参、是否需要额外输入、固定测试输入、`launch.json` 参数，以及 `input()` 交互调试。
 - **01-SI：Spyder 补充资料**
   - [双语指南](docs/01-SI-spyder.zh-CN.md) · [双语 PDF](docs/print/01-SI-spyder.zh-CN.pdf)。
   - [原运行示例](examples/01_spyder_function_inspection.py)：保留随机数据生成、局部变量、数组类型与形状的完整练习。

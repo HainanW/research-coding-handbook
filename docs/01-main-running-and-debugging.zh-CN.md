@@ -5,43 +5,19 @@
 [手册 / Handbook](../README.zh-CN.md) · [English](01-main-running-and-debugging.md) · [双语 PDF](print/01-main-running-and-debugging.zh-CN.pdf)
 <!-- /print:omit -->
 
-## Question and example / 问题与示例
+## 1. Run the example / 先运行一次
 
-How do I run the open Python file, pass options, and pause inside a function to inspect its values? This first edition uses the existing [chapter 10 script](../examples/10_python_annotations_and_parsing.py). It needs Python 3.9+ and only the standard library. It prints values and does not create files. The original Spyder tutorial is now [01-SI — Spyder](01-SI-spyder.md), supplementary information for this chapter.
+Open the repository folder in VS Code. Use **Ctrl+Shift+P → Python: Select Interpreter** to select an installed Python environment. The interpreter executes your code. You need the Microsoft Python and Python Debugger extensions.
 
-怎样运行当前打开的 Python 文件、传入选项，并在函数内部暂停查看变量？本版使用已有的[第 10 章脚本](../examples/10_python_annotations_and_parsing.py)，需要 Python 3.9+，只用标准库；它打印数值，不创建文件。原 Spyder 教程移至 [01-SI — Spyder](01-SI-spyder.zh-CN.md)，作为本章补充资料（Supplementary Information）。
+在 VS Code 中打开仓库文件夹，按 **Ctrl+Shift+P → Python: Select Interpreter**，选择已有 Python 环境。解释器负责执行代码。需要 Microsoft 的 Python 和 Python Debugger 扩展。
 
-## 1. Choose the interpreter / 选择解释器
+Open [the chapter 10 script](../examples/10_python_annotations_and_parsing.py), save it, then choose **Run Python File in Terminal** from the upper-right triangle. This example needs Python 3.9+ and only the standard library. See [VS Code: running Python](https://code.visualstudio.com/docs/python/run).
 
-Open the repository folder in VS Code. Confirm that Microsoft's Python and Python Debugger extensions are available. An editor displays your code; the Python interpreter executes it.
+打开并保存[第 10 章脚本](../examples/10_python_annotations_and_parsing.py)，在右上角三角按钮中选择 **Run Python File in Terminal**。这个示例需要 Python 3.9+，只用标准库。参见 [VS Code：运行 Python](https://code.visualstudio.com/docs/python/run)。
 
-在 VS Code 中打开仓库文件夹，确认 Microsoft 的 Python 与 Python Debugger 扩展可用。编辑器（editor）显示代码，Python 解释器（interpreter）负责执行代码。
+Expected output:
 
-Press `Ctrl+Shift+P`, run **Python: Select Interpreter**, and choose an installed environment. The selected interpreter is normally used for Python runs and debugging; a debug configuration can override it. See [VS Code: environments](https://code.visualstudio.com/docs/python/environments).
-
-按 `Ctrl+Shift+P`，执行 **Python: Select Interpreter**，选择已有环境。Python 的运行和调试通常使用该解释器，但调试配置可以指定另一个解释器。参见 [VS Code：环境](https://code.visualstudio.com/docs/python/environments)。
-
-In a newly opened terminal, check which interpreter the command `python` actually resolves to:
-
-新建终端后，检查 `python` 命令实际指向哪个解释器：
-
-```powershell
-python -c "import sys; print(sys.executable); print(sys.version)"
-```
-
-Compare the printed executable with your selection. An already-open terminal can still use a previous environment. For environment setup, see [chapter 07](07-main-conda-environment.md).
-
-将输出的可执行文件路径与所选解释器比较。此前打开的终端可能仍使用旧环境；环境设置见[第 07 章](07-main-conda-environment.zh-CN.md)。
-
-## 2. Run the open file / 运行当前文件
-
-Open `examples/10_python_annotations_and_parsing.py`, save it, and choose **Run Python File in Terminal** from the upper-right play button. Inspect the command and output in **Terminal**. If another extension supplies a similar triangle, identify the Python command by its label. See [VS Code: running Python](https://code.visualstudio.com/docs/python/run).
-
-打开并保存 `examples/10_python_annotations_and_parsing.py`，在右上角三角按钮中选择 **Run Python File in Terminal**，在 **Terminal** 查看实际命令与输出。其他扩展也可能提供三角按钮，要根据命令名称确认。参见 [VS Code：运行 Python](https://code.visualstudio.com/docs/python/run)。
-
-Running executes the script to completion unless it waits for input or encounters an error. A breakpoint only pauses execution when a debugger is attached. For this example, running without options produces:
-
-运行（Run）会执行脚本，直到结束、等待输入或遇到错误。断点（breakpoint）需要在连接调试器时才会暂停程序。本例不带选项运行时输出：
+预期输出：
 
 ```text
 p value: {'rho': 50.0}
@@ -51,31 +27,47 @@ annotation type: str
 output path: None
 ```
 
-`None` here means no output path was supplied; it is not an error. The meanings of the annotation and `__name__` guard are explained in [chapter 10](10-main-python-imports-annotations-parsing.md).
+Alternatively, run this in a PowerShell terminal at the repository root:
 
-这里的 `None` 表示没有传入输出路径，不是报错。类型标注与 `__name__` 入口判断见[第 10 章](10-main-python-imports-annotations-parsing.zh-CN.md)。
-
-## 3. Run from the terminal and pass an option / 在终端运行并传入选项
-
-At a PowerShell prompt, with the repository root as the current directory, run:
-
-在 PowerShell 提示符下，以仓库根目录为当前目录，执行：
+也可以在仓库根目录的 PowerShell 终端中运行：
 
 ```powershell
-Get-Location
 python examples/10_python_annotations_and_parsing.py
-python examples/10_python_annotations_and_parsing.py --output-dir results/demo
 ```
 
-The second Python command changes the final output to `output path: results/demo`. In this teaching script the path is parsed and printed; no directory is created. `python` selects the interpreter, the `.py` path selects the script, and `--output-dir results/demo` supplies a script option.
+If the prompt is `>>>`, enter `exit()` first to leave the Python interactive session.
 
-第二条 Python 命令将最后一行输出改为 `output path: results/demo`。这个教学脚本只解析并打印路径，不创建目录。`python` 选择解释器，`.py` 路径选择脚本，`--output-dir results/demo` 向脚本传入选项。
+如果提示符是 `>>>`，先输入 `exit()`，退出 Python 交互环境后再执行终端命令。
 
-The current working directory determines how relative paths are interpreted. It is not necessarily the script's folder. A prompt beginning with `>>>` is a Python REPL; enter `exit()` before typing these PowerShell commands.
+## 2. Pause and inspect a function / 暂停并观察函数
 
-当前工作目录（current working directory）决定相对路径的起点，不一定是脚本所在文件夹。如果提示符是 `>>>`，当前处于 Python 交互环境（REPL）；先输入 `exit()`，再执行这些 PowerShell 命令。
+### 2.1 Do I need to enter arguments first? / 需要先输入实参吗？
 
-## 4. Pause and inspect a function / 暂停并观察函数
+No extra input is needed for the current example: the caller already supplies the argument. These excerpts are from the chapter 10 script:
+
+当前案例不需要额外输入：调用处已经提供了实参。以下片段来自第 10 章脚本：
+
+```python
+from __future__ import annotations
+
+# Function definition
+def identity(p: dict[str, float] | None = None):
+    return p
+
+# Inside main()
+p = {"rho": 50.0}
+value = identity(p)
+```
+
+A **parameter** is the receiving name in a function definition; an **argument** is what the caller supplies. Here, `p` receives the dictionary. Because its default is `None`, calling `identity()` returns `None`. Required parameters without defaults must receive arguments; the debugger does not prompt for them.
+
+**形参（parameter）**是函数定义中接收值的名称，**实参（argument）**是调用时提供的对象。这里 `p` 接收字典；有默认值 `None`，所以调用 `identity()` 会返回 `None`。没有默认值的必需形参，调用时必须提供实参，调试器不会弹窗让你补填。
+
+Here, `--output-dir` is an optional command-line argument, separate from the function argument. Omitting it leaves `args.output_dir` as `None`; `identity` still receives the dictionary. The script does not call `input()` or wait for keyboard input.
+
+这里的 `--output-dir` 是可选的命令行参数，与函数实参分开。不传该选项时，`args.output_dir` 为 `None`，而 `identity` 仍然接收字典。脚本没有调用 `input()`，也不会等待键盘输入。
+
+### 2.2 Follow the argument into the function / 跟着实参进入函数
 
 Keep the example `.py` file active. Click the gutter next to `value = identity(p)` to add a breakpoint. Start debugging with `F5`; if prompted, choose **Python Debugger** and the current Python file. If an existing launch configuration targets another program, choose the current-file configuration instead. See [Python debugging](https://code.visualstudio.com/docs/python/debugging).
 
@@ -85,9 +77,15 @@ At the breakpoint, the highlighted statement has not executed yet. On this fresh
 
 停在断点时，高亮语句还未执行。在本次新启动的运行中，`p` 已经是 `{'rho': 50.0}`，但 `value` 尚未赋值。按 **Step Into / 单步进入**（`F11`），进入 `identity`；停在 `return p` 时，函数的局部参数 `p` 指向同一个字典。
 
-Inspect `p`, `type(p)`, and `p["rho"]` in **Debug Console** while paused; the results are the dictionary, `dict`, and `50.0`. After returning to `main`, use Step Over if needed until the assignment has finished. Then `value` is available and `value is p` is `True`: this function returns the original object, not a copy.
+```python
+p          # {'rho': 50.0}
+type(p)    # <class 'dict'>
+p["rho"]   # 50.0
+```
 
-暂停时在 **Debug Console / 调试控制台** 中查看 `p`、`type(p)`、`p["rho"]`，分别得到字典、`dict` 类型和 `50.0`。返回 `main` 后，如赋值尚未完成，再执行 Step Over。完成后可查看 `value`，且 `value is p` 为 `True`：函数返回的是原对象，没有复制字典。
+Enter these expressions separately in Debug Console while paused inside `identity`. Terminal is for shell commands or keyboard input requested by the program. They inspect the argument already received; they do not supply a missing argument. Use **Shift+F11** to return to the caller, then **F5** to continue after inspecting the completed assignment.
+
+在 `identity` 内部暂停时，将这些表达式逐条输入 Debug Console。Terminal 则用于终端命令或程序要求的键盘输入。它们查看的是已经收到的实参，不是在补传参数。用 **Shift+F11** 返回调用处，核对赋值完成后的结果，再按 **F5** 继续运行。
 
 | Windows default action<br>Windows 默认操作 | What it does<br>作用 |
 | --- | --- |
@@ -97,32 +95,97 @@ Inspect `p`, `type(p)`, and `p["rho"]` in **Debug Console** while paused; the re
 | F5 — Continue<br>继续 | Resume until another breakpoint, a configured exception stop, or completion.<br>继续到下一断点、已配置的异常暂停或程序结束。 |
 | Shift+F5 — Stop<br>停止 | End the debugging session.<br>结束本次调试。 |
 
-**Variables**, **Watch**, and **Call Stack** help inspect the paused state. The selected stack frame determines the available local variables. See [VS Code: debugging controls](https://code.visualstudio.com/docs/debugtest/debugging). Shortcuts can be customized; use toolbar labels if yours differ.
+## 3. Prepare inputs for a debugging session / 调试时如何准备输入
 
-通过 **Variables / 变量**、**Watch / 监视** 和 **Call Stack / 调用堆栈** 查看暂停状态。选中的栈帧（stack frame）决定可查看哪些局部变量。参见 [VS Code：调试控制](https://code.visualstudio.com/docs/debugtest/debugging)。快捷键可能被自定义，可按工具栏名称操作。
+First identify how the program receives its input. For this learning example, start with a fixed input in `main()` so that you can repeat the same run and compare values.
 
-## 5. Keep the three consoles distinct / 区分三种输入位置
+先确定程序通过什么方式接收输入。对于这个学习案例，建议先在 `main()` 中写好固定输入，方便重复运行并对照数值。
 
-| Location<br>位置 | What to enter<br>输入内容 |
+| Input source<br>输入来源 | How to supply it while debugging<br>调试时如何提供 |
 | --- | --- |
-| Terminal with a PowerShell prompt<br>显示 PowerShell 提示符的终端 | Shell commands, including `python script.py`.<br>Shell 命令，例如 `python script.py`。 |
-| Python REPL with `>>>`<br>显示 `>>>` 的 Python 交互环境 | Python statements, in that REPL's own session.<br>Python 语句，使用该交互会话自己的变量。 |
-| Debug Console during a paused session<br>调试暂停时的 Debug Console | Expressions for the selected frame, such as `p["rho"]`.<br>当前选中栈帧中的表达式，例如 `p["rho"]`。 |
+| A function call such as `identity(test_p)`<br>函数调用，例如 `identity(test_p)` | Create `test_p` before the call.<br>调用前准备好 `test_p`。 |
+| A command-line option such as `--output-dir`<br>命令行选项，例如 `--output-dir` | Set `args` in the selected `launch.json` configuration.<br>在所选 `launch.json` 配置的 `args` 中填写。 |
+| An interactive `input()` call<br>`input()` 交互输入 | Type in Terminal when the running program requests input.<br>程序提示输入时，在 Terminal 中键入。 |
 
-A separately launched script's local variables do not automatically appear in a different Python REPL after it exits. Pause before the function returns to inspect them.
+### 3.1 Fixed arguments in a small caller / 在调用处准备固定实参
 
-独立启动的脚本退出后，它的局部变量不会自动出现在另一个 Python REPL 中。要观察这些变量，应在函数返回前暂停。
+This is a standalone teaching variant, not a replacement for the chapter 10 script. It uses only the standard library. Save it as a separate practice `.py` file if you want to run it:
 
-If the file is not found, check the working directory and script path. If a module is missing, check the interpreter and its dependencies. If a breakpoint does not stop, check that you started debugging, selected the correct script, and reached that executable line.
+下面是只使用标准库的独立教学变体，供另存为练习 `.py` 文件后运行；第 10 章原脚本仍保留原样：
 
-找不到文件时，检查工作目录与脚本路径；缺少模块时，检查解释器及其依赖；断点不停时，检查是否启动调试、是否选中正确脚本，以及是否执行到该可执行语句。
+```python
+def identity(p=None):
+    return p
+
+
+def main():
+    test_p = {"rho": 60.0}
+    result = identity(test_p)  # Set a breakpoint here
+    print(result)
+
+
+if __name__ == "__main__":
+    main()
+```
+
+Start this practice file under the debugger, pause at the call, and press F11. In `main`, the argument is named `test_p`; inside `identity`, the receiving parameter is named `p`. The names can differ. Both refer to the same dictionary, and the final output is `{'rho': 60.0}`. Change `test_p` and restart to try a different input. Calling `identity()` instead returns `None` because this function has a default.
+
+调试这个练习文件，停在函数调用处，再按 F11。在 `main` 中传入的变量名是 `test_p`，进入 `identity` 后接收它的形参名是 `p`，两者不必同名。它们指向同一个字典，最后输出 `{'rho': 60.0}`。修改 `test_p` 后重新启动调试，即可尝试其他输入。若改成调用 `identity()`，由于该函数有默认值，结果为 `None`。
+
+### 3.2 Command-line inputs in launch.json / 在 launch.json 中设置命令行参数
+
+For the existing chapter 10 script, the following configuration supplies the option `--output-dir results/demo`. This is a configuration example; documenting it does not change your VS Code settings. In `.vscode/launch.json`, add the configuration object to the existing `configurations` list, or use the whole file below if none exists:
+
+对于已有的第 10 章脚本，下列配置传入 `--output-dir results/demo` 选项。这是配置示例，整理进教程不代表已修改你的 VS Code 设置。在 `.vscode/launch.json` 中，将配置对象加入已有的 `configurations` 列表；尚无该文件时，可使用下面的完整内容：
+
+```json
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Chapter 10: arguments",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/examples/10_python_annotations_and_parsing.py",
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "args": ["--output-dir", "results/demo"]
+        }
+    ]
+}
+```
+
+Open the repository root as the VS Code workspace. Select **Chapter 10: arguments** in Run and Debug, then press F5. `program` fixes the script, `cwd` fixes the working directory, and `args` supplies script options. The final output is `output path: results/demo`; no directory is created. Each token is a separate `args` item. See [Python debugging](https://code.visualstudio.com/docs/python/debugging).
+
+以仓库根目录作为 VS Code 工作区。在 Run and Debug 中选择 **Chapter 10: arguments**，再按 F5。`program` 指定脚本，`cwd` 指定工作目录，`args` 提供脚本选项。最后输出 `output path: results/demo`，不会创建目录。选项名和选项值分别占一个 `args` 元素。参见 [Python 调试](https://code.visualstudio.com/docs/python/debugging)。
+
+This configuration always targets chapter 10, even when a different file is open. Switch back to a current-file configuration to debug the practice variant in section 3.1. `--output-dir` does not set `p` or `rho`: the script only connects this option to `args.output_dir`. Passing a value into `identity` still requires a Python function call.
+
+即使当前打开其他文件，这份配置仍运行第 10 章脚本。调试第 3.1 节练习文件时，应切换回当前文件配置。`--output-dir` 不会设置 `p` 或 `rho`；脚本只把该选项解析到 `args.output_dir`。向 `identity` 传值仍需通过 Python 函数调用。
+
+### 3.3 Interactive keyboard input / 键盘交互输入
+
+For an interactive variant of section 3.1, keep its `identity` definition and entry-point guard, but replace the body of `main()` with:
+
+若将第 3.1 节改成交互输入版本，保留 `identity` 定义和入口判断，将 `main()` 的函数体替换为：
+
+```python
+    rho = float(input("Enter rho: "))
+    p = {"rho": rho}
+    value = identity(p)  # Set a breakpoint here
+    print(value)
+```
+
+Debug that practice file with the integrated terminal. When the prompt appears, select **Terminal**, type `60`, and press Enter. The program converts the text to `60.0`, builds the dictionary, and then reaches the breakpoint. Entering expressions in Debug Console does not answer this terminal prompt. Nonnumeric text fails at `float(...)` with `ValueError`, before the function call.
+
+使用集成终端调试该练习文件。出现输入提示后，切换到 **Terminal**，输入 `60` 并回车。程序将文本转换为 `60.0`、创建字典，然后到达断点。在 Debug Console 输入表达式不会回答这个终端提示。若输入非数字文本，会在 `float(...)` 处触发 `ValueError`，尚未执行到函数调用。
 
 ## Verification and next discussion / 核对与后续讨论
 
-The two terminal runs above were executed with Python 3.13.9 and produced the displayed values. The VS Code steps were checked against official documentation; the graphical debug session has not been performed here.
+The original script and both practice variants were checked with Python 3.13.9. Fixed input and interactive input `60` both printed `{'rho': 60.0}`. The default call `identity()` returned `None`. The JSON example was parsed and its configured program and arguments were run from the repository root; the VS Code F5 launch itself was not performed.
 
-上述两种终端运行已在 Python 3.13.9 下执行，得到所列输出。VS Code 操作已核对官方文档；本次未实际操作图形界面完成调试会话。
+原脚本和两个练习变体均已用 Python 3.13.9 核对。固定输入和交互输入 `60` 均输出 `{'rho': 60.0}`。默认调用 `identity()` 返回 `None`。JSON 示例已解析检查，并在仓库根目录执行了它指定的脚本与参数；本次未实际在 VS Code 中按 F5 启动该配置。
 
-Next, we can work through your own pause-and-step session, then add saved arguments in `launch.json`, exception breakpoints, and traceback reading as needed. This chapter starts with the basic run/debug workflow; [01-SI](01-SI-spyder.md) preserves the more detailed Spyder array-inspection example.
+Next, we can add exception breakpoints and traceback reading based on your own debugging session. [01-SI](01-SI-spyder.md) preserves the more detailed Spyder array-inspection example.
 
-接下来可以结合你的实际操作，逐步讨论暂停与单步执行，再按需要补充 `launch.json` 中保存运行参数、异常断点，以及错误回溯（traceback）的阅读方法。本章先建立基本运行与调试流程；[01-SI](01-SI-spyder.zh-CN.md)保留详细的 Spyder 数组检查案例。
+接下来可以结合你的实际调试会话，补充异常断点与错误回溯（traceback）的阅读方法。[01-SI](01-SI-spyder.zh-CN.md)保留详细的 Spyder 数组检查案例。
