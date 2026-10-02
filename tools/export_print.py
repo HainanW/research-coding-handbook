@@ -77,6 +77,8 @@ def render_html(source, destination, css):
     text = re.sub(r"<!-- print:omit -->.*?<!-- /print:omit -->", "", text, flags=re.S)
     text = re.sub(r"^\[(?:Back to the handbook|返回手册)\].*$", "", text, flags=re.M)
     body = markdown.markdown(text, extensions=["tables", "fenced_code", "sane_lists"])
+    if "<!-- print:toc -->" in text:
+        body = body.replace("<table>", '<table class="toc-chapters">', 1)
     body = re.sub(r"<pre><code([^>]*)>(.*?)</code></pre>", split_listing, body, flags=re.S)
     references = []
 

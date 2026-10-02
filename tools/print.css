@@ -43,6 +43,10 @@ tr { break-inside: avoid; }
 th, td { border: 0.5pt solid #999; padding: 5pt 6pt; vertical-align: top; overflow-wrap: anywhere; }
 th { font-weight: bold; background: white; border-bottom: 1pt solid #444; }
 table code { font-size: 0.93em; }
+/* The contents page reserves more room for summaries and nests worked examples. */
+table.toc-chapters th:first-child { width: 32%; }
+table.toc-chapters th:last-child { width: 68%; }
+.toc-subentry { display: block; padding-left: 14pt; }
 figure { margin: 9pt 0 12pt; break-inside: avoid; }
 figure p { margin: 0; }
 img { display: block; width: 100%; height: auto; filter: grayscale(1); }

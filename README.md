@@ -4,6 +4,8 @@
 
 [00 — Table of Content](docs/00-Table-of-Content.md) · [Bilingual landscape PDF](docs/print/00-Table-of-Content.zh-CN.pdf) · [English–Chinese contents](docs/00-Table-of-Content.zh-CN.md).
 
+The printed contents uses a narrower chapter/topic column (32%) and indents worked examples beneath their parent chapter.
+
 The contents list all ten guides, the chapter 03 worked example, and Koopman reading materials. Chapter titles link to their sources. The default print export includes this table of contents.
 
 A practical handbook for turning research questions and mathematical models into reliable code, reproducible experiments, and publication results.

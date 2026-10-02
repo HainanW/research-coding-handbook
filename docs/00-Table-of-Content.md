@@ -1,6 +1,7 @@
 # 00 — Table of Content
 
 <!-- print:landscape -->
+<!-- print:toc -->
 
 <!-- print:omit -->
 [English handbook](../README.md) · [中文手册](../README.zh-CN.md) · [双语 PDF](print/00-Table-of-Content.zh-CN.pdf)
@@ -17,7 +18,7 @@ Select a chapter title to open its source. Each chapter PDF has its own page num
 | [**01** Inspect functions in Spyder](01-main-spyder-function-inspection.md) | Breakpoints, stepping, variable types and shapes, local/global randomness. |
 | [**02** Insert and manage Markdown images](02-main-markdown-images.md) | Relative paths, embedded figures, VS Code screenshots, display width. |
 | [**03** Python data types and a profit equation](03-main-python-data-types.md) | Built-in types, mutation, NumPy arrays, Case 1 calculations. |
-| [**03 · Example 1** MO-book production planning](03-example-01-mo-book-production.md) | Equations to Python objects, LP variables, pandas, solver results and verification. |
+| <span class="toc-subentry">[**03 · Example 1** MO-book production planning](03-example-01-mo-book-production.md)</span> | Equations to Python objects, LP variables, pandas, solver results and verification. |
 | [**04** Manual GitHub synchronization](04-main-github-manual-push.md) | Remote checks, pull, stage, commit, push, verification and troubleshooting. |
 | [**05** Dunder methods and special names](05-main-python-dunder.md) | Special methods, a profit container, entry-point guards, underscore patterns. |
 | [**06** Create a GitHub organization](06-main-github-organization.md) | Account and organization names, setup, repository ownership, verification. |

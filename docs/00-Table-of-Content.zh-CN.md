@@ -1,6 +1,7 @@
 # 00 — Table of Content / 总目录
 
 <!-- print:landscape -->
+<!-- print:toc -->
 
 <!-- bilingual: en-zh -->
 
@@ -23,7 +24,7 @@ Select an English title to open the English source, or a Chinese title to open t
 | [**01** Inspect functions in Spyder](01-main-spyder-function-inspection.md)<br>[在 Spyder 中检查函数](01-main-spyder-function-inspection.zh-CN.md) | Breakpoints, stepping, variable types and shapes, local/global randomness.<br>断点、单步执行、变量类型与形状、局部及全局随机数。 |
 | [**02** Insert and manage Markdown images](02-main-markdown-images.md)<br>[Markdown 插图与图片管理](02-main-markdown-images.zh-CN.md) | Relative paths, embedded figures, VS Code screenshots, display width.<br>相对路径、嵌入图片、VS Code 截图、显示宽度。 |
 | [**03** Python data types and a profit equation](03-main-python-data-types.md)<br>[Python 数据类型与利润方程](03-main-python-data-types.zh-CN.md) | Built-in types, mutation, NumPy arrays, Case 1 calculations.<br>内置类型、可变性、NumPy 数组、Case 1 计算。 |
-| [**03 · Example 1** MO-book production planning](03-example-01-mo-book-production.md)<br>[MO-book 生产计划](03-example-01-mo-book-production.zh-CN.md) | Equations to Python objects, LP variables, pandas, solver results and verification.<br>公式到 Python 对象、LP 变量、pandas、求解结果与验证。 |
+| <span class="toc-subentry">[**03 · Example 1** MO-book production planning](03-example-01-mo-book-production.md)<br>[MO-book 生产计划](03-example-01-mo-book-production.zh-CN.md)</span> | Equations to Python objects, LP variables, pandas, solver results and verification.<br>公式到 Python 对象、LP 变量、pandas、求解结果与验证。 |
 | [**04** Manual GitHub synchronization](04-main-github-manual-push.md)<br>[GitHub 手动同步](04-main-github-manual-push.zh-CN.md) | Remote checks, pull, stage, commit, push, verification and troubleshooting.<br>远程检查、拉取、暂存、提交、推送、结果核对与故障处理。 |
 | [**05** Dunder methods and special names](05-main-python-dunder.md)<br>[双下划线方法与特殊名称](05-main-python-dunder.zh-CN.md) | Special methods, a profit container, entry-point guards, underscore patterns.<br>特殊方法、利润容器、入口判断、下划线命名形式。 |
 | [**06** Create a GitHub organization](06-main-github-organization.md)<br>[创建 GitHub 组织](06-main-github-organization.zh-CN.md) | Account and organization names, setup, repository ownership, verification.<br>账号与组织名称、创建步骤、仓库归属、结果核对。 |
