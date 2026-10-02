@@ -42,15 +42,79 @@ p: dict[str, float] | None = None
 | `\| None` | The type hint also allows `None`<br>类型说明也允许 `None` |
 | `= None` | If the caller omits `p`, its default value is `None`<br>调用时不提供 `p`，默认值就是 `None` |
 
+**A dictionary can contain zero, one, or many key–value pairs.** In `dict[str, float]`, `str` describes the keys and `float` describes the values; the two type names do not mean there is only one pair. For example:
+
+**字典（dictionary）可以包含零个、一个或多个键值对（key–value pairs）。** `dict[str, float]` 中的 `str` 说明键的类型，`float` 说明值的类型；这两个类型名称并不是说“只能放一对”。例如：
+
+```python
+p = {"rho": 50.0, "k": 0.2, "volume": 60.0}
+print(len(p))       # 3
+print(p["rho"])     # 50.0
+print(p["k"])       # 0.2
+```
+
+These are illustrative entries, not a complete validated WO parameter set. Each key is a string and each value here is a float. The annotation does not prescribe particular key names, their count, or physical units; the function body may impose additional requirements. `{}` is an empty dictionary, while `None` means no dictionary was supplied. They are different values.
+
+这些条目只是教学示例，并不是完整、已验证的 WO 参数集。每个键都是字符串，每个值在这里都是浮点数。这个标注没有规定必须有哪些键、键值对数量或物理单位；函数内部代码可能另有要求。`{}` 是空字典，而 `None` 表示没有提供字典，两者不是同一个值。
+
 Likewise, `sc: list[dict[str, Any]]` describes a list of scenario dictionaries. `Any` leaves value types unrestricted; a record can contain float flows and integer indices. `-> np.ndarray` describes an array return value.
 
 同理，`sc: list[dict[str, Any]]` 表示由情景字典组成的列表。`Any` 不限定值的类型，因此一条记录可以同时包含浮点流量和整数编号。`-> np.ndarray` 说明预期返回数组。
 
 ## 2. Why the future import is needed here / 这里为什么要用 future import
 
-Without the future import, Python 3.9 tries to evaluate `dict[str, float] | None` while defining the function, before any call. It can parse the expression, but cannot perform this type-union operation, so it raises `TypeError`. Type unions using `|` were added in [Python 3.10](https://docs.python.org/3.10/whatsnew/3.10.html#pep-604-new-type-union-operator).
+### 2.1 A number and a piece of text are different / 2.1 数字和文字不是一回事
 
-不加 future import 时，Python 3.9 在定义函数时就会尝试处理 `dict[str, float] | None`，这时还没有调用函数。它能读懂表达式的结构，但还不支持用 `|` 组合类型，因此报 `TypeError`。这种类型联合运算是在 [Python 3.10](https://docs.python.org/3.10/whatsnew/3.10.html#pep-604-new-type-union-operator) 中加入的。
+Start with these two lines. The only difference is the quotation marks:
+
+先看下面两行，区别只是有没有引号：
+
+```python
+number = 1 + 2
+text = "1 + 2"
+
+print(number)        # 3
+print(type(number))  # <class 'int'>
+print(text)          # 1 + 2
+print(type(text))    # <class 'str'>
+```
+
+For `number`, Python performs the addition and stores the result `3`. For `text`, Python stores the characters `1 + 2` as a string. **Saving those characters does not perform the addition, now or automatically later.**
+
+`number` 那一行让 Python 做加法，保存结果 `3`。`text` 那一行只保存 `1 + 2` 这几个字符，类型是字符串（string）。**保存这些字符，不会做加法，也不会过一会儿就自动做加法。**
+
+A separate instruction can ask Python to execute the saved text as an expression. Here `eval()` does that for our fixed arithmetic example:
+
+如果另外下达指令，Python 才会把保存的文字当作表达式执行。下面的 `eval()` 就是对这个固定的加法例子提出这样的要求：
+
+```python
+text = "1 + 2"
+result = eval(text)
+print(result)  # 3
+print(text)    # 1 + 2
+```
+
+`result` receives `3`; `text` itself remains the string `"1 + 2"`. This example explains the difference between storing text and asking Python to execute it. You do not need to add `eval()` to the WO script.
+
+`result` 得到 `3`，而 `text` 本身仍然是字符串 `"1 + 2"`。这个例子只是帮助区分“保存文字”和“要求 Python 执行文字中的表达式”。你的 WO 脚本不需要因此添加 `eval()`。
+
+### 2.2 Apply that distinction to the parameter annotation / 2.2 再看参数旁边的类型说明
+
+In `p: dict[str, float] | None = None`, the part after the colon and before `= None` describes the expected type of `p`: **a dictionary with string keys and float values, or `None`**. The `|` means “or” here. The final `= None` separately specifies the default value if no argument is supplied.
+
+在 `p: dict[str, float] | None = None` 中，冒号后面、`= None` 前面的部分，是对 `p` 的类型说明：**字符串键、浮点数值的字典，或者 `None`**。这里的 `|` 表示“或者”；最后的 `= None` 则单独规定“不传参数时默认用什么值”。
+
+Without the future import, Python 3.9 tries to turn this annotation into a type description it can work with when defining the function. That requires support for `|` between these types. Python 3.9 does not have that support, so the definition raises `TypeError`. This use of `|` was introduced in [Python 3.10](https://docs.python.org/3.10/whatsnew/3.10.html#pep-604-new-type-union-operator).
+
+不加 future import 时，Python 3.9 在定义函数时，就会尝试把这段标注变成它能使用的类型信息。这需要支持“用 `|` 把类型组合起来”的功能。Python 3.9 没有这个功能，所以函数定义会报 `TypeError`。这种 `|` 用法是在 [Python 3.10](https://docs.python.org/3.10/whatsnew/3.10.html#pep-604-new-type-union-operator) 中加入的。
+
+With `from __future__ import annotations`, Python 3.9 instead keeps this annotation as the string `"dict[str, float] | None"`. Just as saving `"1 + 2"` does not require addition, saving this text does not require performing the unsupported `|` operation. The function can therefore be defined and called. See [PEP 563](https://peps.python.org/pep-0563/).
+
+加上 `from __future__ import annotations` 后，Python 3.9 改为把这段标注保存成字符串 `"dict[str, float] | None"`。就像保存 `"1 + 2"` 不需要做加法，保存这份文字也不需要执行它不支持的 `|` 运算。因此函数可以正常定义和调用。参见 [PEP 563](https://peps.python.org/pep-0563/)。
+
+Run the following as a complete, separate Python 3.9 script:
+
+将下面内容作为一个完整、独立的 Python 3.9 脚本运行：
 
 ```python
 from __future__ import annotations
@@ -58,13 +122,46 @@ from __future__ import annotations
 def identity(p: dict[str, float] | None = None):
     return p
 
-print(identity({"rho": 50.0}))       # {'rho': 50.0}
-print(type(identity.__annotations__["p"]).__name__)  # str
+parameters = {"rho": 50.0, "k": 0.2}
+result = identity(parameters)
+print(result)                    # {'rho': 50.0, 'k': 0.2}
+print(type(result).__name__)      # dict
+
+annotation = identity.__annotations__["p"]
+print(annotation)                # dict[str, float] | None
+print(type(annotation).__name__)  # str
 ```
 
-`identity.__annotations__["p"]` retrieves the stored annotation for `p`. With the future statement, Python 3.9 stores it as the text `"dict[str, float] | None"`, avoiding evaluation at function definition. Only the annotation becomes text; the supplied `p` remains a dictionary. This does not add runtime support for type unions if another tool later evaluates that text. See [PEP 563](https://peps.python.org/pep-0563/).
+There are two separate things to inspect: `result` is the real dictionary returned by the function; `annotation` is the saved text describing the parameter. `identity.__annotations__["p"]` simply retrieves that description. **The dictionary has not become a string.**
 
-`identity.__annotations__["p"]` 取出函数保存的 `p` 的类型标注。加上 future 语句后，Python 3.9 把它保存为文字 `"dict[str, float] | None"`，定义函数时不计算它。只有标注变成文字，传入的 `p` 仍是字典。如果其他工具后来再计算这段文字，Python 3.9 仍不因此获得类型联合运算能力。参见 [PEP 563](https://peps.python.org/pep-0563/)。
+这里分开看两样东西：`result` 是函数返回的真实字典；`annotation` 是保存下来的参数类型说明。`identity.__annotations__["p"]` 只是取出这份说明的写法。**字典没有变成字符串。**
+
+### 2.3 Is it equivalent to a comment? / 2.3 这是不是相当于注释掉了？
+
+It resembles a comment in that it does not immediately perform the `|` operation, but it is not discarded. A normal `#` comment is not stored as the function's annotation; this description is stored in `__annotations__` and can be retrieved by tools. The future import also does not add automatic checking of the argument values.
+
+可以把它理解为“暂时不执行里面的 `|`”，但它并没有被丢弃。普通 `#` 注释不会作为函数的类型标注保存；这份说明则保存在 `__annotations__` 中，工具仍能取出来查看。future import 也不会自动检查你传入的数据类型。
+
+### 2.4 When can an error still occur? (Optional) / 2.4 那什么时候还会报错？（可先跳过）
+
+An ordinary `identity(parameters)` call uses the dictionary and runs `return p`; it does not ask Python to convert the saved annotation text into type information. But `typing.get_type_hints(identity)` makes that additional request. On Python 3.9, it then encounters the unsupported `|` operation and raises `TypeError`. This is a separate action, like explicitly calling `eval(text)` in the arithmetic example. **A stored string does not execute itself, and the future import does not upgrade Python.**
+
+普通的 `identity(parameters)` 调用拿到字典，然后执行 `return p`，不会要求 Python 把保存的类型文字转换为类型信息。但 `typing.get_type_hints(identity)` 会额外提出这个要求。在 Python 3.9 中，这时又遇到不支持的 `|` 运算，才会报 `TypeError`。这是额外的一步，就像前面的例子里特意调用了 `eval(text)`。**字符串不会自己执行，future import 也没有升级 Python。**
+
+If a Python 3.9 program needs that extra tool, the compatible spelling below expresses the same intended type. This is an optional alternative; the original WO script is not being changed.
+
+如果 Python 3.9 程序确实需要那个额外工具，可以使用下面兼容的写法，表达相同的类型要求。这只是可选的替代方式，没有修改原 WO 脚本。
+
+```python
+from typing import Optional
+
+def identity(p: Optional[dict[str, float]] = None):
+    return p
+```
+
+`Optional[dict[str, float]]` also means “this dictionary type or `None`.” Neither spelling restricts the dictionary to a single key–value pair.
+
+`Optional[dict[str, float]]` 同样表示“这种字典或者 `None`”。两种写法都不限制字典只能有一个键值对。
 
 `__future__` is a special standard-library module. Python recognizes `from __future__ import annotations` as an instruction to enable this annotation behavior in the file. *Dunder* means *double underscore*: `__future__` has two underscores at each end. Put the statement before ordinary imports; a module docstring and comments may precede it. See [future statements](https://docs.python.org/3.9/reference/simple_stmts.html#future-statements).
 
