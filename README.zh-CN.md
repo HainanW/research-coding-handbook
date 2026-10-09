@@ -77,11 +77,11 @@
 - [双语指南](docs/08-main-python-classes.zh-CN.md)：类、实例、`self`、初始化、属性、方法，以及各自保存数据的实验记录对象。
 - [运行示例](examples/08_python_classes.py) · [英中双语 PDF](docs/print/08-main-python-classes.zh-CN.pdf) · [双语打印 HTML](docs/print/08-main-python-classes.zh-CN.html)。
 
-**09：Codex Skills 入门、安装与科研绘图**
+**09：Codex 技能入门**
 
-- [英中双语指南](docs/09-main-codex-skills.zh-CN.md)：skill 文件结构、个人级与项目级安装、`.agents/skills` 与 `.codex/skills` 的区别、调用、维护，以及 `scientific-visualization` 科研绘图案例。
-- 收录可复制提示词、Matplotlib 示例和本篇教程的原始编写请求。安装命令仅作为教程示例；新增本章不代表已安装 skill 或修改 Python 环境。
-- [US Letter 英中双语 PDF](docs/print/09-main-codex-skills.zh-CN.pdf) · [双语打印 HTML](docs/print/09-main-codex-skills.zh-CN.html)。
+- [英中双语指南](docs/09-main-codex-skills.zh-CN.md)：以本机已安装的手册技能为例，说明什么是 skill、个人级／项目级／内置技能、六种内置技能用途，以及调用和安装方法。
+- 包含可复制的 Codex 请求及简短排错表；安装示例未实际执行。
+- [US Letter 英中双语 PDF](docs/print/09-main-codex-skills.zh-CN.pdf)。
 
 **10：Python 导入、类型标注与解析**
 

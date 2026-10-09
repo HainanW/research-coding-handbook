@@ -32,7 +32,7 @@ Select an English title to open the English source, or a Chinese title to open t
 | [**06** Create a GitHub organization](06-main-github-organization.md)<br>[创建 GitHub 组织](06-main-github-organization.zh-CN.md) | Account and organization names, setup, repository ownership, verification.<br>账号与组织名称、创建步骤、仓库归属、结果核对。 |
 | [**07** Conda environments on Windows](07-main-conda-environment.md)<br>[Windows 下的 conda 环境](07-main-conda-environment.zh-CN.md) | Installation checks, environments, VS Code interpreters, reproducible specifications.<br>安装检查、环境创建、VS Code 解释器、可复现环境清单。 |
 | [**08** Python classes and objects](08-main-python-classes.md)<br>[Python 类与对象](08-main-python-classes.zh-CN.md) | Classes, instances, self, initialization, attributes, methods, inheritance and composition.<br>类、实例、self、初始化、属性、方法、继承与组合。 |
-| [**09** Codex skills](09-main-codex-skills.md)<br>[Codex 技能](09-main-codex-skills.zh-CN.md) | Skill structure, installation paths, invocation, maintenance and scientific plotting.<br>技能结构、安装路径、调用、维护与科研绘图。 |
+| [**09** Codex skills](09-main-codex-skills.md)<br>[Codex 技能](09-main-codex-skills.zh-CN.md) | Skill basics, installation scope, built-in skills, invocation and installation.<br>技能概念、安装范围、内置技能、调用与安装。 |
 | [**10** Imports, annotations and parsing](10-main-python-imports-annotations-parsing.md)<br>[导入、类型标注与解析](10-main-python-imports-annotations-parsing.zh-CN.md) | Imports, future annotations, argparse, `__annotations__`, `__name__`, dunder names, entry points and complete code.<br>导入、延后求值的标注、argparse、`__annotations__`、`__name__`、双下划线、入口判断与完整代码。 |
 
 ## Supplementary reading: Koopman operator / 补充阅读：Koopman 算子

@@ -26,7 +26,7 @@ Select a chapter title to open its source. Each chapter PDF has its own page num
 | [**06** Create a GitHub organization](06-main-github-organization.md) | Account and organization names, setup, repository ownership, verification. |
 | [**07** Conda environments on Windows](07-main-conda-environment.md) | Installation checks, environments, VS Code interpreters, reproducible specifications. |
 | [**08** Python classes and objects](08-main-python-classes.md) | Classes, instances, self, initialization, attributes, methods, inheritance and composition. |
-| [**09** Codex skills](09-main-codex-skills.md) | Skill structure, installation paths, invocation, maintenance and scientific plotting. |
+| [**09** Codex skills](09-main-codex-skills.md) | Skill basics, installation scope, built-in skills, invocation and installation. |
 | [**10** Imports, annotations and parsing](10-main-python-imports-annotations-parsing.md) | Imports, future annotations, argparse, `__annotations__`, `__name__`, dunder names, entry points and complete code. |
 
 ## Supplementary reading: Koopman operator

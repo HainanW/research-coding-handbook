@@ -74,11 +74,11 @@ This repository collects recurring programming practices, workflows, and templat
 - [Read the guide](docs/08-main-python-classes.md): classes, instances, `self`, initialization, attributes, methods, and independent experiment records.
 - [Run the example](examples/08_python_classes.py) · [PDF](docs/print/08-main-python-classes.pdf) · [Print HTML](docs/print/08-main-python-classes.html).
 
-**09. Codex skills: installation and scientific plotting**
+**09. Codex skills: a beginner’s guide**
 
-- [Read the guide](docs/09-main-codex-skills.md): skill structure, personal and project installation, `.agents/skills` versus `.codex/skills`, invocation, maintenance, and scientific plotting with `scientific-visualization`.
-- Includes copyable prompts, a Matplotlib example, and the original tutorial request. The installation commands are documented examples; adding this chapter does not install a skill or change Python environments.
-- [US Letter PDF](docs/print/09-main-codex-skills.pdf) · [Print HTML](docs/print/09-main-codex-skills.html).
+- [Read the guide](docs/09-main-codex-skills.md): use the installed handbook skill to learn personal/project/built-in scope, six built-in skill roles, invocation and installation.
+- Includes copyable Codex requests and a short troubleshooting table; installation examples were not executed.
+- [US Letter bilingual PDF](docs/print/09-main-codex-skills.zh-CN.pdf).
 
 **10. Python imports, type annotations, and parsing**
 
